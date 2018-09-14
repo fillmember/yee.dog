@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <canvas ref="canvas" :width="width" :height="height"></canvas>
+    <canvas ref="canvas"></canvas>
   </div>
 </template>
 
@@ -9,11 +9,17 @@ import {
   MeshLambertMaterial,
   PerspectiveCamera,
   WebGLRenderer,
-  DirectionalLight
+  DirectionalLight,
+  LinearEncoding
 } from "three";
 import GLTFLoader from "three-gltf-loader";
+import MakeOrbitControls from "three-orbit-controls";
 import { TweenMax } from "gsap";
 import { IKSolver } from "three-ik";
+
+const THREE = require("three");
+
+const OrbitControls = MakeOrbitControls(THREE);
 
 export default {
   name: "DogLand",
@@ -44,7 +50,7 @@ export default {
         gltf => {
           const camera = (this.camera = new PerspectiveCamera(
             22,
-            this.ratio,
+            this.width / this.height,
             0.1,
             1000
           ));
@@ -55,7 +61,8 @@ export default {
           renderer.setClearColor(0x1b8547);
           const scene = (this.scene = gltf.scene);
           const dog = (this.dog = scene.getObjectByName("Mesh"));
-          // Correct material
+          dog.position.y = -0.4;
+          dog.material.map.encoding = LinearEncoding;
           var mat = new MeshLambertMaterial({
             color: 0x444444,
             map: dog.material.map,
@@ -68,6 +75,15 @@ export default {
           light.position.set(0, 1, 0.5);
           scene.add(light);
           camera.position.set(-20, 2, -20);
+          const controls = new OrbitControls(camera, this.$refs.canvas);
+          controls.autoRotate = true;
+          controls.autoRotateSpeed = 0.033;
+          controls.enableDamping = true;
+          controls.rotateSpeed = 0.3;
+          controls.dampingFactor = 0.1;
+          controls.enablePan = false;
+          controls.enableZoom = false;
+          //
           this.ready = true;
         },
         function(xhr) {
@@ -95,11 +111,6 @@ export default {
         this.renderer.render(this.scene, this.camera);
       }
       window.requestAnimationFrame(this.update);
-    }
-  },
-  computed: {
-    ratio() {
-      return this.width / this.height;
     }
   }
 };
