@@ -1,14 +1,26 @@
 <template>
   <div class="hello">
-    <canvas ref="canvas"></canvas>
+    <canvas ref="canvas" @mousedown="onMousedown" @mouseup="onMouseup"></canvas>
+    <div class="menu">
+      <button class="debug-toggle" @click="debug = !debug">debug view: {{debug ? "yes" : "no"}}</button>
+      <button @click="stage3D.dog.animation.actions.forEach(a=>a.paused=!a.paused)">狗舞</button>
+    </div>
   </div>
 </template>
 
 <script>
 import Stage3D from "./Stage3D.js";
+import { DOG_BARK_START, DOG_BARK_END } from "./Events.js";
 
+export const MODE_BARK = "MODE_BARK";
+export const MODE_DANCE = "MODE_DANCE";
 export default {
   name: "DogLand",
+  data() {
+    return {
+      mode: MODE_BARK
+    };
+  },
   created() {
     // non-reactive data here
   },
@@ -16,11 +28,28 @@ export default {
     this.stage3D = new Stage3D({ domElement: this.$refs.canvas });
     this.stage3D.init({ width: window.innerWidth, height: window.innerHeight });
     this.stage3D.load({});
+    this.stage3D.debug = this.$store.state.debug;
     this.bind();
   },
   beforeDestroy() {
     window.cancelAnimationFrame(this._animationFrameID);
     this.unbind();
+    this.stage3D.destroy();
+  },
+  computed: {
+    debug: {
+      get() {
+        return this.$store.state.debug;
+      },
+      set(v) {
+        this.$store.commit("TOGGLE_DEBUG");
+      }
+    }
+  },
+  watch: {
+    debug() {
+      this.stage3D.debug = this.$store.state.debug;
+    }
   },
   methods: {
     bind() {
@@ -41,11 +70,37 @@ export default {
         width: window.innerWidth,
         height: window.innerHeight
       });
+    },
+    onMousedown(evt) {
+      switch (this.mode) {
+        case MODE_BARK:
+          this.stage3D.dispatch({
+            type: DOG_BARK_START
+          });
+      }
+    },
+    onMouseup(evt) {
+      switch (this.mode) {
+        case MODE_BARK:
+          this.stage3D.dispatch({
+            type: DOG_BARK_END
+          });
+      }
     }
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
+<!-- Consider: https://github.com/c8r/vue-styled-system -->
 <style scoped>
+.hello {
+  margin: 0;
+  padding: 0;
+}
+.menu {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+}
 </style>

@@ -1,10 +1,4 @@
-import {
-  MeshLambertMaterial,
-  PerspectiveCamera,
-  WebGLRenderer,
-  DirectionalLight,
-  LinearEncoding
-} from "three";
+import { PerspectiveCamera, WebGLRenderer, DirectionalLight } from "three";
 import GLTFLoader from "three-gltf-loader";
 import MakeOrbitControls from "three-orbit-controls";
 import { TweenMax } from "gsap";
@@ -12,6 +6,8 @@ import { IKSolver } from "three-ik";
 
 const THREE = require("three");
 const OrbitControls = MakeOrbitControls(THREE);
+
+import Dog from "./Dog3D.js";
 
 export default class Stage3D {
   constructor({ domElement } = {}) {
@@ -21,10 +17,11 @@ export default class Stage3D {
     const camera = (this.camera = new PerspectiveCamera(
       22,
       width / height,
-      0.1,
-      1000
+      0.01,
+      10000
     ));
-    this.camera.position.set(-20, 2, -20);
+    const a = 1;
+    this.camera.position.set(-20 * a, 2 * a, -20 * a);
     //
     const renderer = (this.renderer = new WebGLRenderer({
       canvas: this.domElement
@@ -39,8 +36,8 @@ export default class Stage3D {
     this.orbitcontrols.enableDamping = true;
     this.orbitcontrols.rotateSpeed = 0.3;
     this.orbitcontrols.dampingFactor = 0.1;
-    this.orbitcontrols.enablePan = false;
-    this.orbitcontrols.enableZoom = false;
+    this.orbitcontrols.enablePan = true;
+    this.orbitcontrols.enableZoom = true;
     //
   }
   load({ progressCallback } = {}) {
@@ -50,24 +47,14 @@ export default class Stage3D {
         `${process.env.BASE_URL}model/wt.glb`,
         gltf => {
           const scene = (this.scene = gltf.scene);
-          const dog = (this.dog = scene.getObjectByName("Mesh"));
-          //
-          dog.material.map.encoding = LinearEncoding;
-          var mat = new MeshLambertMaterial({
-            color: 0x444444,
-            map: dog.material.map,
-            skinning: true,
-            emissive: 0xffffff,
-            emissiveMap: dog.material.map
-          });
-          dog.material = mat;
+          const dog = (this.dog = new Dog({
+            obj3d: scene.getObjectByName("Mesh"),
+            scene
+          }));
           //
           var light = new DirectionalLight(0xffffff, 1);
           light.position.set(0, 1, 0.5);
           scene.add(light);
-          //
-          dog.position.y = -0.4;
-
           //
           resolve();
         },
@@ -88,11 +75,29 @@ export default class Stage3D {
     this.renderer.setSize(width, height);
   }
   update(dt) {
+    this.dog && this.dog.update();
     this.orbitcontrols.update();
   }
   render() {
     if (this.scene) {
       this.renderer.render(this.scene, this.camera);
+    }
+  }
+  destroy() {
+    this.renderer.dispose();
+  }
+  dispatch({ type, ...payload }) {
+    switch (type) {
+      case "yee":
+    }
+  }
+  set debug(v) {
+    if (this.dog) this.dog.debug = v;
+    if (this.orbitcontrols) {
+      this.orbitcontrols.autoRotate = !v;
+      this.orbitcontrols.dampingFactor = 0.1;
+      this.orbitcontrols.enablePan = v;
+      this.orbitcontrols.enableZoom = v;
     }
   }
 }
