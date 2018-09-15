@@ -147,11 +147,29 @@ export const Clips = {
 			times: [0, 1],
 			values: [0, -45].map(toRad)
 		}
+	],
+	earWagL: [
+		{
+			bone: BoneID.EarL_0,
+			property: "rotation[y]",
+			times: [0, 1],
+			values: [20, 50].map(toRad)
+		}
+	],
+	earWagR: [
+		{
+			bone: BoneID.EarR_0,
+			property: "rotation[y]",
+			times: [0, 1],
+			values: [-20, -50].map(toRad)
+		}
 	]
 };
 
 export const Actions = {
 	wag: { loop: LoopPingPong, paused: true, timeScale: 4 },
 	vleg: { loop: LoopPingPong, paused: true, timeScale: 8 },
-	bark: { loop: LoopPingPong, paused: true, timeScale: 6 }
+	bark: { loop: LoopPingPong, paused: true, timeScale: 6 },
+	earWagL: { loop: LoopPingPong, paused: true, timeScale: 10 },
+	earWagR: { loop: LoopPingPong, paused: true, timeScale: 10 }
 };
