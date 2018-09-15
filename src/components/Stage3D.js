@@ -1,8 +1,14 @@
-import { PerspectiveCamera, WebGLRenderer, DirectionalLight } from "three";
+import {
+  PerspectiveCamera,
+  WebGLRenderer,
+  DirectionalLight,
+  GridHelper
+} from "three";
 import GLTFLoader from "three-gltf-loader";
 import MakeOrbitControls from "three-orbit-controls";
 import { TweenMax } from "gsap";
 import { IKSolver } from "three-ik";
+import { DOG_BARK_START, DOG_BARK_END } from "./Events.js";
 
 const THREE = require("three");
 const OrbitControls = MakeOrbitControls(THREE);
@@ -38,7 +44,6 @@ export default class Stage3D {
     this.orbitcontrols.dampingFactor = 0.1;
     this.orbitcontrols.enablePan = true;
     this.orbitcontrols.enableZoom = true;
-    //
   }
   load({ progressCallback } = {}) {
     var loader = new GLTFLoader();
@@ -55,6 +60,8 @@ export default class Stage3D {
           var light = new DirectionalLight(0xffffff, 1);
           light.position.set(0, 1, 0.5);
           scene.add(light);
+          //
+          this.scene.add(new GridHelper(50, 10));
           //
           resolve();
         },
@@ -85,11 +92,6 @@ export default class Stage3D {
   }
   destroy() {
     this.renderer.dispose();
-  }
-  dispatch({ type, ...payload }) {
-    switch (type) {
-      case "yee":
-    }
   }
   set debug(v) {
     if (this.dog) this.dog.debug = v;

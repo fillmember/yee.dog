@@ -20,10 +20,10 @@ export default class Dog3D {
     dog.position.y = -0.4;
     // IK
     this.solver = new IKSolver(dog);
-    this.solver.chains({
-      worm: { joints: [5, 6, 7, 8], constraints: [20, 20, 20] },
-      armL: { joints: [17, 18, 19, 20], constraints: [20, 20, 20] },
-      armR: { joints: [21, 22, 23, 24], constraints: [20, 20, 20] }
+    this.solver.init(scene, {
+      worm: { joints: [5, 6, 7, 8], constraints: [0, 0, 0] }
+      // armL: { joints: [17, 18, 19], constraints: [20, 20, 20] },
+      // armR: { joints: [21, 22, 23], constraints: [20, 20, 20] }
     });
     // Animation
     this.animation = new Animation(dog);

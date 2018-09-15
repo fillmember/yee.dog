@@ -5664,7 +5664,13 @@ three-orbit-controls@^82.1.0:
   version "82.1.0"
   resolved "https://registry.yarnpkg.com/three-orbit-controls/-/three-orbit-controls-82.1.0.tgz#11a7f33d0a20ecec98f098b37780f6537374fab4"
 
-three@^0.96.0:
+three-transformcontrols@^0.78.1:
+  version "0.78.1"
+  resolved "https://registry.yarnpkg.com/three-transformcontrols/-/three-transformcontrols-0.78.1.tgz#bcff06f4fd3239743d93cfc3c1f0d49ece70b5f4"
+  dependencies:
+    three ">=0.78.0"
+
+three@>=0.78.0, three@^0.96.0:
   version "0.96.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.96.0.tgz#6f48bb9e321506906ae4708bda69b0ffa808ee7f"
 

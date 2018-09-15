@@ -1,5 +1,5 @@
 import { AnimationMixer, AnimationClip, NumberKeyframeTrack } from "three";
-
+import { TweenMax } from "gsap";
 import { Clips, Actions } from "./AnimationData.js";
 
 export class Animation {
@@ -29,7 +29,8 @@ export class Animation {
 							new NumberKeyframeTrack(
 								this.path(obj.bone, obj.property),
 								obj.times,
-								obj.values
+								obj.values,
+								obj.interpolation
 							)
 					)
 				)
@@ -40,15 +41,19 @@ export class Animation {
 		return `${name}.${property}`;
 	}
 	actions(input) {
-		this.actions = Object.keys(input).map(key => {
+		this.actions = {};
+		Object.keys(input).forEach(key => {
 			const action = this.mixer.clipAction(key);
 			const properties = Object.keys(input[key]);
 			properties.forEach(prop => (action[prop] = input[key][prop]));
 			action.play();
-			return action;
+			this.actions[key] = action;
 		});
 	}
 	update(dt = 1 / 60) {
 		this.mixer.update(dt);
 	}
+	// tween(target, duration, vars) {
+	// 	// TweenMax.to(action[target], duration, vars);
+	// }
 }

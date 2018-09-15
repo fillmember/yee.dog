@@ -1,5 +1,5 @@
 import BoneID from "./BoneID.js";
-import { Math as ThreeMath, LoopPingPong } from "three";
+import { Math as ThreeMath, LoopPingPong, InterpolateSmooth } from "three";
 
 const toRad = ThreeMath.degToRad;
 
@@ -29,19 +29,22 @@ export const Clips = {
 			bone: BoneID.Tail_0,
 			property: "rotation[y]",
 			times: [0, 1],
-			values: [-5, 5].map(toRad)
+			values: [-7, 7].map(toRad),
+			interpolation: InterpolateSmooth
 		},
 		{
 			bone: BoneID.Tail_1,
 			property: "rotation[y]",
 			times: [0, 1],
-			values: [20, -20].map(toRad)
+			values: [10, -10].map(toRad),
+			interpolation: InterpolateSmooth
 		},
 		{
 			bone: BoneID.Tail_2,
 			property: "rotation[y]",
 			times: [0, 1],
-			values: [30, -30].map(toRad)
+			values: [20, -20].map(toRad),
+			interpolation: InterpolateSmooth
 		}
 	],
 	vleg: [
@@ -167,9 +170,9 @@ export const Clips = {
 };
 
 export const Actions = {
-	wag: { loop: LoopPingPong, paused: true, timeScale: 4 },
+	wag: { loop: LoopPingPong, paused: false, timeScale: 4 },
 	vleg: { loop: LoopPingPong, paused: true, timeScale: 8 },
-	bark: { loop: LoopPingPong, paused: true, timeScale: 6 },
+	bark: { loop: LoopPingPong, paused: true },
 	earWagL: { loop: LoopPingPong, paused: true, timeScale: 10 },
 	earWagR: { loop: LoopPingPong, paused: true, timeScale: 10 }
 };

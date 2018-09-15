@@ -3,7 +3,6 @@
     <canvas ref="canvas" @mousedown="onMousedown" @mouseup="onMouseup"></canvas>
     <div class="menu">
       <button class="debug-toggle" @click="debug = !debug">debug view: {{debug ? "yes" : "no"}}</button>
-      <button @click="stage3D.dog.animation.actions.forEach(a=>a.paused=!a.paused)">狗舞</button>
     </div>
   </div>
 </template>
@@ -72,20 +71,18 @@ export default {
       });
     },
     onMousedown(evt) {
-      switch (this.mode) {
-        case MODE_BARK:
-          this.stage3D.dispatch({
-            type: DOG_BARK_START
-          });
-      }
+      const action = this.stage3D.dog.animation.actions.bark;
+      TweenMax.to(action, 0.07, {
+        time: 1,
+        ease: Power2.easeOut
+      });
     },
     onMouseup(evt) {
-      switch (this.mode) {
-        case MODE_BARK:
-          this.stage3D.dispatch({
-            type: DOG_BARK_END
-          });
-      }
+      const action = this.stage3D.dog.animation.actions.bark;
+      TweenMax.to(action, 0.07, {
+        time: 0,
+        ease: Power2.easeOut
+      });
     }
   }
 };
