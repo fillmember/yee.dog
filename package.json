@@ -13,6 +13,7 @@
     "three-gltf-loader": "^1.96.0",
     "three-ik": "^0.1.0",
     "three-orbit-controls": "^82.1.0",
+    "three-proto-particle": "^0.0.3",
     "three-transformcontrols": "^0.78.1",
     "vue": "^2.5.17",
     "vuex": "^3.0.1"
@@ -28,5 +29,9 @@
       "autoprefixer": {}
     }
   },
-  "browserslist": ["> 1%", "last 2 versions", "not ie <= 11"]
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 11"
+  ]
 }

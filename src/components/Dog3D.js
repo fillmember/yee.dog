@@ -3,7 +3,7 @@ import { TweenMax, Power2 } from "gsap";
 import { IKSolver } from "./IK.js";
 import { Animation } from "./Animation.js";
 import BoneID from "./BoneID.js";
-import { DOG_BARK_START, DOG_BARK_END } from "./Events.js";
+import ParticleSystem from "./ParticleSystem.js";
 
 export default class Dog3D {
   constructor({ obj3d, scene }) {
@@ -39,10 +39,13 @@ export default class Dog3D {
     });
     // Animation
     this.animation = new Animation(dog);
+    // Particles
+    this.particles = new ParticleSystem(dog);
   }
   update(dt) {
     this.ik.update(dt);
     this.animation.update(dt);
+    this.particles.update(dt);
   }
   set debug(v) {
     this.ik.debug = v;

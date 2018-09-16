@@ -5664,6 +5664,10 @@ three-orbit-controls@^82.1.0:
   version "82.1.0"
   resolved "https://registry.yarnpkg.com/three-orbit-controls/-/three-orbit-controls-82.1.0.tgz#11a7f33d0a20ecec98f098b37780f6537374fab4"
 
+three-proto-particle@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/three-proto-particle/-/three-proto-particle-0.0.3.tgz#2da2fe2e249b987868d08ac330493013c8607280"
+
 three-transformcontrols@^0.78.1:
   version "0.78.1"
   resolved "https://registry.yarnpkg.com/three-transformcontrols/-/three-transformcontrols-0.78.1.tgz#bcff06f4fd3239743d93cfc3c1f0d49ece70b5f4"

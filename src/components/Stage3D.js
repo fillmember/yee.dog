@@ -9,7 +9,6 @@ import GLTFLoader from "three-gltf-loader";
 import MakeOrbitControls from "three-orbit-controls";
 import { TweenMax } from "gsap";
 import { IKSolver } from "three-ik";
-import { DOG_BARK_START, DOG_BARK_END } from "./Events.js";
 
 const THREE = require("three");
 const OrbitControls = MakeOrbitControls(THREE);

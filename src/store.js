@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    debug: false
+    debug: true
   },
   mutations: {
     TOGGLE_DEBUG(state) {
