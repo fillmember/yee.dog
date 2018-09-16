@@ -1,4 +1,9 @@
-import { MeshLambertMaterial, LinearEncoding, Vector3 } from "three";
+import {
+  MeshLambertMaterial,
+  LinearEncoding,
+  Vector3,
+  Math as Math3
+} from "three";
 import { TweenMax, Power2 } from "gsap";
 import { IKSolver } from "./IK.js";
 import { Animation } from "./Animation.js";
@@ -63,6 +68,27 @@ export default class Dog3D {
           center: [0, 180, 0],
           lifespan: Infinity,
           sprite: 50
+        }
+      },
+      digital: {
+        max: 512,
+        parent: scene,
+        emitter: {
+          size: () => Math3.randFloat(0.4, 0.8),
+          rate: 1 / 60,
+          center: dog.skeleton.bones[BoneID.Spine],
+          extent: [0.1, 0.1, 0.1],
+          lifespan: 4,
+          sprite: [57, 56],
+          velocity: () => {
+            const a = 0.05;
+            return [
+              Math3.randFloat(-a, a),
+              Math3.randFloat(-a, a),
+              Math3.randFloat(-a, a)
+            ];
+          },
+          lifespan: () => Math3.randFloat(0.5, 2)
         }
       }
     });
