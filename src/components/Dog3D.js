@@ -19,18 +19,25 @@ export default class Dog3D {
     dog.material = mat;
     dog.position.y = -0.4;
     // IK
-    this.solver = new IKSolver(dog);
-    this.solver.init(scene, {
-      worm: { joints: [5, 6, 7, 8], constraints: [0, 0, 0] }
-      // armL: { joints: [17, 18, 19], constraints: [20, 20, 20] },
-      // armR: { joints: [21, 22, 23], constraints: [20, 20, 20] }
+    this.ik = new IKSolver();
+    this.ik.init({
+      scene,
+      mesh: dog,
+      chains: {
+        worm: {
+          joints: [5, 6, 7, 8],
+          constraints: [0, 0, 0],
+          influence: 1
+        },
+        look: { joints: [7, 8], constraints: [0, 0, 0], influence: 0.0 }
+      }
     });
     // Animation
     this.animation = new Animation(dog);
   }
   update() {
-    this.animation.update();
-    this.solver.update();
+    this.ik.update();
+    // this.animation.update();
   }
   get position() {
     return this.dog.position;

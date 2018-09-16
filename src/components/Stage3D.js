@@ -61,7 +61,7 @@ export default class Stage3D {
           light.position.set(0, 1, 0.5);
           scene.add(light);
           //
-          this.scene.add(new GridHelper(50, 10));
+          // this.scene.add(new GridHelper(50, 10));
           //
           resolve();
         },

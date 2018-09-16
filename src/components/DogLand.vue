@@ -1,8 +1,9 @@
 <template>
   <div class="hello">
-    <canvas ref="canvas" @mousedown="onMousedown" @mouseup="onMouseup"></canvas>
+    <canvas ref="canvas" @mousedown="onMousedown" @mousemove="onMousemove" @mouseup="onMouseup"></canvas>
     <div class="menu">
       <button class="debug-toggle" @click="debug = !debug">debug view: {{debug ? "yes" : "no"}}</button>
+      <button @click="Object.keys(stage3D.dog.animation.actions).forEach(a=>stage3D.dog.animation.actions[a].paused=false)">狗舞</button>
     </div>
   </div>
 </template>
@@ -69,6 +70,20 @@ export default {
         width: window.innerWidth,
         height: window.innerHeight
       });
+    },
+    onMousemove(evt) {
+      const x = 2 * (evt.offsetX / this.$refs.canvas.offsetWidth) - 1;
+      const y = 1 - (evt.offsetY / this.$refs.canvas.offsetHeight) * 2;
+      if (this.stage3D.dog) {
+        this.stage3D.dog.ik.chains.worm.references.target.position.set(
+          0 + x * -8,
+          0.8 + y * 8,
+          -2.7
+        );
+        this.stage3D.dog.ik.chains.look.references.target.position.copy(
+          this.stage3D.dog.ik.chains.worm.references.target.position
+        );
+      }
     },
     onMousedown(evt) {
       const action = this.stage3D.dog.animation.actions.bark;
