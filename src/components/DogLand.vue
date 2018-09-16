@@ -74,22 +74,22 @@ export default {
       const y = 1 - (evt.offsetY / this.$refs.canvas.offsetHeight) * 2;
     },
     onMousedown(evt) {
-      this.stage3D.dog.bark(true);
+      this.stage3D.dog && this.stage3D.dog.bark(true);
     },
     onMouseup(evt) {
-      this.stage3D.dog.bark(false);
+      this.stage3D.dog && this.stage3D.dog.bark(false);
     },
     onKeyDown(evt) {
       switch (evt.keyCode) {
         case 32:
-          this.stage3D.dog.bark(true);
+          this.stage3D.dog && this.stage3D.dog.bark(true);
           break;
       }
     },
     onKeyUp(evt) {
       switch (evt.keyCode) {
         case 32:
-          this.stage3D.dog.bark(false);
+          this.stage3D.dog && this.stage3D.dog.bark(false);
           break;
       }
     }

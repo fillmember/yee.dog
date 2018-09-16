@@ -72,7 +72,7 @@ export default class Stage3D {
   start() {
     const clock = new Clock(true);
     this.renderer.setAnimationLoop(time => {
-      this.update(clock.getDelta());
+      this.update(clock.getDelta(), clock.getElapsedTime());
       this.render();
     });
   }
@@ -84,7 +84,7 @@ export default class Stage3D {
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
   }
-  update(dt) {
+  update(dt, time) {
     if (this.dog) {
       this.dog.update(dt);
     }

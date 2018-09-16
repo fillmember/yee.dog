@@ -1,4 +1,4 @@
-import { MeshLambertMaterial, LinearEncoding } from "three";
+import { MeshLambertMaterial, LinearEncoding, Vector3 } from "three";
 import { TweenMax, Power2 } from "gsap";
 import { IKSolver } from "./IK.js";
 import { Animation } from "./Animation.js";
@@ -40,7 +40,33 @@ export default class Dog3D {
     // Animation
     this.animation = new Animation(dog);
     // Particles
-    this.particles = new ParticleSystem(dog);
+    this.particles = new ParticleSystem({
+      confused: {
+        max: 16,
+        parent: scene,
+        emitter: {
+          rate: 0.2,
+          center: dog.skeleton.bones[BoneID.Head],
+          extent: [1, 1, 1],
+          offset: [0, 1, 0],
+          velocity: () => [0, 0.01, 0],
+          lifespan: () => 1 + Math.random() * 2,
+          sprite: 51
+        }
+      },
+      surprise: {
+        max: 4,
+        parent: dog.skeleton.bones[BoneID.Head],
+        emitter: {
+          size: 2,
+          rate: 0.5,
+          center: [0, 180, 0],
+          lifespan: Infinity,
+          sprite: 50
+        }
+      }
+    });
+    //
   }
   update(dt) {
     this.ik.update(dt);
