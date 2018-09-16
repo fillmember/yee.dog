@@ -50,7 +50,7 @@ export class Animation {
 			this.actions[key] = action;
 		});
 	}
-	update(dt = 1 / 60) {
+	update(dt) {
 		this.mixer.update(dt);
 	}
 	// tween(target, duration, vars) {

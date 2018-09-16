@@ -2,7 +2,8 @@ import {
   PerspectiveCamera,
   WebGLRenderer,
   DirectionalLight,
-  GridHelper
+  GridHelper,
+  Clock
 } from "three";
 import GLTFLoader from "three-gltf-loader";
 import MakeOrbitControls from "three-orbit-controls";
@@ -26,8 +27,7 @@ export default class Stage3D {
       0.01,
       10000
     ));
-    const a = 1;
-    this.camera.position.set(-20 * a, 2 * a, -20 * a);
+    this.camera.position.set(-20, 2, -20);
     //
     const renderer = (this.renderer = new WebGLRenderer({
       canvas: this.domElement
@@ -45,7 +45,7 @@ export default class Stage3D {
     this.orbitcontrols.enablePan = true;
     this.orbitcontrols.enableZoom = true;
   }
-  load({ progressCallback } = {}) {
+  load() {
     var loader = new GLTFLoader();
     return new Promise((resolve, reject) => {
       loader.load(
@@ -61,20 +61,24 @@ export default class Stage3D {
           light.position.set(0, 1, 0.5);
           scene.add(light);
           //
-          // this.scene.add(new GridHelper(50, 10));
-          //
           resolve();
         },
-        function(xhr) {
-          if (progressCallback) {
-            progressCallback(xhr.loaded / xhr.total);
-          }
-        },
+        function(xhr) {},
         function(error) {
           reject(error);
         }
       );
     });
+  }
+  start() {
+    const clock = new Clock(true);
+    this.renderer.setAnimationLoop(time => {
+      this.update(clock.getDelta());
+      this.render();
+    });
+  }
+  stop() {
+    this.renderer.setAnimationLoop(null);
   }
   resize({ width = window.innerWidth, height = window.innerHeight } = {}) {
     this.camera.aspect = width / height;
@@ -82,8 +86,10 @@ export default class Stage3D {
     this.renderer.setSize(width, height);
   }
   update(dt) {
-    this.dog && this.dog.update();
-    this.orbitcontrols.update();
+    if (this.dog) {
+      this.dog.update(dt);
+    }
+    this.orbitcontrols.update(dt);
   }
   render() {
     if (this.scene) {
@@ -92,6 +98,7 @@ export default class Stage3D {
   }
   destroy() {
     this.renderer.dispose();
+    this.renderer = null;
   }
   set debug(v) {
     if (this.dog) this.dog.debug = v;

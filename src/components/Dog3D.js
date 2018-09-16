@@ -1,4 +1,5 @@
 import { MeshLambertMaterial, LinearEncoding } from "three";
+import { TweenMax, Power2 } from "gsap";
 import { IKSolver } from "./IK.js";
 import { Animation } from "./Animation.js";
 import BoneID from "./BoneID.js";
@@ -25,31 +26,34 @@ export default class Dog3D {
       mesh: dog,
       chains: {
         worm: {
-          joints: [5, 6, 7, 8],
+          joints: [BoneID.Spine, BoneID.Shoulder, BoneID.Neck, BoneID.Head],
           constraints: [0, 0, 0],
-          influence: 1
+          influence: 0
         },
-        look: { joints: [7, 8], constraints: [0, 0, 0], influence: 0.0 }
+        look: {
+          joints: [BoneID.Neck, BoneID.Head],
+          constraints: [0, 0, 0],
+          influence: 0
+        }
       }
     });
     // Animation
     this.animation = new Animation(dog);
   }
-  update() {
-    this.ik.update();
-    // this.animation.update();
-  }
-  get position() {
-    return this.dog.position;
-  }
-  get rotation() {
-    return this.dog.rotation;
-  }
-  get scale() {
-    return this.dog.scale;
+  update(dt) {
+    this.ik.update(dt);
+    this.animation.update(dt);
   }
   set debug(v) {
-    this.solver.debug = v;
+    this.ik.debug = v;
     this.dog.material.wireframe = v;
+  }
+  // Dog Behaviours
+  bark(b) {
+    const action = this.animation.actions.bark;
+    TweenMax.to(action, 0.07, {
+      time: b ? 1 : 0,
+      ease: Power2.easeOut
+    });
   }
 }

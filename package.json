@@ -28,9 +28,5 @@
       "autoprefixer": {}
     }
   },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 11"
-  ]
+  "browserslist": ["> 1%", "last 2 versions", "not ie <= 11"]
 }

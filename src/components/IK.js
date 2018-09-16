@@ -32,9 +32,7 @@ export class IKSolver {
 		Object.keys(chains).forEach(key => {
 			const chain = chains[key];
 			const { joints, influence, constraints } = chain;
-			const bones = joints.map(
-				boneID => this.mesh.skeleton.bones[boneID]
-			);
+			const bones = joints.map(boneID => this.mesh.skeleton.bones[boneID]);
 			this.chains[key] = new FABRIK({
 				joints: bones,
 				influence,
