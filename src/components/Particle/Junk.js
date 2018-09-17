@@ -122,35 +122,34 @@
 // this.heademit(51);
 // window.dami = this;
 
-
 // helpers
-  setAttribute(attribute, ...args) {
-    if (args.length === 0) {
-      return this.setSprites(...new Array(64).fill(0).map((v, index) => index));
-    } else if (args.length === 1) {
-      this.system.geometry.attributes[attribute].array.fill(args[0]);
-      this.system.geometry.attributes[attribute].needsUpdate = true;
-    } else {
-      const rndIndex = () => Math3.randInt(0, args.length - 1);
-      this.system.geometry.attributes[
-        attribute
-      ].array = this.system.geometry.attributes.translate.array.map(
-        (v, index) => {
-          return args[rndIndex()];
-        }
-      );
-      this.system.geometry.attributes[attribute].needsUpdate = true;
-    }
-  }
-  setSprites(...args) {
-    this.setAttribute("sprite", ...args);
-  }
-  reparent(options = {}) {
-    const parent = options.parent || this.parent;
-    if (parent !== this.system.parent) {
-      parent.add(this.system);
-      if (options.position) {
-        this.system.position.copy(options.position);
-      }
-    }
-  }
+// setAttribute(attribute, ...args) {
+//   if (args.length === 0) {
+//     return this.setSprites(...new Array(64).fill(0).map((v, index) => index));
+//   } else if (args.length === 1) {
+//     this.system.geometry.attributes[attribute].array.fill(args[0]);
+//     this.system.geometry.attributes[attribute].needsUpdate = true;
+//   } else {
+//     const rndIndex = () => Math3.randInt(0, args.length - 1);
+//     this.system.geometry.attributes[
+//       attribute
+//     ].array = this.system.geometry.attributes.translate.array.map(
+//       (v, index) => {
+//         return args[rndIndex()];
+//       }
+//     );
+//     this.system.geometry.attributes[attribute].needsUpdate = true;
+//   }
+// }
+// setSprites(...args) {
+//   this.setAttribute("sprite", ...args);
+// }
+// reparent(options = {}) {
+//   const parent = options.parent || this.parent;
+//   if (parent !== this.system.parent) {
+//     parent.add(this.system);
+//     if (options.position) {
+//       this.system.position.copy(options.position);
+//     }
+//   }
+// }

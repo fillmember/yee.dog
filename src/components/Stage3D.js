@@ -2,13 +2,10 @@ import {
   PerspectiveCamera,
   WebGLRenderer,
   DirectionalLight,
-  GridHelper,
   Clock
 } from "three";
 import GLTFLoader from "three-gltf-loader";
 import MakeOrbitControls from "three-orbit-controls";
-import { TweenMax } from "gsap";
-import { IKSolver } from "three-ik";
 
 const THREE = require("three");
 const OrbitControls = MakeOrbitControls(THREE);
@@ -51,10 +48,10 @@ export default class Stage3D {
         `${process.env.BASE_URL}model/wt.glb`,
         gltf => {
           const scene = (this.scene = gltf.scene);
-          const dog = (this.dog = new Dog({
+          this.dog = new Dog({
             obj3d: scene.getObjectByName("Mesh"),
             scene
-          }));
+          });
           //
           var light = new DirectionalLight(0xffffff, 1);
           light.position.set(0, 1, 0.5);
@@ -62,7 +59,7 @@ export default class Stage3D {
           //
           resolve();
         },
-        function(xhr) {},
+        function() {},
         function(error) {
           reject(error);
         }
@@ -71,7 +68,7 @@ export default class Stage3D {
   }
   start() {
     const clock = new Clock(true);
-    this.renderer.setAnimationLoop(time => {
+    this.renderer.setAnimationLoop(() => {
       this.update(clock.getDelta(), clock.getElapsedTime());
       this.render();
     });
@@ -84,7 +81,7 @@ export default class Stage3D {
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
   }
-  update(dt, time) {
+  update(dt) {
     if (this.dog) {
       this.dog.update(dt);
     }

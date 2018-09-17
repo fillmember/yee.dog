@@ -68,5 +68,6 @@ export class Emitter {
     this.system.velocities[i + 2] = velocity[2];
     this.system.addParticle(position, options);
   }
+  // eslint-disable-next-line
   influence(iter, pos, v, a) {}
 }

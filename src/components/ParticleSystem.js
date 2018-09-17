@@ -1,11 +1,10 @@
-import { Texture, NearestFilter, Math as Math3 } from "three";
+import { Texture, NearestFilter } from "three";
 import {
   Emitter,
   System,
   Geometry,
   BillboardMaterial
 } from "./Particle/index.js";
-import { TweenMax, Elastic } from "gsap";
 import PARTICLE_TEXTURE from "./particle_tex_0.png";
 
 export default class ParticleSystems {

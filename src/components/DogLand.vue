@@ -9,7 +9,6 @@
 
 <script>
 import Stage3D from "./Stage3D.js";
-import { DOG_BARK_START, DOG_BARK_END } from "./Events.js";
 
 export const MODE_BARK = "MODE_BARK";
 export const MODE_DANCE = "MODE_DANCE";
@@ -43,7 +42,7 @@ export default {
         return this.$store.state.debug;
       },
       set(v) {
-        this.$store.commit("TOGGLE_DEBUG");
+        this.$store.commit("TOGGLE_DEBUG", v);
       }
     }
   },
@@ -72,11 +71,12 @@ export default {
     onMousemove(evt) {
       const x = 2 * (evt.offsetX / this.$refs.canvas.offsetWidth) - 1;
       const y = 1 - (evt.offsetY / this.$refs.canvas.offsetHeight) * 2;
+      return { x, y };
     },
-    onMousedown(evt) {
+    onMousedown() {
       this.stage3D.dog && this.stage3D.dog.bark(true);
     },
-    onMouseup(evt) {
+    onMouseup() {
       this.stage3D.dog && this.stage3D.dog.bark(false);
     },
     onKeyDown(evt) {

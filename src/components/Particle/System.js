@@ -1,5 +1,7 @@
 import { Clock } from "three";
 import { Mesh } from "./Mesh.js";
+import { Geometry } from "./Geometry.js";
+import { BillboardMaterial } from "./BillboardMaterial.js";
 
 /**
  * physics enabled particle system
@@ -109,10 +111,10 @@ export class System extends Mesh {
     return attribute.array;
   }
 
-  _tickEmitter(dt, time) {
+  _tickEmitter(dt) {
     var translations = this.getAttributeArray("translate");
     this.emitters.forEach(emitter => {
-      emitter.tick();
+      emitter.tick(dt);
       for (var i3 = 0; i3 < this.particleCount * 3; i3 += 3) {
         emitter.influence(
           i3,
@@ -141,7 +143,7 @@ export class System extends Mesh {
     }
   }
 
-  update(dt, time) {
+  update(dt) {
     this._tickEmitter(dt);
     this._tickPhysics(dt);
     this._tickMove(dt);

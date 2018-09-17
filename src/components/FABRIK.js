@@ -1,6 +1,6 @@
 // ref: http://wiki.roblox.com/index.php?title=Inverse_kinematics#FABRIK
 
-import { Vector3, Object3D, AxesHelper, Math as Math3 } from "three";
+import { Vector3, Object3D, Math as Math3 } from "three";
 
 const toRad = v => Math3.degToRad(v);
 const last = arr => arr[arr.length - 1];

@@ -55,7 +55,7 @@ export class Jet extends Force {
     this.spread = spread;
     this.deadzone = deadzone;
   }
-
+  // eslint-disable-next-line
   influence(iter, positions, velocities, accelerations) {
     var dx = this.x - positions[iter + 0];
     var dy = this.y - positions[iter + 1];
@@ -133,7 +133,7 @@ export class Friction extends Force {
     this.y = fy;
     this.z = fz;
   }
-
+  // eslint-disable-next-line
   influence(iter, positions, velocities, accelerations) {
     velocities[iter + 0] *= this.x;
     velocities[iter + 1] *= this.y;
@@ -147,7 +147,7 @@ export class Floor extends Force {
     this.y = y;
     this.strength = strength;
   }
-
+  // eslint-disable-next-line
   influence(iter, positions, velocities, accelerations) {
     if (positions[iter + 1] <= this.y) {
       positions[iter + 1] = this.y;
