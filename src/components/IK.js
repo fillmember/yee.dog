@@ -89,6 +89,7 @@ export class IKSolver {
       }, []);
       const clip = new AnimationClip(key, 1, tracks);
       this.clips[key] = clip;
+      this.mesh.animations = this.mesh.animations || [];
       this.mesh.animations.push(clip);
     }
   }
