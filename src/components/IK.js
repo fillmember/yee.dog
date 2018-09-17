@@ -1,5 +1,12 @@
-import { Object3D, AxesHelper, Bone } from "three";
-
+import {
+	Object3D,
+	AxesHelper,
+	Bone,
+	AnimationClip,
+	NumberKeyframeTrack,
+	Euler
+} from "three";
+import { Animation } from "./Animation.js";
 import { FABRIK, ConeConstraint } from "./FABRIK.js";
 
 export class IKTarget extends Object3D {
@@ -25,7 +32,10 @@ export class IKTarget extends Object3D {
 }
 export class IKSolver {
 	constructor() {}
-	init({ mesh, scene, chains }) {
+	init(config) {
+		this.config = config;
+		const { mesh, chains } = this.config;
+		this.clips = {};
 		this.mesh = mesh;
 		this.mesh.updateMatrixWorld();
 		this.chains = {};
@@ -44,7 +54,44 @@ export class IKSolver {
 	}
 	update() {
 		for (let key in this.chains) {
+			this.chains[key].refresh();
 			this.chains[key].update();
+			const quaternions = this.chains[key].getQuaternions();
+			this.clips[key].tracks.forEach((track, index) => {
+				const { object, property, axis } = Animation.parsePath(track.name);
+				const q = quaternions[object];
+				if (!q) {
+					return;
+				}
+				const e = new Euler().setFromQuaternion(q);
+				track.values[0] = e[axis];
+			});
+		}
+	}
+	createAnimationClips(animation) {
+		for (let key in this.config.chains) {
+			const config = this.config.chains[key];
+			const chain = this.chains[key];
+			const tracks = config.joints.reduce((a, boneID) => {
+				const name = this.mesh.skeleton.bones[boneID].name;
+				return [
+					...a,
+					new NumberKeyframeTrack(
+						Animation.path(name, "rotation[x]"),
+						[0],
+						[0]
+					),
+					new NumberKeyframeTrack(
+						Animation.path(name, "rotation[y]"),
+						[0],
+						[0]
+					),
+					new NumberKeyframeTrack(Animation.path(name, "rotation[z]"), [0], [0])
+				];
+			}, []);
+			const clip = new AnimationClip(key, 1, tracks);
+			this.clips[key] = clip;
+			this.mesh.animations.push(clip);
 		}
 	}
 	set debug(value) {

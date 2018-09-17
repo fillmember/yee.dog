@@ -44,6 +44,7 @@ export default class Dog3D {
     });
     // Animation
     this.animation = new Animation(dog);
+    this.ik.createAnimationClips(this.animation);
     // Particles
     this.particles = new ParticleSystem({
       confused: {

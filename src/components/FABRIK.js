@@ -86,6 +86,21 @@ export class FABRIK {
     });
   }
 
+  getQuaternions() {
+    const result = {};
+    this.references.joints.forEach((j, i) => {
+      let v = this.joints[i + 1] || this.target;
+      const localChildPosition = j.parent.worldToLocal(v.clone());
+      const origiQ = j.quaternion.clone();
+      j.lookAt(localChildPosition);
+      j.rotateY(Math.PI);
+      const newQ = j.quaternion.clone();
+      j.quaternion.copy(origiQ);
+      result[j.name] = newQ;
+    });
+    return result;
+  }
+
   solve() {
     // get target reference's position
     this.references.target.getWorldPosition(this.target);

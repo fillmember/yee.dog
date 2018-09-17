@@ -3,6 +3,15 @@ import { TweenMax } from "gsap";
 import { Clips, Actions } from "./AnimationData.js";
 
 export class Animation {
+	static path = (name, property) => `${name}.${property}`;
+	static parsePath = str => {
+		const arr = str.split(".");
+		const object = arr[0];
+		const arr2 = arr[1].split("[");
+		const property = arr2[0];
+		const axis = arr2[1].substr(0, 1);
+		return { object, property, axis };
+	};
 	constructor(mesh) {
 		this.mesh = mesh;
 		this.mesh.animations = this.clips(Clips);
@@ -38,7 +47,7 @@ export class Animation {
 	}
 	path(boneIndex, property) {
 		const name = this.mesh.skeleton.bones[boneIndex].name;
-		return `${name}.${property}`;
+		return Animation.path(name, property);
 	}
 	actions(input) {
 		this.actions = {};
@@ -53,7 +62,4 @@ export class Animation {
 	update(dt) {
 		this.mixer.update(dt);
 	}
-	// tween(target, duration, vars) {
-	// 	// TweenMax.to(action[target], duration, vars);
-	// }
 }
