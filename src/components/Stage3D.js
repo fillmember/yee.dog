@@ -7,8 +7,24 @@ import {
 import GLTFLoader from "three-gltf-loader";
 import MakeOrbitControls from "three-orbit-controls";
 
-const THREE = require("three");
-const OrbitControls = MakeOrbitControls(THREE);
+import {
+  MOUSE,
+  Quaternion,
+  Spherical,
+  Vector2,
+  Vector3,
+  // PerspectiveCamera,
+  EventDispatcher
+} from "three";
+const OrbitControls = MakeOrbitControls({
+  MOUSE,
+  Quaternion,
+  Spherical,
+  Vector2,
+  Vector3,
+  PerspectiveCamera,
+  EventDispatcher
+});
 
 import Dog from "./Dog3D.js";
 
