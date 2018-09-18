@@ -35,9 +35,12 @@ export class Emitter {
     this.config = config;
   }
   tick() {
+    if (this.config.enabled === false) {
+      return;
+    }
     const now = this.system.clock.getElapsedTime();
     const deltaTime = now - this._lastTime;
-    const cooldownTime = this.config.rate > 0 ? 1 / this.config.rate : Infinity
+    const cooldownTime = this.config.rate > 0 ? 1 / this.config.rate : Infinity;
     if (deltaTime > cooldownTime || isNaN(deltaTime)) {
       this.emitParticle();
       this._lastTime = now;
@@ -70,5 +73,9 @@ export class Emitter {
     this.system.addParticle(position, options);
   }
   // eslint-disable-next-line
-  influence(iter, pos, v, a) {}
+  influence(iter, pos, v, a) {
+    if (this.config.enabled === false) {
+      return;
+    }
+  }
 }

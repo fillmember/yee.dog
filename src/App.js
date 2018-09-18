@@ -1,8 +1,10 @@
 import React, { Component } from "react";
+import { ThemeProvider } from "styled-components";
 import Stage3D from "./3D/Stage3D.js";
 import { DogProvider } from "./DogContext.js";
 import Debug from "./UI/Debug.js";
-
+import theme from "./theme.js";
+import throttle from "lodash/throttle";
 class App extends Component {
   $canvasContainer = React.createRef();
   state = {
@@ -19,21 +21,43 @@ class App extends Component {
     }
   };
   //
-  updateProvider = (event) => {
+  updateProvider = throttle(event => {
     this.setState({
       providerValue: {
         stage: this.state.stage3D,
         dog: this.state.stage3D.dog,
         update: this.updateProvider,
-        event,
+        event
       }
     });
+    window.dog = this.state.stage3D;
+  }, 1 / 30);
+  onDragStart = evt => {
+    console.log(evt);
+    evt.nativeEvent.stopPropagation && evt.nativeEvent.stopPropagation();
+    console.log("onDragStart", evt);
+    evt.preventDefault();
   };
-  onResize = () => {
-    this.state.stage3D.resize({
-      width: window.innerWidth,
-      height: window.innerHeight
-    });
+  onDragEnter = evt => {
+    evt.nativeEvent.stopPropagation && evt.nativeEvent.stopPropagation();
+    console.log("onDragEnter", evt);
+    evt.preventDefault();
+  };
+  onDragLeave = evt => {
+    evt.nativeEvent.stopPropagation && evt.nativeEvent.stopPropagation();
+    console.log("onDragLeave", evt);
+    evt.preventDefault();
+  };
+  onDragEnd = evt => {
+    evt.nativeEvent.stopPropagation && evt.nativeEvent.stopPropagation();
+    console.log("onDragEnd", evt);
+    evt.preventDefault();
+  };
+  onDrop = evt => {
+    console.log(evt);
+    evt.nativeEvent.stopPropagation && evt.nativeEvent.stopPropagation();
+    console.log("onDrop", evt);
+    evt.preventDefault();
   };
   onKeyDown = evt => {
     switch (evt.keyCode) {
@@ -53,6 +77,12 @@ class App extends Component {
         break;
     }
   };
+  onResize = () => {
+    this.state.stage3D.resize({
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+  };
   componentDidMount() {
     this.state.stage3D
       .load(process.env.PUBLIC_URL + "/model/wt.glb")
@@ -61,7 +91,7 @@ class App extends Component {
           this.state.stage3D.renderer.domElement
         );
         this.state.stage3D.start({ updateUI: this.updateProvider });
-        // this.updateProvider()
+        this.updateProvider({ type: "read" });
       });
     //
     window.addEventListener("resize", this.onResize);
@@ -75,12 +105,21 @@ class App extends Component {
   }
   render() {
     return (
-      <DogProvider value={this.state.providerValue}>
-        <div className="App">
-          <div className="3d-container" ref={this.$canvasContainer} />
-          <Debug />
-        </div>
-      </DogProvider>
+      <ThemeProvider theme={theme}>
+        <DogProvider value={this.state.providerValue}>
+          <div
+            className="App"
+            onDragStart={this.onDragStart}
+            onDrop={this.onDrop}
+          >
+            {/*onDragEnter={this.onDragEnter}
+            onDragLeave={this.onDragLeave}
+            onDragEnd={this.onDragEnd}*/}
+            <div className="3d-container" ref={this.$canvasContainer} />
+            <Debug />
+          </div>
+        </DogProvider>
+      </ThemeProvider>
     );
   }
 }

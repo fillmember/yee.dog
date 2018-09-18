@@ -52,9 +52,10 @@ export class IKSolver {
   }
   update() {
     for (let key in this.chains) {
-      this.chains[key].refresh();
-      this.chains[key].update();
-      const quaternions = this.chains[key].getQuaternions();
+      const chain = this.chains[key];
+      chain.refresh();
+      chain.solve();
+      const quaternions = chain.getQuaternions();
       this.clips[key].tracks.forEach(track => {
         const { object, axis } = Animation.parsePath(track.name);
         const q = quaternions[object];
@@ -62,7 +63,9 @@ export class IKSolver {
           return;
         }
         const e = new Euler().setFromQuaternion(q);
-        track.values[0] = e[axis];
+        // track.values[0] = e[axis];
+        track.values[0] += (e[axis] - track.values[0]) * chain.influence;
+        // isNaN(track.values[0]) && console.error("FUCK!", track.name);
       });
     }
   }
@@ -91,6 +94,11 @@ export class IKSolver {
       this.mesh.animations = this.mesh.animations || [];
       this.mesh.animations.push(clip);
     }
+  }
+  createAnimationActions(animation) {
+    Object.keys(this.clips).forEach(key => {
+      animation.actions({ [key]: {} });
+    });
   }
   set debug(value) {
     if (this._debugSkeletonAxesHelpers) {

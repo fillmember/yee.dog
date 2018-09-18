@@ -4,6 +4,7 @@ import { IKSolver } from "./IK.js";
 import { Animation } from "./Animation.js";
 import BoneID from "./BoneID.js";
 import ParticleSystem from "./ParticleSystem.js";
+import { Clips, Actions } from "./AnimationData.js";
 
 export default class Dog3D {
   constructor({ obj3d, scene }) {
@@ -28,24 +29,28 @@ export default class Dog3D {
         worm: {
           joints: [BoneID.Spine, BoneID.Shoulder, BoneID.Neck, BoneID.Head],
           constraints: [0, 0, 0],
-          influence: 0
+          influence: 0.1
         },
         look: {
           joints: [BoneID.Neck, BoneID.Head],
           constraints: [0, 0, 0],
-          influence: 0
+          influence: 0.1
         }
       }
     });
     // Animation
-    this.animation = new Animation(dog);
+    this.animation = new Animation(this.dog);
     this.ik.createAnimationClips();
+    this.ik.createAnimationActions(this.animation);
+    this.animation.clips(this.dog, Clips);
+    this.animation.actions(Actions);
     // Particles
     this.particles = new ParticleSystem({
       confused: {
         max: 16,
         parent: scene,
         emitter: {
+          enabled: true,
           rate: 5,
           center: dog.skeleton.bones[BoneID.Head],
           extent: [1, 1, 1],
@@ -59,6 +64,7 @@ export default class Dog3D {
         max: 4,
         parent: dog.skeleton.bones[BoneID.Head],
         emitter: {
+          enabled: true,
           size: 2,
           rate: 2,
           center: [0, 180, 0],
@@ -70,6 +76,7 @@ export default class Dog3D {
         max: 512,
         parent: scene,
         emitter: {
+          enabled: true,
           size: () => Math3.randFloat(0.4, 0.8),
           rate: 60,
           center: dog.skeleton.bones[BoneID.Spine],
@@ -90,7 +97,7 @@ export default class Dog3D {
     //
   }
   update(dt) {
-    this.ik.update(dt);
+    // this.ik.update(dt);
     this.animation.update(dt);
     this.particles.update(dt);
   }

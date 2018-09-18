@@ -1,5 +1,4 @@
 import { AnimationMixer, AnimationClip, NumberKeyframeTrack } from "three";
-import { Clips, Actions } from "./AnimationData.js";
 
 export class Animation {
   static path = (name, property) => `${name}.${property}`;
@@ -13,11 +12,12 @@ export class Animation {
   };
   constructor(mesh) {
     this.mesh = mesh;
-    this.mesh.animations = this.clips(Clips);
+    this.mesh.animations = [];
     this.mixer = new AnimationMixer(mesh);
-    this.actions(Actions);
+    // this.clips(this.mesh, Clips);
+    // this.actions(Actions);
   }
-  clips(input) {
+  clips(mesh, input) {
     const keys = Object.keys(input);
     const durations = keys.map(key => {
       const tracks = input[key];
@@ -27,21 +27,23 @@ export class Animation {
       });
       return max;
     });
-    return keys.map(
-      (key, i) =>
-        new AnimationClip(
-          key,
-          durations[i],
-          input[key].map(
-            obj =>
-              new NumberKeyframeTrack(
-                this.path(obj.bone, obj.property),
-                obj.times,
-                obj.values,
-                obj.interpolation
-              )
+    mesh.animations = mesh.animations.concat(
+      keys.map(
+        (key, i) =>
+          new AnimationClip(
+            key,
+            durations[i],
+            input[key].map(
+              obj =>
+                new NumberKeyframeTrack(
+                  this.path(obj.bone, obj.property),
+                  obj.times,
+                  obj.values,
+                  obj.interpolation
+                )
+            )
           )
-        )
+      )
     );
   }
   path(boneIndex, property) {
@@ -49,7 +51,7 @@ export class Animation {
     return Animation.path(name, property);
   }
   actions(input) {
-    this.actions = {};
+    this.actions = this.actions || {};
     Object.keys(input).forEach(key => {
       const action = this.mixer.clipAction(key);
       const properties = Object.keys(input[key]);

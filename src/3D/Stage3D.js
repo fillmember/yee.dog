@@ -76,14 +76,14 @@ export default class Stage3D {
       );
     });
   }
-  start({updateUI}) {
+  start({ updateUI }) {
     const clock = new Clock(true);
     this.renderer.setAnimationLoop(() => {
       const dt = clock.getDelta();
       const elapsed = clock.getElapsedTime();
       this.update(dt);
       this.render();
-      updateUI && updateUI({type:'frame', value:{dt,elapsed}})
+      // updateUI && updateUI({type:'frame', value:{dt,elapsed}})
     });
   }
   stop() {

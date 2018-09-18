@@ -170,9 +170,9 @@ export const Clips = {
 };
 
 export const Actions = {
-  wag: { loop: LoopPingPong, paused: false, timeScale: 4 },
-  vleg: { loop: LoopPingPong, paused: true, timeScale: 8 },
-  bark: { loop: LoopPingPong, paused: true },
-  earWagL: { loop: LoopPingPong, paused: true, timeScale: 10 },
-  earWagR: { loop: LoopPingPong, paused: true, timeScale: 10 }
+  wag: { loop: LoopPingPong, timeScale: 4 },
+  vleg: { loop: LoopPingPong, weight: 0, timeScale: 8 },
+  bark: { loop: LoopPingPong, paused: true, weight: 1 },
+  earWagL: { loop: LoopPingPong, weight: 0, timeScale: 10 },
+  earWagR: { loop: LoopPingPong, weight: 0, timeScale: 10 }
 };
