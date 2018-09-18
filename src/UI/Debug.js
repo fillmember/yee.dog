@@ -45,20 +45,65 @@ export default class Debug extends React.Component {
               <Heading>Particles</Heading>
               <Box>
                 {Object.keys(dog.particles.systems).map(key => {
-                  const system = dog.particles.systems[key]
+                  const system = dog.particles.systems[key];
                   const config = system.config;
                   return (
-                    <Box>
+                    <Box key={key}>
                       <Heading>{key}</Heading>
                       <Heading>Emitter</Heading>
                       <Flex>
                         <Label>Rate</Label>
-                        <Slider min="0" max="4" step="0.001" value={config.emitter.rate} onChange={(evt)=>{
-                          config.emitter.rate = evt.target.value;
-                          update();
-                        }} />
+                        <Slider
+                          min="0"
+                          max="60"
+                          step="1"
+                          value={config.emitter.rate}
+                          onChange={evt => {
+                            config.emitter.rate = evt.target.value;
+                            update();
+                          }}
+                        />
                         <Text>{config.emitter.rate}</Text>
                       </Flex>
+                    </Box>
+                  );
+                })}
+              </Box>
+              <Heading>Animation</Heading>
+              <Box>
+                {Object.keys(dog.animation.actions).map(key => {
+                  const action = dog.animation.actions[key];
+                  return (
+                    <Box key={key}>
+                      <Heading>{key}</Heading>
+                      <button
+                        onClick={() => {
+                          action.paused = false;
+                          update();
+                        }}
+                      >
+                        Play
+                      </button>
+                      <button
+                        onClick={() => {
+                          action.paused = true;
+                          update();
+                        }}
+                      >
+                        Pause
+                      </button>
+                      {action.time.toFixed(1)}
+                      {action.timeScale}
+                    </Box>
+                  );
+                })}
+              </Box>
+              <Heading>IKs</Heading>
+              <Box>
+                {Object.keys(dog.ik.chains).map(key => {
+                  return (
+                    <Box key={key}>
+                      <Heading>{key}</Heading>
                     </Box>
                   );
                 })}
