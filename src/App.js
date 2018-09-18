@@ -14,16 +14,18 @@ class App extends Component {
     providerValue: {
       stage: false,
       dog: false,
+      event: false,
       update: this.updateProvider
     }
   };
   //
-  updateProvider = ({ type, value } = {}) => {
+  updateProvider = (event) => {
     this.setState({
       providerValue: {
         stage: this.state.stage3D,
         dog: this.state.stage3D.dog,
-        update: this.updateProvider
+        update: this.updateProvider,
+        event,
       }
     });
   };
