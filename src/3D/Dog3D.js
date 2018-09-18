@@ -97,7 +97,7 @@ export default class Dog3D {
     //
   }
   update(dt) {
-    // this.ik.update(dt);
+    this.ik.update(dt);
     this.animation.update(dt);
     this.particles.update(dt);
   }
