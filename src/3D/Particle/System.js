@@ -8,7 +8,7 @@ import { BillboardMaterial } from "./BillboardMaterial.js";
  */
 export class System extends Mesh {
   constructor(geometry, material) {
-    if (typeof geometry == "number") {
+    if (typeof geometry === "number") {
       geometry = new Geometry(geometry);
       material = new BillboardMaterial();
     }
@@ -23,8 +23,8 @@ export class System extends Mesh {
     this.clock = new Clock();
     this.clock.start();
 
-    (this.velocities = new Float32Array(this.particleCount * 3)),
-      (this.accelerations = new Float32Array(this.particleCount * 3));
+    this.velocities = new Float32Array(this.particleCount * 3);
+    this.accelerations = new Float32Array(this.particleCount * 3);
 
     this.attributes = {
       velocity: this.velocities,

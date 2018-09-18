@@ -30,7 +30,6 @@ export class IKTarget extends Object3D {
   }
 }
 export class IKSolver {
-  constructor() {}
   init(config) {
     this.config = config;
     const { mesh, chains } = this.config;

@@ -16,6 +16,8 @@ import {
   // PerspectiveCamera,
   EventDispatcher
 } from "three";
+import Dog from "./Dog3D.js";
+
 const OrbitControls = MakeOrbitControls({
   MOUSE,
   Quaternion,
@@ -26,12 +28,7 @@ const OrbitControls = MakeOrbitControls({
   EventDispatcher
 });
 
-import Dog from "./Dog3D.js";
-
 export default class Stage3D {
-  constructor({ domElement } = {}) {
-    this.domElement = domElement;
-  }
   init({ width, height }) {
     const camera = (this.camera = new PerspectiveCamera(
       22,
@@ -40,28 +37,24 @@ export default class Stage3D {
       10000
     ));
     this.camera.position.set(-20, 2, -20);
-    //
-    const renderer = (this.renderer = new WebGLRenderer({
-      canvas: this.domElement
-    }));
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setClearColor(0x1b8547);
+    this.renderer = new WebGLRenderer();
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setClearColor(0x1b8547);
     this.renderer.setSize(width, height);
-    //
-    this.orbitcontrols = new OrbitControls(camera, this.domElement);
+    this.orbitcontrols = new OrbitControls(camera, this.renderer.domElement);
     this.orbitcontrols.autoRotate = true;
     this.orbitcontrols.autoRotateSpeed = 0.033;
     this.orbitcontrols.enableDamping = true;
     this.orbitcontrols.rotateSpeed = 0.3;
     this.orbitcontrols.dampingFactor = 0.1;
-    this.orbitcontrols.enablePan = true;
-    this.orbitcontrols.enableZoom = true;
+    this.orbitcontrols.enablePan = false;
+    this.orbitcontrols.enableZoom = false;
   }
-  load() {
+  load(url) {
     var loader = new GLTFLoader();
     return new Promise((resolve, reject) => {
       loader.load(
-        `${process.env.BASE_URL}model/wt.glb`,
+        url,
         gltf => {
           const scene = (this.scene = gltf.scene);
           this.dog = new Dog({
@@ -107,10 +100,6 @@ export default class Stage3D {
     if (this.scene) {
       this.renderer.render(this.scene, this.camera);
     }
-  }
-  destroy() {
-    this.renderer.dispose();
-    this.renderer = null;
   }
   set debug(v) {
     if (this.dog) this.dog.debug = v;
