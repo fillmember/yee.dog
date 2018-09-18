@@ -8,10 +8,25 @@ class App extends Component {
   state = {
     stage3D: new Stage3D({
       width: window.innerWidth,
-      height: window.innerHeight
-    })
+      height: window.innerHeight,
+      updateUI: this.updateProvider
+    }),
+    providerValue: {
+      stage: false,
+      dog: false,
+      update: this.updateProvider
+    }
   };
   //
+  updateProvider = ({ type, value } = {}) => {
+    this.setState({
+      providerValue: {
+        stage: this.state.stage3D,
+        dog: this.state.stage3D.dog,
+        update: this.updateProvider
+      }
+    });
+  };
   onResize = () => {
     this.state.stage3D.resize({
       width: window.innerWidth,
@@ -40,10 +55,11 @@ class App extends Component {
     this.state.stage3D
       .load(process.env.PUBLIC_URL + "/model/wt.glb")
       .then(() => {
-        this.state.stage3D.start();
         this.$canvasContainer.current.appendChild(
           this.state.stage3D.renderer.domElement
         );
+        this.state.stage3D.start({ updateUI: this.updateProvider });
+        // this.updateProvider()
       });
     //
     window.addEventListener("resize", this.onResize);
@@ -57,7 +73,7 @@ class App extends Component {
   }
   render() {
     return (
-      <DogProvider value={this.state.stage3D}>
+      <DogProvider value={this.state.providerValue}>
         <div className="App">
           <div className="3d-container" ref={this.$canvasContainer} />
           <Debug />
@@ -68,19 +84,3 @@ class App extends Component {
 }
 
 export default App;
-
-export const oldVueComponent = {
-  methods: {
-    onMousemove(evt) {
-      const x = 2 * (evt.offsetX / this.$refs.canvas.offsetWidth) - 1;
-      const y = 1 - (evt.offsetY / this.$refs.canvas.offsetHeight) * 2;
-      return { x, y };
-    },
-    onMousedown() {
-      this.stage3D.dog && this.stage3D.dog.bark(true);
-    },
-    onMouseup() {
-      this.stage3D.dog && this.stage3D.dog.bark(false);
-    }
-  }
-};

@@ -6,6 +6,7 @@ import {
 } from "three";
 import GLTFLoader from "three-gltf-loader";
 import MakeOrbitControls from "three-orbit-controls";
+import Dog from "./Dog3D.js";
 
 import {
   MOUSE,
@@ -16,7 +17,6 @@ import {
   // PerspectiveCamera,
   EventDispatcher
 } from "three";
-import Dog from "./Dog3D.js";
 
 const OrbitControls = MakeOrbitControls({
   MOUSE,
@@ -76,11 +76,14 @@ export default class Stage3D {
       );
     });
   }
-  start() {
+  start({updateUI}) {
     const clock = new Clock(true);
     this.renderer.setAnimationLoop(() => {
-      this.update(clock.getDelta(), clock.getElapsedTime());
+      const dt = clock.getDelta();
+      const elapsed = clock.getElapsedTime();
+      this.update(dt);
       this.render();
+      updateUI && updateUI({type:'frame', value:{dt,elapsed}})
     });
   }
   stop() {

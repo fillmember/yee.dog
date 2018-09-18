@@ -18,6 +18,7 @@ export default class ParticleSystems {
         new Geometry(config.max),
         this.material
       ));
+      system.config = config;
       system.addEmitter(new Emitter(config.emitter));
       config.parent.add(system);
     });
