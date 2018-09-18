@@ -46,7 +46,7 @@ export default class Dog3D {
         max: 16,
         parent: scene,
         emitter: {
-          rate: 0.2,
+          rate: 5,
           center: dog.skeleton.bones[BoneID.Head],
           extent: [1, 1, 1],
           offset: [0, 1, 0],
@@ -60,7 +60,7 @@ export default class Dog3D {
         parent: dog.skeleton.bones[BoneID.Head],
         emitter: {
           size: 2,
-          rate: 0.5,
+          rate: 2,
           center: [0, 180, 0],
           lifespan: Infinity,
           sprite: 50
@@ -71,7 +71,7 @@ export default class Dog3D {
         parent: scene,
         emitter: {
           size: () => Math3.randFloat(0.4, 0.8),
-          rate: 1 / 60,
+          rate: 60,
           center: dog.skeleton.bones[BoneID.Spine],
           extent: [0.1, 0.1, 0.1],
           sprite: [57, 56],

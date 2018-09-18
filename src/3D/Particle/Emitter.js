@@ -37,7 +37,8 @@ export class Emitter {
   tick() {
     const now = this.system.clock.getElapsedTime();
     const deltaTime = now - this._lastTime;
-    if (deltaTime > this.config.rate || isNaN(deltaTime)) {
+    const cooldownTime = this.config.rate > 0 ? 1 / this.config.rate : Infinity
+    if (deltaTime > cooldownTime || isNaN(deltaTime)) {
       this.emitParticle();
       this._lastTime = now;
     }
