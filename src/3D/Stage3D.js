@@ -29,7 +29,10 @@ const OrbitControls = MakeOrbitControls({
 });
 
 export default class Stage3D {
-  init({ width, height }) {
+  constructor({ width, height }) {
+    this.renderer = new WebGLRenderer();
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setClearColor(0x1b8547);
     const camera = (this.camera = new PerspectiveCamera(
       22,
       width / height,
@@ -37,10 +40,8 @@ export default class Stage3D {
       10000
     ));
     this.camera.position.set(-20, 2, -20);
-    this.renderer = new WebGLRenderer();
-    this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.setClearColor(0x1b8547);
     this.renderer.setSize(width, height);
+    //
     this.orbitcontrols = new OrbitControls(camera, this.renderer.domElement);
     this.orbitcontrols.autoRotate = true;
     this.orbitcontrols.autoRotateSpeed = 0.033;

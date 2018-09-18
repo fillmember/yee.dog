@@ -1,10 +1,19 @@
 import React, { Component } from "react";
 import Stage3D from "./3D/Stage3D.js";
+import { DogProvider } from "./DogContext.js";
+import Debug from "./UI/Debug.js";
 
 class App extends Component {
   $canvasContainer = React.createRef();
+  state = {
+    stage3D: new Stage3D({
+      width: window.innerWidth,
+      height: window.innerHeight
+    })
+  };
+  //
   onResize = () => {
-    this.stage3D.resize({
+    this.state.stage3D.resize({
       width: window.innerWidth,
       height: window.innerHeight
     });
@@ -12,7 +21,7 @@ class App extends Component {
   onKeyDown = evt => {
     switch (evt.keyCode) {
       case 32:
-        this.stage3D.dog && this.stage3D.dog.bark(true);
+        this.state.stage3D.dog && this.state.stage3D.dog.bark(true);
         break;
       default:
         break;
@@ -21,24 +30,21 @@ class App extends Component {
   onKeyUp = evt => {
     switch (evt.keyCode) {
       case 32:
-        this.stage3D.dog && this.stage3D.dog.bark(false);
+        this.state.stage3D.dog && this.state.stage3D.dog.bark(false);
         break;
       default:
         break;
     }
   };
   componentDidMount() {
-    this.stage3D = new Stage3D();
-    this.stage3D.init({
-      width: window.innerWidth,
-      height: window.innerHeight
-    });
-    this.stage3D.load(process.env.PUBLIC_URL + "/model/wt.glb").then(() => {
-      this.stage3D.start();
-      this.$canvasContainer.current.appendChild(
-        this.stage3D.renderer.domElement
-      );
-    });
+    this.state.stage3D
+      .load(process.env.PUBLIC_URL + "/model/wt.glb")
+      .then(() => {
+        this.state.stage3D.start();
+        this.$canvasContainer.current.appendChild(
+          this.state.stage3D.renderer.domElement
+        );
+      });
     //
     window.addEventListener("resize", this.onResize);
     window.addEventListener("keydown", this.onKeyDown);
@@ -51,9 +57,12 @@ class App extends Component {
   }
   render() {
     return (
-      <div className="App">
-        <div className="3d-container" ref={this.$canvasContainer} />
-      </div>
+      <DogProvider value={this.state.stage3D}>
+        <div className="App">
+          <div className="3d-container" ref={this.$canvasContainer} />
+          <Debug />
+        </div>
+      </DogProvider>
     );
   }
 }
