@@ -1,25 +1,13 @@
-<template>
-  <canvas
-    ref="canvas"
-    @mousedown="onMousedown"
-    @mousemove="onMousemove"
-    @mouseup="onMouseup"
-  />
-</template>
+import React, { Component } from "react";
 
-<script>
-import Stage3D from "./Stage3D.js";
+class App extends Component {
+  render() {
+    return <div className="App">1</div>;
+  }
+}
 
-export const MODE_BARK = "MODE_BARK";
-export const MODE_DANCE = "MODE_DANCE";
-export default {
-  name: "DogLand",
-  data() {
-    return {
-      mode: MODE_BARK
-    };
-  },
-  created() {},
+export default App;
+export const oldVueComponent = {
   mounted() {
     this.stage3D = new Stage3D({ domElement: this.$refs.canvas });
     this.stage3D.init({ width: window.innerWidth, height: window.innerHeight });
@@ -95,4 +83,3 @@ export default {
     }
   }
 };
-</script>
