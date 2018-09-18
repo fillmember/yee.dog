@@ -66,7 +66,7 @@ export default class Dog3D {
         emitter: {
           enabled: true,
           size: 2,
-          rate: 2,
+          rate: 0,
           center: [0, 180, 0],
           lifespan: Infinity,
           sprite: 50
