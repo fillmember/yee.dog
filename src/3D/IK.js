@@ -63,9 +63,11 @@ export class IKSolver {
           return;
         }
         const e = new Euler().setFromQuaternion(q);
-        // track.values[0] = e[axis];
+        if (isNaN(e[axis])) {
+          return;
+        }
         track.values[0] += (e[axis] - track.values[0]) * chain.influence;
-        // isNaN(track.values[0]) && console.error("FUCK!", track.name);
+        track.values[1] = track.values[0];
       });
     }
   }
@@ -78,15 +80,19 @@ export class IKSolver {
           ...a,
           new NumberKeyframeTrack(
             Animation.path(name, "rotation[x]"),
-            [0],
-            [0]
+            [0, 1],
+            [0, 0]
           ),
           new NumberKeyframeTrack(
             Animation.path(name, "rotation[y]"),
-            [0],
-            [0]
+            [0, 1],
+            [0, 0]
           ),
-          new NumberKeyframeTrack(Animation.path(name, "rotation[z]"), [0], [0])
+          new NumberKeyframeTrack(
+            Animation.path(name, "rotation[z]"),
+            [0, 1],
+            [0, 0]
+          )
         ];
       }, []);
       const clip = new AnimationClip(key, 1, tracks);
@@ -97,7 +103,9 @@ export class IKSolver {
   }
   createAnimationActions(animation) {
     Object.keys(this.clips).forEach(key => {
-      animation.actions({ [key]: {} });
+      animation.actions({
+        [key]: { zeroSlopeAtEnd: false, zeroSlopeAtStart: false }
+      });
     });
   }
   set debug(value) {

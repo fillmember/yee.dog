@@ -14,10 +14,39 @@ export class Animation {
     this.mesh = mesh;
     this.mesh.animations = [];
     this.mixer = new AnimationMixer(mesh);
-    // this.clips(this.mesh, Clips);
-    // this.actions(Actions);
+    this.createResetClip();
   }
-  clips(mesh, input) {
+  createResetClip() {
+    const clip = new AnimationClip(
+      "reset",
+      1,
+      this.mesh.skeleton.bones.reduce((tracks, bone) => {
+        const xyz = ["x", "y", "z"];
+        xyz.forEach(axis => {
+          const ts = [0, 1];
+          const rname = `${bone.name}.rotation[${axis}]`;
+          const rs = new Array(2).fill(bone.rotation[axis]);
+          const rtrack = new NumberKeyframeTrack(rname, ts, rs);
+          const pname = `${bone.name}.position[${axis}]`;
+          const ps = new Array(2).fill(bone.position[axis]);
+          const ptrack = new NumberKeyframeTrack(pname, ts, ps);
+          tracks.push(rtrack);
+          tracks.push(ptrack);
+        });
+        return tracks;
+      }, [])
+    );
+    this.mesh.animations.push(clip);
+    this.actions({
+      reset: {
+        weight: 0,
+        paused: true,
+        zeroSlopeAtEnd: false,
+        zeroSlopeAtStart: false
+      }
+    });
+  }
+  clips(input) {
     const keys = Object.keys(input);
     const durations = keys.map(key => {
       const tracks = input[key];
@@ -27,7 +56,7 @@ export class Animation {
       });
       return max;
     });
-    mesh.animations = mesh.animations.concat(
+    this.mesh.animations = this.mesh.animations.concat(
       keys.map(
         (key, i) =>
           new AnimationClip(

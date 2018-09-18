@@ -137,15 +137,13 @@ export default class Debug extends React.Component {
                   {Object.keys(dog.animation.actions).map(key => {
                     const action = dog.animation.actions[key];
                     return (
-                      <Box key={key}>
-                        <Heading fontSize={[2, 4]}>{key}</Heading>
-                        <ValueSlider
-                          label="Weight"
-                          object={action}
-                          property="weight"
-                          update={update}
-                        />
-                      </Box>
+                      <ValueSlider
+                        key={key}
+                        label={key}
+                        object={action}
+                        property="weight"
+                        update={update}
+                      />
                     );
                   })}
                 </Box>
