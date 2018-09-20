@@ -101,10 +101,6 @@ export default class Dog3D {
     this.animation.update(dt);
     this.particles.update(dt);
   }
-  set debug(v) {
-    this.ik.debug = v;
-    this.dog.material.wireframe = v;
-  }
   // Dog Behaviours
   bark(b) {
     const action = this.animation.actions.bark;

@@ -1,10 +1,4 @@
-import {
-  Object3D,
-  AnimationClip,
-  AxesHelper,
-  NumberKeyframeTrack,
-  Euler
-} from "three";
+import { Object3D, AnimationClip, NumberKeyframeTrack, Euler } from "three";
 import { Animation } from "./Animation.js";
 import { FABRIK, ConeConstraint } from "./FABRIK.js";
 
@@ -20,15 +14,8 @@ export class IKTarget extends Object3D {
   reset() {
     this.position.copy(this.userData.initialPosition);
   }
-  set debug(v) {
-    if (this.userData.helper) {
-      this.userData.helper.visible = v;
-    } else if (v) {
-      this.userData.helper = new AxesHelper(100);
-      this.add(this.userData.helper);
-    }
-  }
 }
+
 export class IKSolver {
   init(config) {
     this.config = config;
@@ -107,19 +94,5 @@ export class IKSolver {
         [key]: { zeroSlopeAtEnd: false, zeroSlopeAtStart: false }
       });
     });
-  }
-  set debug(value) {
-    if (this._debugSkeletonAxesHelpers) {
-      this._debugSkeletonAxesHelpers.forEach(h => (h.visible = value));
-    } else {
-      if (value) {
-        this._debugSkeletonAxesHelpers = [];
-        this.mesh.skeleton.bones.forEach(b => {
-          const h = new AxesHelper(100);
-          this._debugSkeletonAxesHelpers.push(h);
-          b.add(h);
-        });
-      }
-    }
   }
 }

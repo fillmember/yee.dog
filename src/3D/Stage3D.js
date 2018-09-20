@@ -105,13 +105,4 @@ export default class Stage3D {
       this.renderer.render(this.scene, this.camera);
     }
   }
-  set debug(v) {
-    if (this.dog) this.dog.debug = v;
-    if (this.orbitcontrols) {
-      this.orbitcontrols.autoRotate = !v;
-      this.orbitcontrols.dampingFactor = 0.1;
-      this.orbitcontrols.enablePan = v;
-      this.orbitcontrols.enableZoom = v;
-    }
-  }
 }
