@@ -83,6 +83,15 @@ class App extends Component {
       height: window.innerHeight
     });
   };
+  onMouseMove = evt => {
+    const renderer = this.state.stage3D.renderer;
+    if (renderer) {
+      const canvas = renderer.domElement;
+      const x = (evt.offsetX / canvas.offsetWidth) * 2 - 1;
+      const y = -(evt.offsetY / canvas.offsetHeight) * 2 + 1;
+      this.state.stage3D.updatePointer({ x, y });
+    }
+  };
   componentDidMount() {
     this.state.stage3D
       .load(process.env.PUBLIC_URL + "/model/wt.glb")
@@ -97,24 +106,25 @@ class App extends Component {
     window.addEventListener("resize", this.onResize);
     window.addEventListener("keydown", this.onKeyDown);
     window.addEventListener("keyup", this.onKeyUp);
+    this.state.stage3D.renderer.domElement.addEventListener(
+      "mousemove",
+      this.onMouseMove
+    );
   }
   componentWillUnmount() {
     window.removeEventListener("resize", this.onResize);
     window.removeEventListener("keydown", this.onKeyDown);
     window.removeEventListener("keyup", this.onKeyUp);
+    this.state.stage3D.renderer.domElement.removeEventListener(
+      "mousemove",
+      this.onMouseMove
+    );
   }
   render() {
     return (
       <ThemeProvider theme={theme}>
         <DogProvider value={this.state.providerValue}>
-          <div
-            className="App"
-            onDragStart={this.onDragStart}
-            onDrop={this.onDrop}
-          >
-            {/*onDragEnter={this.onDragEnter}
-            onDragLeave={this.onDragLeave}
-            onDragEnd={this.onDragEnd}*/}
+          <div className="App">
             <div className="3d-container" ref={this.$canvasContainer} />
             <Debug />
           </div>

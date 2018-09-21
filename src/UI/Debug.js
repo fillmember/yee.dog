@@ -160,10 +160,6 @@ export default class Debug extends React.Component {
                           property="influence"
                           update={update}
                         />
-                        <Vector3Control
-                          vec={chain.references.target.position}
-                          update={update}
-                        />
                       </Box>
                     );
                   })}

@@ -35,7 +35,7 @@ export class Emitter {
     this.config = config;
   }
   tick() {
-    if (this.config.enabled === false) {
+    if (this.config.rate === 0 || this.config.enabled === false) {
       return;
     }
     const now = this.system.clock.getElapsedTime();

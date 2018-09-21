@@ -1,8 +1,17 @@
+import throttle from "lodash/throttle";
 import {
   PerspectiveCamera,
   WebGLRenderer,
   DirectionalLight,
-  Clock
+  Clock,
+  AxesHelper,
+  Mesh,
+  PlaneGeometry,
+  MeshBasicMaterial,
+  BackSide,
+  Raycaster,
+  Vector3,
+  Vector2
 } from "three";
 import GLTFLoader from "three-gltf-loader";
 import MakeOrbitControls from "three-orbit-controls";
@@ -12,8 +21,6 @@ import {
   MOUSE,
   Quaternion,
   Spherical,
-  Vector2,
-  Vector3,
   // PerspectiveCamera,
   EventDispatcher
 } from "three";
@@ -22,27 +29,37 @@ const OrbitControls = MakeOrbitControls({
   MOUSE,
   Quaternion,
   Spherical,
-  Vector2,
   Vector3,
+  Vector2,
   PerspectiveCamera,
   EventDispatcher
 });
 
 export default class Stage3D {
+  renderer = new WebGLRenderer();
+  raycaster = new Raycaster();
+  //
+  mouse3D = new Vector3(0, 0, -100);
+  mouse2D = new Vector2();
+  mousePlane = new Mesh(
+    new PlaneGeometry(20, 20, 1, 1),
+    new MeshBasicMaterial({
+      colorWrite: false,
+      depthWrite: false,
+      depthTest: false
+    })
+  );
   constructor({ width, height }) {
-    this.renderer = new WebGLRenderer();
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setClearColor(0x1b8547);
-    const camera = (this.camera = new PerspectiveCamera(
-      22,
-      width / height,
-      0.01,
-      10000
-    ));
+    this.camera = new PerspectiveCamera(22, width / height, 0.01, 10000);
     this.camera.position.set(-20, 2, -20);
     this.renderer.setSize(width, height);
     //
-    this.orbitcontrols = new OrbitControls(camera, this.renderer.domElement);
+    this.orbitcontrols = new OrbitControls(
+      this.camera,
+      this.renderer.domElement
+    );
     this.orbitcontrols.autoRotate = true;
     this.orbitcontrols.autoRotateSpeed = 0.033;
     this.orbitcontrols.enableDamping = true;
@@ -57,15 +74,20 @@ export default class Stage3D {
       loader.load(
         url,
         gltf => {
-          const scene = (this.scene = gltf.scene);
+          this.scene = gltf.scene;
+          this.scene.add(this.camera);
+          //
           this.dog = new Dog({
-            obj3d: scene.getObjectByName("Mesh"),
-            scene
+            obj3d: this.scene.getObjectByName("Mesh"),
+            scene: this.scene
           });
           //
           var light = new DirectionalLight(0xffffff, 1);
           light.position.set(0, 1, 0.5);
-          scene.add(light);
+          this.scene.add(light);
+          //
+          this.camera.add(this.mousePlane);
+          this.mousePlane.position.set(0, 0, -25);
           //
           resolve();
         },
@@ -80,7 +102,6 @@ export default class Stage3D {
     const clock = new Clock(true);
     this.renderer.setAnimationLoop(() => {
       const dt = clock.getDelta();
-      const elapsed = clock.getElapsedTime();
       this.update(dt);
       this.render();
       // updateUI && updateUI({type:'frame', value:{dt,elapsed}})
@@ -95,14 +116,28 @@ export default class Stage3D {
     this.renderer.setSize(width, height);
   }
   update(dt) {
+    this.raycast();
     if (this.dog) {
       this.dog.update(dt);
     }
     this.orbitcontrols.update(dt);
   }
+  raycast = throttle(() => {
+    this.raycaster.setFromCamera(this.mouse2D, this.camera);
+    var intersect = [];
+    this.raycaster.intersectObject(this.mousePlane, false, intersect);
+    intersect.forEach(({ point }) => {
+      this.mouse3D.copy(point);
+    });
+    //
+    this.dog.lookAt(this.mouse3D);
+  }, 17);
   render() {
     if (this.scene) {
       this.renderer.render(this.scene, this.camera);
     }
+  }
+  updatePointer({ x, y }) {
+    this.mouse2D.set(x, y);
   }
 }

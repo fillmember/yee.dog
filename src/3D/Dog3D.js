@@ -29,12 +29,14 @@ export default class Dog3D {
         worm: {
           joints: [BoneID.Spine, BoneID.Shoulder, BoneID.Neck, BoneID.Head],
           constraints: [0, 0, 0],
-          influence: 0.1
+          influence: 0.1,
+          clipWeight: 1
         },
         look: {
           joints: [BoneID.Neck, BoneID.Head],
           constraints: [0, 0, 0],
-          influence: 0.1
+          influence: 0.1,
+          clipWeight: 2
         }
       }
     });
@@ -51,11 +53,11 @@ export default class Dog3D {
         parent: scene,
         emitter: {
           enabled: true,
-          rate: 5,
+          rate: 0,
           center: dog.skeleton.bones[BoneID.Head],
           extent: [1, 1, 1],
           offset: [0, 1, 0],
-          velocity: () => [0, 0.01, 0],
+          velocity: [0, 0.01, 0],
           lifespan: () => 1 + Math.random() * 2,
           sprite: 51
         }
@@ -68,7 +70,7 @@ export default class Dog3D {
           size: 2,
           rate: 0,
           center: [0, 180, 0],
-          lifespan: Infinity,
+          lifespan: 1.3,
           sprite: 50
         }
       },
@@ -78,7 +80,7 @@ export default class Dog3D {
         emitter: {
           enabled: true,
           size: () => Math3.randFloat(0.4, 0.8),
-          rate: 60,
+          rate: 0,
           center: dog.skeleton.bones[BoneID.Spine],
           extent: [0.1, 0.1, 0.1],
           sprite: [57, 56],
@@ -102,6 +104,10 @@ export default class Dog3D {
     this.particles.update(dt);
   }
   // Dog Behaviours
+  lookAt(vector3) {
+    this.ik.chains.look.references.target.position.copy(vector3);
+    this.ik.chains.worm.references.target.position.copy(vector3);
+  }
   bark(b) {
     const action = this.animation.actions.bark;
     TweenMax.to(action, 0.07, {

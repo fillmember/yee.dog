@@ -190,8 +190,8 @@ export class FABRIK {
     this.references.joints.forEach((j, i) =>
       j.getWorldPosition(this.joints[i])
     );
-    this.origin = this.joints[0].clone();
     this.references.target.getWorldPosition(this.target);
+    this.origin = this.joints[0].clone();
   }
   /*
   constrain

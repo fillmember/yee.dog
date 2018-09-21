@@ -91,7 +91,11 @@ export class IKSolver {
   createAnimationActions(animation) {
     Object.keys(this.clips).forEach(key => {
       animation.actions({
-        [key]: { zeroSlopeAtEnd: false, zeroSlopeAtStart: false }
+        [key]: {
+          zeroSlopeAtEnd: false,
+          zeroSlopeAtStart: false,
+          weight: this.config.chains[key].clipWeight
+        }
       });
     });
   }
