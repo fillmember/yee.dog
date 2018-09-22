@@ -129,9 +129,9 @@ export default function() {
   this.confused = bool => {
     TweenMax.to(
       this.state.stage3D.dog.particles.systems.confused.config.emitter,
-      bool ? 0.2 : 0,
+      0,
       {
-        rate: bool ? 1.3 : 0
+        rate: bool ? 4 : 0
       }
     );
   };
@@ -149,28 +149,38 @@ export default function() {
     this.bark(false);
     this.dragZoom(false);
     this.surprise(false);
-    let sprites = [0, 1];
+    const eatParticles = this.state.stage3D.dog.particles.systems.eat.config;
     if (files && files[0] && files[0].name) {
-      sprites = files[0].name
+      eatParticles.emitter.sprite = files[0].name
         .split("")
         .filter(c => c !== " ")
         .map(c => c.toLowerCase())
         .map(c => ParticleTextureMap01[c])
         .filter(v => !isNaN(v));
-    }
-    const eatParticles = this.state.stage3D.dog.particles.systems.eat.config;
-    eatParticles.emitter.sprite = sprites;
-    const open = () => {
-      this.bark(true, 0.1);
-      eatParticles.emitter.rate = 16;
-    };
-    const close = () => {
-      this.bark(false, 0.1);
-      eatParticles.emitter.rate = 0;
-    };
-    for (var i = 0; i < 10; i++) {
-      TweenMax.delayedCall(i * 0.2, open);
-      TweenMax.delayedCall(i * 0.2 + 0.1, close);
+      const open = () => {
+        this.bark(true, 0.1);
+        eatParticles.emitter.rate = 16;
+      };
+      const close = () => {
+        this.bark(false, 0.1);
+        eatParticles.emitter.rate = 0;
+      };
+      for (var i = 0; i < 10; i++) {
+        TweenMax.delayedCall(i * 0.2, open);
+        TweenMax.delayedCall(i * 0.2 + 0.1, close);
+      }
+      this.files.process(files[0]);
+      TweenMax.delayedCall((i + 1) * 0.2, () => {
+        this.files.start();
+      });
+    } else {
+      eatParticles.emitter.sprite = [0, 1];
+      TweenMax.delayedCall(0.5, () => {
+        this.confused(true);
+      });
+      TweenMax.delayedCall(2.8, () => {
+        this.confused(false);
+      });
     }
   };
   this.onDragLeave = () => {

@@ -3,14 +3,16 @@ import { ThemeProvider } from "styled-components";
 import DropZone from "react-dropzone";
 import throttle from "lodash/throttle";
 import AppEventHandlers from "./AppEventHandlers.js";
+import FileProcesser from "./FileProcesser.js";
 import Stage3D from "./3D/Stage3D.js";
 import { DogProvider } from "./DogContext.js";
-import Debug from "./UI/Debug.js";
+// import Debug from "./UI/Debug.js";
 import theme from "./theme.js";
 const nostyle = {};
 class App extends Component {
   $canvasContainer = React.createRef();
   //
+  files = new FileProcesser();
   state = {
     stage3D: new Stage3D({
       width: window.innerWidth,
