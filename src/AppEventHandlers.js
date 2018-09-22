@@ -101,6 +101,13 @@ export default function() {
     TweenMax.to(orbitcontrols.target, duration, {
       y: bool ? 1 : 0
     });
+    //
+    const wormAction = this.state.stage3D.dog.animation.actions.worm;
+    wormAction.weight = bool ? 0 : 1;
+    const vlegAction = this.state.stage3D.dog.animation.actions.vleg;
+    vlegAction.weight = bool ? 0.1 : 1;
+    const wormIK = this.state.stage3D.dog.ik.chains.worm;
+    wormIK.influence = bool ? 0 : 0.1;
   };
   this.surprise = bool => {
     TweenMax.to(
@@ -120,13 +127,13 @@ export default function() {
       }
     );
   };
-  this.onDragEnter = evt => {
+  this.onDragEnter = () => {
     this.bark(true);
     this.dragZoom(true);
     this.surprise(true);
     TweenMax.delayedCall(1.2, () => this.surprise(false));
   };
-  this.onDragStart = evt => {
+  this.onDragStart = () => {
     this.bark(true);
     this.dragZoom(true);
   };
@@ -158,7 +165,7 @@ export default function() {
       TweenMax.delayedCall(i * 0.2 + 0.1, close);
     }
   };
-  this.onDragLeave = evt => {
+  this.onDragLeave = () => {
     this.bark(false);
     this.dragZoom(false);
     this.surprise(false);

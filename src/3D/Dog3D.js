@@ -26,15 +26,15 @@ export default class Dog3D {
       scene,
       mesh: dog,
       chains: {
-        worm: {
-          joints: [BoneID.Spine, BoneID.Shoulder, BoneID.Neck, BoneID.Head],
-          constraints: [0, 0, 0],
+        look: {
+          joints: [BoneID.Neck, BoneID.Head],
+          constraints: [30, 30, 30],
           influence: 0.1,
           clipWeight: 1
         },
-        look: {
-          joints: [BoneID.Neck, BoneID.Head],
-          constraints: [0, 0, 0],
+        worm: {
+          joints: [BoneID.Spine, BoneID.Shoulder, BoneID.Neck],
+          constraints: [30, 30, 30],
           influence: 0.1,
           clipWeight: 1
         }
@@ -127,6 +127,10 @@ export default class Dog3D {
   lookAt(vector3) {
     this.ik.chains.look.references.target.position.copy(vector3);
     this.ik.chains.worm.references.target.position.copy(vector3);
+    const action = this.animation.actions.vleg;
+    TweenMax.to(action, 0.8, {
+      time: vector3.y < 0 ? 1 : 0
+    });
   }
   bark(b, duration = 0.2) {
     const action = this.animation.actions.bark;

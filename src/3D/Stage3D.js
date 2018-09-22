@@ -1,20 +1,20 @@
+import { TweenMax } from "gsap";
 import throttle from "lodash/throttle";
 import {
   PerspectiveCamera,
   WebGLRenderer,
   DirectionalLight,
   Clock,
-  AxesHelper,
   Mesh,
   PlaneGeometry,
   MeshBasicMaterial,
-  BackSide,
   Raycaster,
   Vector3,
   Vector2
 } from "three";
 import GLTFLoader from "three-gltf-loader";
 import MakeOrbitControls from "three-orbit-controls";
+import BoneID from "./BoneID.js";
 import Dog from "./Dog3D.js";
 
 import {
@@ -40,7 +40,7 @@ export default class Stage3D {
   raycaster = new Raycaster();
   //
   mouse3D = new Vector3(0, 0, -100);
-  mouse2D = new Vector2();
+  mouse2D = new Vector2(-999, -999);
   mousePlane = new Mesh(
     new PlaneGeometry(20, 20, 1, 1),
     new MeshBasicMaterial({
@@ -98,38 +98,50 @@ export default class Stage3D {
       );
     });
   }
-  start({ updateUI }) {
+  toScreenPosition(obj, target = new Vector3()) {
+    // We already update matrix world else where, leave this commented.
+    // Don't remove
+    //
+    // obj.updateMatrixWorld();
+    //
+    target.setFromMatrixPosition(obj.matrixWorld);
+    target.project(this.camera);
+    return target;
+  }
+  start() {
     const clock = new Clock(true);
     this.renderer.setAnimationLoop(() => {
       const dt = clock.getDelta();
       this.update(dt);
       this.render();
-      // updateUI && updateUI({type:'frame', value:{dt,elapsed}})
     });
   }
   stop() {
     this.renderer.setAnimationLoop(null);
   }
-  resize({ width = window.innerWidth, height = window.innerHeight } = {}) {
-    this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize(width, height);
-  }
+  resize = throttle(
+    ({ width = window.innerWidth, height = window.innerHeight } = {}) => {
+      this.camera.aspect = width / height;
+      this.camera.updateProjectionMatrix();
+      this.renderer.setSize(width, height);
+    },
+    1 / 30
+  );
   update(dt) {
-    this.raycast();
     if (this.dog) {
+      this.raycast();
       this.dog.update(dt);
+      this.pet();
     }
-    this.orbitcontrols.update(dt);
+    this.orbitcontrols && this.orbitcontrols.update(dt);
   }
   raycast = throttle(() => {
     this.raycaster.setFromCamera(this.mouse2D, this.camera);
-    var intersect = [];
+    let intersect = [];
     this.raycaster.intersectObject(this.mousePlane, false, intersect);
     intersect.forEach(({ point }) => {
       this.mouse3D.copy(point);
     });
-    //
     this.dog.lookAt(this.mouse3D);
   }, 17);
   render() {
@@ -140,4 +152,27 @@ export default class Stage3D {
   updatePointer({ x, y }) {
     this.mouse2D.set(x, y);
   }
+  _mouseIsAround_screenPosition = new Vector2();
+  _mouseIsAround(...boneIDs) {
+    this._mouseIsAround_screenPosition.set(0, 0);
+    boneIDs.forEach(boneID => {
+      const bone = this.dog.dog.skeleton.bones[boneID];
+      this._mouseIsAround_screenPosition.add(this.toScreenPosition(bone));
+    });
+    this._mouseIsAround_screenPosition.multiplyScalar(1 / boneIDs.length);
+    const distanceSquared = this.mouse2D.distanceToSquared(
+      this._mouseIsAround_screenPosition
+    );
+    return distanceSquared < 0.0016;
+  }
+  pet = throttle(() => {
+    const isPettingEarL = this._mouseIsAround(BoneID.EarL_0, BoneID.EarL_1);
+    TweenMax.to(this.dog.animation.actions.earWagL, 0.5, {
+      weight: isPettingEarL ? 0.6 : 0
+    });
+    const isPettingEarR = this._mouseIsAround(BoneID.EarR_0, BoneID.EarR_1);
+    TweenMax.to(this.dog.animation.actions.earWagR, 0.5, {
+      weight: isPettingEarR ? 0.6 : 0
+    });
+  }, 200);
 }

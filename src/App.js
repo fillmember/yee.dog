@@ -5,7 +5,7 @@ import throttle from "lodash/throttle";
 import AppEventHandlers from "./AppEventHandlers.js";
 import Stage3D from "./3D/Stage3D.js";
 import { DogProvider } from "./DogContext.js";
-// import Debug from "./UI/Debug.js";
+import Debug from "./UI/Debug.js";
 import theme from "./theme.js";
 const nostyle = {};
 class App extends Component {
@@ -44,7 +44,7 @@ class App extends Component {
         this.$canvasContainer.current.appendChild(
           this.state.stage3D.renderer.domElement
         );
-        this.state.stage3D.start({ updateUI: this.updateProvider });
+        this.state.stage3D.start();
         this.updateProvider({ type: "loaded" });
         this.bind();
       });

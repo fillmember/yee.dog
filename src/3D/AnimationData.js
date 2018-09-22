@@ -130,25 +130,25 @@ export const Clips = {
       bone: BoneID.ArmL_2,
       property: "rotation[x]",
       times: [0, 1],
-      values: [-90, -50].map(toRad)
+      values: [-90, -70].map(toRad)
     },
     {
       bone: BoneID.ArmR_2,
       property: "rotation[x]",
       times: [0, 1],
-      values: [-90, -50].map(toRad)
+      values: [-90, -70].map(toRad)
     },
     {
       bone: BoneID.ArmL_2,
       property: "rotation[z]",
       times: [0, 1],
-      values: [0, 45].map(toRad)
+      values: [0, 20].map(toRad)
     },
     {
       bone: BoneID.ArmR_2,
       property: "rotation[z]",
       times: [0, 1],
-      values: [0, -45].map(toRad)
+      values: [0, -20].map(toRad)
     }
   ],
   earWagL: [
@@ -171,7 +171,7 @@ export const Clips = {
 
 export const Actions = {
   wag: { loop: LoopPingPong, timeScale: 4 },
-  vleg: { loop: LoopPingPong, weight: 0, timeScale: 8 },
+  vleg: { loop: LoopPingPong, paused: true, weight: 1 },
   bark: { loop: LoopPingPong, paused: true, weight: 1 },
   earWagL: { loop: LoopPingPong, weight: 0, timeScale: 10 },
   earWagR: { loop: LoopPingPong, weight: 0, timeScale: 10 }
