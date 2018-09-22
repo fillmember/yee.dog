@@ -175,11 +175,13 @@ export default function() {
       });
     } else {
       eatParticles.emitter.sprite = [0, 1];
+      this.bark(true);
       TweenMax.delayedCall(0.5, () => {
         this.confused(true);
       });
       TweenMax.delayedCall(2.8, () => {
         this.confused(false);
+        this.bark(false);
       });
     }
   };
