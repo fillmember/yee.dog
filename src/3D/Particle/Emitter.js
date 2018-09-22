@@ -65,11 +65,15 @@ export class Emitter {
       lifespan: getNumber(this.config.lifespan, 1)
     };
     // finally
-    const velocity = getVec3(this.config.velocity);
     const i = this.system.iter * 3;
+    const velocity = getVec3(this.config.velocity);
     this.system.velocities[i] = velocity[0];
     this.system.velocities[i + 1] = velocity[1];
     this.system.velocities[i + 2] = velocity[2];
+    const acceleration = getVec3(this.config.acceleration);
+    this.system.accelerations[i] = acceleration[0];
+    this.system.accelerations[i + 1] = acceleration[1];
+    this.system.accelerations[i + 2] = acceleration[2];
     this.system.addParticle(position, options);
   }
   // eslint-disable-next-line

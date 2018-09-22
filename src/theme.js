@@ -1,5 +1,5 @@
 export default {
-  fontSizes: [12, 14, 16, 20, 24, 32, 48, 64],
+  fontSizes: [8, 10, 12, 16, 20, 24, 32, 40],
   space: [0, 4, 8, 16, 32, 64, 128, 256],
   fonts: {
     sans: "system-ui, sans-serif",

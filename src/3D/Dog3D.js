@@ -36,7 +36,7 @@ export default class Dog3D {
           joints: [BoneID.Neck, BoneID.Head],
           constraints: [0, 0, 0],
           influence: 0.1,
-          clipWeight: 2
+          clipWeight: 1
         }
       }
     });
@@ -59,7 +59,7 @@ export default class Dog3D {
           offset: [0, 1, 0],
           velocity: [0, 0.01, 0],
           lifespan: () => 1 + Math.random() * 2,
-          sprite: 51
+          sprite: 37
         }
       },
       surprise: {
@@ -70,8 +70,8 @@ export default class Dog3D {
           size: 2,
           rate: 0,
           center: [0, 180, 0],
-          lifespan: 1.3,
-          sprite: 50
+          lifespan: 0.8,
+          sprite: 36
         }
       },
       digital: {
@@ -83,7 +83,7 @@ export default class Dog3D {
           rate: 0,
           center: dog.skeleton.bones[BoneID.Spine],
           extent: [0.1, 0.1, 0.1],
-          sprite: [57, 56],
+          sprite: [0, 1],
           velocity: () => {
             const a = 0.05;
             return [
@@ -93,6 +93,26 @@ export default class Dog3D {
             ];
           },
           lifespan: () => Math3.randFloat(0.5, 2)
+        }
+      },
+      eat: {
+        max: 64,
+        parent: scene,
+        emitter: {
+          enabled: true,
+          size: 0.6,
+          rate: 0,
+          center: dog.skeleton.bones[BoneID.JawU_1],
+          extend: [0.4, 0.1, 0.5],
+          offset: [0, -0.1, 1],
+          sprite: [0, 1],
+          velocity: () => [
+            Math.random() > 0.5 ? -0.03 : 0.03,
+            Math3.randFloat(-0.02, 0.02),
+            Math3.randFloat(-0.01, -0.05)
+          ],
+          acceleration: [0, -0.005, 0],
+          lifespan: 0.7
         }
       }
     });
@@ -108,9 +128,9 @@ export default class Dog3D {
     this.ik.chains.look.references.target.position.copy(vector3);
     this.ik.chains.worm.references.target.position.copy(vector3);
   }
-  bark(b) {
+  bark(b, duration = 0.2) {
     const action = this.animation.actions.bark;
-    TweenMax.to(action, 0.07, {
+    TweenMax.to(action, duration, {
       time: b ? 1 : 0,
       ease: Power2.easeOut
     });

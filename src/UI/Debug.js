@@ -4,7 +4,6 @@ import {
   Flex,
   Box,
   Heading,
-  Checkbox,
   Text,
   Button,
   Label,
@@ -79,20 +78,6 @@ export const Vector3Control = ({
   );
 };
 
-/*
-<Button
-  onClick={() => {
-    stage.orbitcontrols.autoRotate = !stage.orbitcontrols
-      .autoRotate;
-    update();
-  }}
->
-  {stage.orbitcontrols.autoRotate
-    ? "disable Auto Rotate"
-    : "enable Auto Rotate"}
-</Button>
-*/
-
 export default class Debug extends React.Component {
   render() {
     return (
@@ -112,13 +97,14 @@ export default class Debug extends React.Component {
                     return (
                       <Box key={key}>
                         <Heading fontSize={[2, 4]}>{key}</Heading>
-                        <Checkbox
-                          defaultChecked={system.visible}
-                          onInput={evt => {
-                            system.visible = evt.target.checked;
+                        <Button
+                          onClick={() => {
+                            system.visible = !system.visible;
                             update();
                           }}
-                        />
+                        >
+                          {system.visible ? "hide" : "show"}
+                        </Button>
                         <ValueSlider
                           label="rate"
                           min={0}
