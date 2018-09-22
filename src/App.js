@@ -71,7 +71,11 @@ class App extends Component {
             multiple={false}
           >
             <div className="App">
-              <div className="3d-container" ref={this.$canvasContainer} />
+              <div
+                className="3d-container"
+                ref={this.$canvasContainer}
+                style={{ fontSize: 0, lineHeight: 0 }}
+              />
               {/*<Debug />*/}
             </div>
           </DropZone>
