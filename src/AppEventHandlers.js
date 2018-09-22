@@ -138,6 +138,8 @@ export default function() {
     if (files && files[0] && files[0].name) {
       sprites = files[0].name
         .split("")
+        .filter(c => c !== " ")
+        .map(c => c.toLowerCase())
         .map(c => ParticleTextureMap01[c])
         .filter(v => !isNaN(v));
     }
