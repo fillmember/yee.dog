@@ -24,6 +24,9 @@ export default function() {
     canvas.addEventListener("mousemove", this.onMouseMove);
     canvas.addEventListener("mousedown", this.onMouseDown);
     canvas.addEventListener("mouseup", this.onMouseUp);
+    canvas.addEventListener("touchmove", this.onMouseMove);
+    canvas.addEventListener("touchstart", this.onMouseDown);
+    canvas.addEventListener("touchend", this.onMouseUp);
   };
   this.unbind = () => {
     window.removeEventListener("resize", this.onResize);
@@ -33,6 +36,9 @@ export default function() {
     canvas.removeEventListener("mousemove", this.onMouseMove);
     canvas.removeEventListener("mousedown", this.onMouseDown);
     canvas.removeEventListener("mouseup", this.onMouseUp);
+    canvas.removeEventListener("touchmove", this.onMouseMove);
+    canvas.removeEventListener("touchstart", this.onMouseDown);
+    canvas.removeEventListener("touchend", this.onMouseUp);
   };
   // Event Handlers
   this.onResize = () => {
@@ -70,10 +76,12 @@ export default function() {
       this.state.stage3D.updatePointer({ x, y });
     }
   };
-  this.onMouseDown = () => {
+  this.onMouseDown = evt => {
+    this.onMouseMove(evt);
     this.bark(true);
   };
-  this.onMouseUp = () => {
+  this.onMouseUp = evt => {
+    this.onMouseMove(evt);
     this.bark(false);
   };
   //
