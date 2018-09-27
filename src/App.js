@@ -6,6 +6,7 @@ import AppEventHandlers from "./AppEventHandlers.js";
 import FileProcessor from "./FileProcessor.js";
 import Stage3D from "./3D/Stage3D.js";
 import { DogProvider } from "./DogContext.js";
+import Audio from "./Audio.js";
 // import Debug from "./UI/Debug.js";
 import theme from "./theme.js";
 const nostyle = {};
@@ -13,6 +14,7 @@ class App extends Component {
   $canvasContainer = React.createRef();
   //
   files = new FileProcessor();
+  audio = new Audio();
   state = {
     stage3D: new Stage3D({
       width: window.innerWidth,
@@ -20,6 +22,7 @@ class App extends Component {
       updateUI: this.updateProvider
     }),
     providerValue: {
+      audio: this.audio.current,
       stage: false,
       dog: false,
       event: false,
@@ -30,6 +33,7 @@ class App extends Component {
   updateProvider = throttle(event => {
     this.setState({
       providerValue: {
+        audio: this.audio.current,
         stage: this.state.stage3D,
         dog: this.state.stage3D.dog,
         update: this.updateProvider,
@@ -39,7 +43,12 @@ class App extends Component {
     window.dog = this.state.stage3D;
   }, 1 / 30);
   componentDidMount() {
+    //
     AppEventHandlers.apply(this);
+    //
+    this.files.addEventListener("process", this.audio.onFileProcess);
+    this.files.addEventListener("start", this.audio.onFileStart);
+    //
     this.state.stage3D
       .load(process.env.PUBLIC_URL + "/model/wt.glb")
       .then(() => {
@@ -55,6 +64,7 @@ class App extends Component {
     this.unbind();
   }
   render() {
+    const Audio = this.audio.reactComponent;
     return (
       <ThemeProvider theme={theme}>
         <DogProvider value={this.state.providerValue}>
@@ -78,7 +88,7 @@ class App extends Component {
                 ref={this.$canvasContainer}
                 style={{ fontSize: 0, lineHeight: 0 }}
               />
-              {/*<Debug />*/}
+              <Audio />
             </div>
           </DropZone>
         </DogProvider>

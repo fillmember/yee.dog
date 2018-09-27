@@ -132,7 +132,7 @@ export default class Dog3D {
       time: vector3.y < 0 ? 1 : 0
     });
   }
-  bark(b, duration = 0.2) {
+  openMouth(b, duration = 0.2) {
     const action = this.animation.actions.bark;
     TweenMax.to(action, duration, {
       time: b ? 1 : 0,

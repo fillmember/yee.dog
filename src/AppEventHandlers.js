@@ -13,7 +13,11 @@ export default function() {
     return { x: -999, y: -999 };
   };
   this.bark = bool => {
-    this.state.stage3D.dog && this.state.stage3D.dog.bark(bool);
+    this.state.stage3D.dog && this.state.stage3D.dog.openMouth(bool);
+    this.audio.bark(bool);
+  };
+  this.openMouth = bool => {
+    this.state.stage3D.dog && this.state.stage3D.dog.openMouth(bool);
   };
   // Bind & Unbind
   this.bind = () => {
@@ -48,9 +52,14 @@ export default function() {
     });
   };
   //
+  const pressedKeys = {};
   this.onKeyDown = evt => {
     switch (evt.keyCode) {
       case 32:
+        if (pressedKeys[32] === true) {
+          return;
+        }
+        pressedKeys[32] = true;
         this.bark(true);
         break;
       default:
@@ -60,6 +69,7 @@ export default function() {
   this.onKeyUp = evt => {
     switch (evt.keyCode) {
       case 32:
+        pressedKeys[32] = false;
         this.bark(false);
         break;
       default:
@@ -136,17 +146,17 @@ export default function() {
     );
   };
   this.onDragEnter = () => {
-    this.bark(true);
+    this.openMouth(true);
     this.dragZoom(true);
     this.surprise(true);
     TweenMax.delayedCall(1.2, () => this.surprise(false));
   };
   this.onDragStart = () => {
-    this.bark(true);
+    this.openMouth(true);
     this.dragZoom(true);
   };
   this.onDrop = files => {
-    this.bark(false);
+    this.openMouth(false);
     this.dragZoom(false);
     this.surprise(false);
     const eatParticles = this.state.stage3D.dog.particles.systems.eat.config;
@@ -158,11 +168,11 @@ export default function() {
         .map(c => ParticleTextureMap01[c])
         .filter(v => !isNaN(v));
       const open = () => {
-        this.bark(true, 0.1);
+        this.openMouth(true, 0.1);
         eatParticles.emitter.rate = 16;
       };
       const close = () => {
-        this.bark(false, 0.1);
+        this.openMouth(false, 0.1);
         eatParticles.emitter.rate = 0;
       };
       for (var i = 0; i < 10; i++) {
@@ -175,18 +185,18 @@ export default function() {
       });
     } else {
       eatParticles.emitter.sprite = [0, 1];
-      this.bark(true);
+      this.openMouth(true);
       TweenMax.delayedCall(0.5, () => {
         this.confused(true);
       });
       TweenMax.delayedCall(2.8, () => {
         this.confused(false);
-        this.bark(false);
+        this.openMouth(false);
       });
     }
   };
   this.onDragLeave = () => {
-    this.bark(false);
+    this.openMouth(false);
     this.dragZoom(false);
     this.surprise(false);
   };

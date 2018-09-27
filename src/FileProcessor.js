@@ -1,30 +1,56 @@
-const TYPE_AUDIO = "TYPE_AUDIO";
-const TYPE_IMAGE = "TYPE_IMAGE";
-const TYPE_UNKNOWN = "TYPE_UNKNOWN";
-
 export default class FileProcessor {
+  static TYPE_AUDIO = "TYPE_AUDIO";
+  static TYPE_IMAGE = "TYPE_IMAGE";
+  static TYPE_UNKNOWN = "TYPE_UNKNOWN";
+  constructor() {
+    this.eventListeners = {
+      process: [],
+      start: []
+    };
+    // this.onProcessListeners = [];
+    // this.onStartListeners = [];
+  }
+  addEventListener(event, listener) {
+    const arr = this.eventListeners[event];
+    if (arr) {
+      arr.push(listener);
+    } else {
+      console.log(`Event ${event} not found. `);
+    }
+  }
+  removeEventListener(event, listener) {
+    const arr = this.eventListeners[event];
+    if (arr) {
+      this.eventListeners[event] = arr.filter(f => f !== listener);
+    } else {
+      console.warn(`Event ${event} not found. `);
+    }
+  }
   process(file) {
     if (!file) {
       return;
     }
     this.currentFile = file;
+    this.currentType = this.identifyType(file);
+    //
+    this.eventListeners.process.forEach(listener => {
+      listener(this.currentFile, this.currentType, this);
+    });
+  }
+  identifyType(file) {
     const type = file.type.split("/");
     switch (type[0]) {
       case "audio":
-        console.log("this file is a audio");
-        this.currentType = TYPE_AUDIO;
-        break;
+        return FileProcessor.TYPE_AUDIO;
       case "image":
-        console.log("this file is a image");
-        this.currentType = TYPE_IMAGE;
-        break;
+        return FileProcessor.TYPE_IMAGE;
       default:
-        console.log("this file is something else");
-        this.currentType = TYPE_UNKNOWN;
-        break;
+        return FileProcessor.TYPE_UNKNOWN;
     }
   }
   start() {
-    console.log("start", this.currentFile, this.currentType);
+    this.eventListeners.start.forEach(listener => {
+      listener(this.currentFile, this.currentType, this);
+    });
   }
 }
