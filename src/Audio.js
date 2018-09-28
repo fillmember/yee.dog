@@ -95,7 +95,7 @@ export default class Audio {
           onComplete: resolve
         });
       } catch (e) {
-        reject(e);
+        // reject(e);
       }
     });
   }
@@ -107,7 +107,7 @@ export default class Audio {
           try {
             node.stop();
           } catch (e) {
-            reject(e);
+            // reject(e);
           }
           resolve();
         }
