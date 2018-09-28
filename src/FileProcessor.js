@@ -14,6 +14,7 @@ export default class FileProcessor {
     const arr = this.eventListeners[event];
     if (arr) {
       arr.push(listener);
+      return this.removeEventListener.bind(this, event, listener);
     } else {
       console.log(`Event ${event} not found. `);
     }
