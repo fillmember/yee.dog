@@ -101,17 +101,17 @@ export default class Audio {
   }
   stopBufferSourceNode(node, fadeDuration = 0.2) {
     return new Promise((resolve, reject) => {
-      TweenMax.to(node.gain, fadeDuration, {
-        value: 0,
-        onComplete: () => {
-          try {
+      try {
+        TweenMax.to(node.gain, fadeDuration, {
+          value: 0,
+          onComplete: () => {
             node.stop();
-          } catch (e) {
-            // reject(e);
+            resolve();
           }
-          resolve();
-        }
-      });
+        });
+      } catch (e) {
+        // reject(e);
+      }
     });
   }
   createBufferSourceNode() {
