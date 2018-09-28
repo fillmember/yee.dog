@@ -139,4 +139,7 @@ export default class Dog3D {
       ease: Power2.easeOut
     });
   }
+  //
+  onFileStart() {}
+  onFileProcess() {}
 }

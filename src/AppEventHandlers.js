@@ -31,6 +31,16 @@ export default function() {
     canvas.addEventListener("touchmove", this.onMouseMove);
     canvas.addEventListener("touchstart", this.onMouseDown);
     canvas.addEventListener("touchend", this.onMouseUp);
+    //
+    // Inter-module communication
+    //
+    this.files.addEventListener("process", this.audio.onFileProcess);
+    this.files.addEventListener("start", this.audio.onFileStart);
+    this.files.addEventListener(
+      "process",
+      this.state.stage3D.dog.onFileProcess
+    );
+    this.files.addEventListener("start", this.state.stage3D.dog.onFileStart);
   };
   this.unbind = () => {
     window.removeEventListener("resize", this.onResize);

@@ -46,9 +46,6 @@ class App extends Component {
     //
     AppEventHandlers.apply(this);
     //
-    this.files.addEventListener("process", this.audio.onFileProcess);
-    this.files.addEventListener("start", this.audio.onFileStart);
-    //
     this.state.stage3D
       .load(process.env.PUBLIC_URL + "/model/wt.glb")
       .then(() => {
@@ -56,8 +53,8 @@ class App extends Component {
           this.state.stage3D.renderer.domElement
         );
         this.state.stage3D.start();
-        this.updateProvider({ type: "loaded" });
         this.bind();
+        this.updateProvider({ type: "loaded" });
       });
   }
   componentWillUnmount() {
