@@ -3,16 +3,38 @@ import { TweenMax } from "gsap";
 import FileProcessor from "./FileProcessor.js";
 
 export default class Audio {
+  static MODE_SHORT = "MODE_SHORT";
+  static MODE_LONG = "MODE_LONG";
+  mode = null;
   constructor() {
     const audio = this;
+    this.$mediaElement = React.createRef();
     this.reactComponent = class AudioComponent extends React.Component {
       static instance = null;
-      constructor() {
-        super();
+      state = {
+        url: null
+      };
+      componentDidMount() {
         audio.reactComponent.instance = this;
       }
+      componentDidUpdate(previousProps, previousState) {
+        if (previousState.url !== this.state.url) {
+          URL.revokeObjectURL(previousState.url);
+        }
+      }
+      componentWillUnmount() {
+        audio.reactComponent.instance = null;
+      }
       render() {
-        return <div />;
+        return (
+          <div>
+            <audio
+              ref={audio.$mediaElement}
+              src={this.state.url}
+              id="dog-sound"
+            />
+          </div>
+        );
       }
     };
   }
@@ -47,16 +69,14 @@ export default class Audio {
         buffer,
         audioBuffer => {
           this.audioBuffer = audioBuffer;
-          const durationInSeconds = audioBuffer.length / audioBuffer.sampleRate;
+          const durationInSec = audioBuffer.length / audioBuffer.sampleRate;
+          this.mode = durationInSec > 1 ? Audio.MODE_LONG : Audio.MODE_SHORT;
         },
         error => console.warn("Dog Audio: failed to decode audio data. ", error)
       );
     };
     this.fileReader.readAsArrayBuffer(file);
   }
-  //
-  // Dog Behaviours
-  //
   onFileProcess = (file, type) => {
     if (type === FileProcessor.TYPE_AUDIO) {
       if (this.context === null) {
@@ -68,11 +88,15 @@ export default class Audio {
   onFileStart = () => {};
   startBufferSourceNode(node, fadeDuration = 0) {
     return new Promise((resolve, reject) => {
-      node.start();
-      TweenMax.to(node.gain, fadeDuration, {
-        value: 1,
-        onComplete: resolve
-      });
+      try {
+        node.start();
+        TweenMax.to(node.gain, fadeDuration, {
+          value: 1,
+          onComplete: resolve
+        });
+      } catch (e) {
+        reject(e);
+      }
     });
   }
   stopBufferSourceNode(node, fadeDuration = 0.2) {
@@ -83,12 +107,17 @@ export default class Audio {
           try {
             node.stop();
           } catch (e) {
-            // dispose error
+            reject(e);
           }
           resolve();
         }
       });
     });
+  }
+  createBufferSourceNode() {
+    this.nodes.source = this.context.createBufferSource();
+    this.nodes.source.buffer = this.audioBuffer;
+    this.nodes.source.connect(this.nodes.analyser);
   }
   bark(bool) {
     if (this.context === null) {
@@ -98,13 +127,11 @@ export default class Audio {
       if (this.nodes.source) {
         this.stopBufferSourceNode(this.nodes.source, 0.1);
       }
-      this.nodes.source = this.context.createBufferSource();
-      this.nodes.source.buffer = this.audioBuffer;
-      this.nodes.source.connect(this.nodes.analyser);
-      this.startBufferSourceNode(this.nodes.source);
+      this.createBufferSourceNode();
+      this.startBufferSourceNode(this.nodes.source, 0.03);
     } else {
       if (this.nodes.source) {
-        this.stopBufferSourceNode(this.nodes.source);
+        this.stopBufferSourceNode(this.nodes.source, 0.03);
       }
     }
   }
