@@ -105,7 +105,9 @@ export default class Audio {
         TweenMax.to(node.gain, fadeDuration, {
           value: 0,
           onComplete: () => {
-            node.stop();
+            try {
+              node.stop();
+            } catch (e) {}
             resolve();
           }
         });
