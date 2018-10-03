@@ -1,22 +1,8 @@
-import { Object3D, AnimationClip, NumberKeyframeTrack, Euler } from "three";
+import { AnimationClip, NumberKeyframeTrack, Euler } from "three";
 import { Animation } from "./Animation.js";
-import { FABRIK, ConeConstraint } from "./FABRIK.js";
+import FABRIK from "./FABRIK.js";
 
-export class IKTarget extends Object3D {
-  constructor(mimicTarget) {
-    super();
-    if (mimicTarget) {
-      mimicTarget.getWorldPosition(this.position);
-    }
-    this.userData.initialPosition = this.position.clone();
-    return this;
-  }
-  reset() {
-    this.position.copy(this.userData.initialPosition);
-  }
-}
-
-export class IKSolver {
+export class DogIK {
   init(config) {
     this.config = config;
     const { mesh, chains } = this.config;
@@ -28,19 +14,18 @@ export class IKSolver {
       const chain = chains[key];
       const { joints, influence, constraints } = chain;
       const bones = joints.map(boneID => this.mesh.skeleton.bones[boneID]);
-      this.chains[key] = new FABRIK({
+      this.chains[key] = new FABRIK.Chain({
         joints: bones,
         influence,
         constraints: constraints
-          ? constraints.map(value => new ConeConstraint(value))
-          : undefined
       });
     });
+    this.solver = new FABRIK.Solver(this.chains);
   }
   update() {
     for (let key in this.chains) {
       const chain = this.chains[key];
-      chain.refresh();
+      chain.alignAllWithReference();
       chain.solve();
       const quaternions = chain.getQuaternions();
       this.clips[key].tracks.forEach(track => {

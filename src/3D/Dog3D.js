@@ -1,6 +1,6 @@
 import { MeshLambertMaterial, LinearEncoding, Math as Math3 } from "three";
 import { TweenMax, Power2 } from "gsap";
-import { IKSolver } from "./IK.js";
+import { DogIK } from "./IK.js";
 import { Animation } from "./Animation.js";
 import BoneID from "./BoneID.js";
 import ParticleSystem from "./ParticleSystem.js";
@@ -21,20 +21,20 @@ export default class Dog3D {
     dog.material = mat;
     dog.position.y = -0.4;
     // IK
-    this.ik = new IKSolver();
+    this.ik = new DogIK();
     this.ik.init({
       scene,
       mesh: dog,
       chains: {
-        look: {
-          joints: [BoneID.Neck, BoneID.Head],
-          constraints: [30, 30, 30],
+        worm: {
+          joints: [BoneID.Spine, BoneID.Shoulder, BoneID.Neck],
+          constraints: [40, 15, 10],
           influence: 0.1,
           clipWeight: 1
         },
-        worm: {
-          joints: [BoneID.Spine, BoneID.Shoulder, BoneID.Neck],
-          constraints: [30, 30, 30],
+        look: {
+          joints: [BoneID.Neck, BoneID.Head],
+          constraints: [35, 20],
           influence: 0.1,
           clipWeight: 1
         }
@@ -125,8 +125,8 @@ export default class Dog3D {
   }
   // Dog Behaviours
   lookAt(vector3) {
-    this.ik.chains.look.references.target.position.copy(vector3);
-    this.ik.chains.worm.references.target.position.copy(vector3);
+    this.ik.chains.look.target.set(vector3);
+    this.ik.chains.worm.target.set(vector3);
     const action = this.animation.actions.vleg;
     TweenMax.to(action, 0.8, {
       time: vector3.y < 0 ? 1 : 0

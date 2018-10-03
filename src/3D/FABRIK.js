@@ -1,117 +1,184 @@
 // ref: http://wiki.roblox.com/index.php?title=Inverse_kinematics#FABRIK
-
+// import Debug3 from "./DebugDraw.js";
 import { Vector3, Object3D, Math as Math3 } from "three";
 
-const toRad = v => Math3.degToRad(v);
 const last = arr => arr[arr.length - 1];
 
-export class ConeConstraint {
-  constructor(angle = 89) {
-    this.left = toRad(angle);
-    this.right = toRad(angle);
-    this.top = toRad(angle);
-    this.down = toRad(angle);
+class Node {
+  constructor(reference) {
+    this.reference = reference;
+    this.alignWithReference();
+  }
+  position = new Vector3();
+  alignWithReference() {
+    this.reference.getWorldPosition(this.position);
+  }
+  set(v3) {
+    this.position.copy(v3);
+    this.reference.position.copy(v3);
   }
 }
 
-export class FABRIK {
-  constructor({
-    joints,
-    target,
-    constraints,
-    influence = 0.5,
-    tolerance = 0.01,
-    maxIterations = 2
-  }) {
+class Joint extends Node {
+  static noop = ref => ref;
+  static negY = ref => ref.rotateY(Math.PI);
+  constructor({ reference, constraint }) {
+    super(reference);
+    this.constraint = constraint || 45;
+  }
+  localToWorldDirection(direction) {
+    if (this.reference.parent) {
+      const parent = this.reference.parent.matrixWorld;
+      direction.transformDirection(parent);
+    }
+    return direction;
+  }
+  _direction_v = new Vector3();
+  get direction() {
+    return this.reference.getWorldDirection(this._direction_v);
+  }
+  set direction(v) {
+    const wp = this.reference.getWorldPosition(this._direction_v);
+    wp.add(v);
+    this.reference.lookAt(wp);
+  }
+}
+
+class Constraint {
+  static Z_AXIS = new Vector3(0, 0, 1);
+  static dir = new Vector3();
+  static parentDir = new Vector3();
+  static correctionAxis = new Vector3();
+  static apply(joint, angle = joint.constraint) {
+    this.dir.copy(joint.direction);
+    joint.localToWorldDirection(this.parentDir.copy(this.Z_AXIS));
+    this.parentDir.normalize();
+    const currentAngle = Math3.radToDeg(this.dir.angleTo(this.parentDir));
+    const needCorrection = currentAngle > angle;
+    if (needCorrection) {
+      this.dir.normalize();
+      this.correctionAxis.crossVectors(this.dir, this.parentDir).normalize();
+      this.parentDir.applyAxisAngle(this.correctionAxis, Math3.degToRad(angle));
+      joint.direction = this.parentDir;
+    }
+  }
+}
+
+class Target extends Node {}
+
+class Solver {
+  constructor(chains) {
+    this.chains = chains;
+  }
+}
+
+class Chain {
+  constructor({ joints, target, influence = 0.5, constraints }) {
     if (!target) {
       target = new Object3D();
       last(joints).getWorldPosition(target.position);
     }
-    this.references = {
-      target: target,
-      joints: joints
-    };
-    this.constraints = constraints || new ConeConstraint(89);
-    this.tolerance = tolerance;
+    if (
+      !joints.every((joint, index, arr) => {
+        const next = arr[index + 1];
+        if (next) {
+          return joint.children.indexOf(next) > -1;
+        } else {
+          return true;
+        }
+      })
+    ) {
+      console.warn(
+        "FABRIK.Chain assumes the bones are in hierarchy. (start -> end). Please check your input. "
+      );
+    }
     this.influence = influence;
-    this.maxIterations = maxIterations;
-    this.needsUpdate = true;
+    this.tolerance = 0.01;
+    this.maxIterations = 5;
     // Vectors
-    this.target = this.references.target.getWorldPosition(new Vector3());
-    this.joints = this.references.joints.map(j => {
-      const pos = new Vector3();
-      j.getWorldPosition(pos);
-      return pos;
-    });
-    this.origin = this.joints[0].clone();
+    this.target = new Target(target);
+    this.joints = joints.map(
+      (obj3d, index) =>
+        new Joint({
+          reference: obj3d,
+          constraint: constraints[index]
+        })
+    );
     this.lengths = this.joints.reduce((a, v1, index, arr) => {
       const v0 = arr[index - 1];
       if (v0) {
-        a.push(v1.distanceTo(v0));
+        a.push(v1.position.distanceTo(v0.position));
       }
       return a;
     }, []);
     this.totalLength = this.lengths.reduce((c, l) => c + l);
   }
-  /*
-  (public method)
-  solve and apply
-  refresh when needed
-  */
-  update() {
-    if (this.needsUpdate) {
-      this.refresh();
-      this.needsUpdate = false;
+  alignReferenceToJoint({ alpha, returnQuaternions }) {
+    const result = {};
+    const originalQuaternions = [];
+    const references = this.joints.map(j => j.reference);
+    // Get result quaternions
+    references.forEach((ref, i) => {
+      let v = this.joints[i + 1] || this.target;
+      originalQuaternions.push(ref.quaternion.clone());
+      ref.lookAt(v.position);
+      Constraint.apply(this.joints[i]);
+      if (returnQuaternions) {
+        result[ref.name] = ref.quaternion.clone();
+      }
+    });
+    // Set reference quaternions back
+    if (alpha === 0) {
+      references.forEach((ref, i) =>
+        ref.quaternion.copy(originalQuaternions[i])
+      );
+    } else {
+      references.forEach((ref, i) =>
+        ref.quaternion.slerp(originalQuaternions[i], 1 - alpha)
+      );
     }
-    this.solve();
-    this.apply(this.influence);
+    if (returnQuaternions) {
+      return result;
+    }
   }
   /*
   apply
-  since we are doing our FABRIK calculation in world position, and without rotation. 
-  we have to use an additional process to apply the result back to joints,
-  which are with local positions and rotations. 
-  //
-  I added in a "Slerp" function to help blend the IK results with other animation systems. 
-  TODO: Let THREE.js Animation System handle this
+  since we are doing our FABRIK calculation in world position, and without rotation.
+  we have to use an additional process to apply the results back to the actual joints,
+  which are with local positions and rotations.
   */
-  apply(lerpAlpha = this.influence) {
-    this.references.joints.forEach((j, i) => {
-      let v = this.joints[i + 1] || this.target;
-      const localChildPosition = j.parent.worldToLocal(v.clone());
-      const q = j.quaternion.clone();
-      j.lookAt(localChildPosition);
-      j.rotateY(Math.PI);
-      j.quaternion.slerp(q, 1 - lerpAlpha);
+  apply(alpha = this.influence) {
+    return this.alignReferenceToJoint({
+      alpha,
+      returnQuaternions: false
     });
   }
-
+  /*
+  getQuaternions
+  same as apply, but instead of setting joints, get the rotated values as quaternions. 
+  */
   getQuaternions() {
-    const result = {};
-    this.references.joints.forEach((j, i) => {
-      let v = this.joints[i + 1] || this.target;
-      const localChildPosition = j.parent.worldToLocal(v.clone());
-      const origiQ = j.quaternion.clone();
-      j.lookAt(localChildPosition);
-      j.rotateY(Math.PI);
-      const newQ = j.quaternion.clone();
-      j.quaternion.copy(origiQ);
-      result[j.name] = newQ;
+    return this.alignReferenceToJoint({
+      alpha: 0,
+      returnQuaternions: true
     });
-    return result;
   }
-
+  /*
+  Solve
+  1. check if target is out of reach
+  2. if yes, arrange joints into a straight line pointing towards target.
+  3. if no, do backward & forward pass until getting close enough.
+  */
   solve() {
-    // get target reference's position
-    this.references.target.getWorldPosition(this.target);
-
     // distance
-    const vector = new Vector3().subVectors(this.target, this.joints[0]);
-    const outOfRange = vector.length() > this.totalLength;
-
+    const fromStartToEnd = new Vector3().subVectors(
+      this.target.position,
+      this.joints[0].position
+    );
+    const outOfRange = fromStartToEnd.length() > this.totalLength;
     if (outOfRange) {
       let a = 0;
-      const v = vector
+      const v = fromStartToEnd
         .clone()
         .normalize()
         .multiplyScalar(this.totalLength);
@@ -120,22 +187,25 @@ export class FABRIK {
           return;
         }
         a += this.lengths[index - 1] / this.totalLength;
-        joint.addVectors(this.joints[0], v.clone().multiplyScalar(a));
+        joint.position.addVectors(
+          this.joints[0].position,
+          v.clone().multiplyScalar(a)
+        );
       });
     } else {
       let count = 0;
-      let diff = this.joints[this.joints.length - 1].distanceTo(this.target);
+      let diff = last(this.joints).position.distanceTo(this.target);
       while (diff > this.tolerance && count < this.maxIterations) {
         this.backward();
         this.forward();
-        diff = this.joints[this.joints.length - 1].distanceTo(this.target);
+        diff = last(this.joints).position.distanceTo(this.target);
         count += 1;
       }
     }
   }
   /*
   Backward
-  1. Set the end (N) joint at the target. 
+  1. Set the end (N) joint at the target.
   2. Find the line between N and N-1.
   3. Move N-1 on the line, and keep the original bone length to N
   4. Find the line between N-1 and N-2.
@@ -159,14 +229,14 @@ export class FABRIK {
   }
   /*
   Forward
-  1. Set the first joint at the origin. 
+  1. Set the first joint at the origin.
   2. Find the line between 0 and 1
   3. Move 1 on the line, and keep the original bone length to 0
   4. Find the line between 1 and 2
   5. Move 2 on the line... (recursively)
   */
   forward() {
-    this.joints[0].copy(this.origin);
+    this.joints[0].alignWithReference();
     const max = this.joints.length - 2;
     for (let i = 0; i <= max; i++) {
       const joint = this.joints[i];
@@ -183,99 +253,18 @@ export class FABRIK {
     }
   }
   /*
-  refresh
+  alignWithReference
   reload the current positions of the joints to vectors
   */
-  refresh() {
-    this.references.joints.forEach((j, i) =>
-      j.getWorldPosition(this.joints[i])
-    );
-    this.references.target.getWorldPosition(this.target);
-    this.origin = this.joints[0].clone();
+  alignAllWithReference() {
+    this.target.alignWithReference();
+    this.joints.forEach(j => j.alignWithReference());
   }
-  /*
-  constrain
-  not sure what it does. 
-  */
-  constrain(calc, cone) {
-    // calc : calculated of result form FABRIK algorithm
-    // line : cone's center axis
-    // cone : the cone matrix
+}
 
-    const line = new Vector3(0, 0, 1).applyMatrix4(cone);
-    const scalar = calc.dot(line) / line.length();
-    const proj = line
-      .clone()
-      .normalize()
-      .multiplyScalar(scalar);
-
-    // get axis that are closest
-    const ups = [
-      new Vector3(0, 1, 0).applyMatrix4(cone),
-      new Vector3(0, -1, 0).applyMatrix4(cone)
-    ];
-    const downs = [
-      new Vector3(1, 0, 0).applyMatrix4(cone),
-      new Vector3(-1, 0, 0).applyMatrix4(cone)
-    ];
-
-    const sortFn = (a, b) => {
-      const _a = a
-        .clone()
-        .sub(calc)
-        .length();
-      const _b = b
-        .clone()
-        .sub(calc)
-        .length();
-      return _a - _b;
-    };
-    const upvec = ups.sort(sortFn)[0];
-    const rightvec = downs.sort(sortFn)[0];
-
-    // get the vector from the projection to the calculated vector
-    const adjust = new Vector3().subVectors(calc, proj);
-    scalar < 0 && proj.negate();
-
-    // get the 2D components
-    const xaspect = adjust.dot(rightvec);
-    const yaspect = adjust.dot(upvec);
-
-    // get the cross section of the cone
-    const left = -proj.length() * Math.tan(this.constraints.left);
-    const right = proj.length() * Math.tan(this.constraints.right);
-    const up = proj.length() * Math.tan(this.constraints.top);
-    const down = -proj.length() * Math.tan(this.constraints.down);
-
-    // find the quadrant
-    const xbound = (xaspect >= 0 && right) || left;
-    const ybound = (yaspect >= 0 && up) || down;
-
-    const f = calc.clone();
-
-    // check if in 2D point lies in the ellipse
-    const ellipse =
-      Math.pow(xaspect, 2) / Math.pow(xbound, 2) +
-      Math.pow(yaspect, 2) / Math.pow(ybound, 2);
-    const inbounds = ellipse <= 1 && scalar >= 0;
-
-    if (!inbounds) {
-      // get the angle of our out of ellipse point
-      const a = Math.atan2(yaspect, xaspect);
-      // find the nearest point
-      const x = xbound * Math.cos(a);
-      const y = ybound * Math.sin(a);
-      // convert back to 3D
-      f.copy(
-        proj
-          .clone()
-          .add(rightvec.clone().multiplyScalar(x))
-          .add(upvec.clone().multiplyScalar(y))
-          .normalize()
-          .multiplyScalar(calc.length())
-      );
-    }
-
-    return f;
-  }
+export default class FABRIK {
+  static Joint = Joint;
+  static Target = Target;
+  static Chain = Chain;
+  static Solver = Solver;
 }
