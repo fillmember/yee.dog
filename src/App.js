@@ -1,14 +1,15 @@
 import React, { Component } from "react";
-import { ThemeProvider } from "styled-components";
+import { Provider as ThemeProvider } from "rebass";
 import DropZone from "react-dropzone";
 import throttle from "lodash/throttle";
-import AppEventHandlers from "./AppEventHandlers.js";
 import FileProcessor from "./FileProcessor.js";
 import Stage3D from "./3D/Stage3D.js";
 import { DogProvider } from "./DogContext.js";
 import Audio from "./Audio.js";
-// import Debug from "./UI/Debug.js";
+import Interface from "./UI/Interface.js";
+import AppEventHandlers from "./AppEventHandlers.js";
 import theme from "./theme.js";
+
 const nostyle = {};
 class App extends Component {
   $canvasContainer = React.createRef();
@@ -86,6 +87,7 @@ class App extends Component {
                 style={{ fontSize: 0, lineHeight: 0 }}
               />
               <Audio />
+              <Interface />
             </div>
           </DropZone>
         </DogProvider>

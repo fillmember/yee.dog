@@ -26,15 +26,15 @@ export default class Dog3D {
       scene,
       mesh: dog,
       chains: {
-        worm: {
-          joints: [BoneID.Spine, BoneID.Shoulder, BoneID.Neck],
-          constraints: [40, 15, 10],
-          influence: 0.1,
-          clipWeight: 1
-        },
+        // worm: {
+        //   joints: [BoneID.Spine, BoneID.Shoulder, BoneID.Neck, BoneID.Head],
+        //   constraints: [40, 15, 10, 5],
+        //   influence: 0.1,
+        //   clipWeight: 1
+        // },
         look: {
-          joints: [BoneID.Neck, BoneID.Head],
-          constraints: [35, 20],
+          joints: [BoneID.Shoulder, BoneID.Neck, BoneID.Head],
+          constraints: [10, 40, 30],
           influence: 0.1,
           clipWeight: 1
         }
@@ -42,10 +42,10 @@ export default class Dog3D {
     });
     // Animation
     this.animation = new Animation(this.dog);
-    this.ik.createAnimationClips();
-    this.ik.createAnimationActions(this.animation);
     this.animation.clips(Clips);
     this.animation.actions(Actions);
+    this.ik.createAnimationClips();
+    this.ik.createAnimationActions(this.animation);
     // Particles
     this.particles = new ParticleSystem({
       confused: {
@@ -125,8 +125,8 @@ export default class Dog3D {
   }
   // Dog Behaviours
   lookAt(vector3) {
-    this.ik.chains.look.target.set(vector3);
-    this.ik.chains.worm.target.set(vector3);
+    this.ik.chains.look && this.ik.chains.look.target.set(vector3);
+    this.ik.chains.worm && this.ik.chains.worm.target.set(vector3);
     const action = this.animation.actions.vleg;
     TweenMax.to(action, 0.8, {
       time: vector3.y < 0 ? 1 : 0
