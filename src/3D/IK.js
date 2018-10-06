@@ -38,7 +38,7 @@ export class DogIK {
         if (isNaN(e[axis])) {
           return;
         }
-        track.values[0] += (e[axis] - track.values[0]) * chain.influence;
+        track.values[0] = e[axis];
         track.values[1] = track.values[0];
       });
     }

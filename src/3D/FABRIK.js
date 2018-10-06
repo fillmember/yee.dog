@@ -44,6 +44,8 @@ class Joint extends Node {
   }
 }
 
+class Target extends Node {}
+
 class Constraint {
   static Z_AXIS = new Vector3(0, 0, 1);
   static dir = new Vector3();
@@ -63,8 +65,6 @@ class Constraint {
     }
   }
 }
-
-class Target extends Node {}
 
 class Solver {
   constructor(chains) {
@@ -123,6 +123,7 @@ class Chain {
       originalQuaternions.push(ref.quaternion.clone());
       ref.lookAt(v.position);
       Constraint.apply(this.joints[i]);
+      ref.quaternion.slerp(originalQuaternions[i], 1 - this.influence);
       if (returnQuaternions) {
         result[ref.name] = ref.quaternion.clone();
       }
