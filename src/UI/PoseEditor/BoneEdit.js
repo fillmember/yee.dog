@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, Box, Heading, Text } from "rebass";
+import { Flex, Box, Heading } from "rebass";
 
 const NumericInput = ({ value, object, property, update }) => (
   <input
@@ -15,11 +15,11 @@ const NumericInput = ({ value, object, property, update }) => (
 
 export default class BoneEdit extends React.Component {
   render() {
-    const { title, bone, dog, update } = this.props;
+    const { title, bone, update } = this.props;
     return (
       <Box width={1 / 7} mb={1}>
         <Heading fontSize={"10px"} fontFamily="mono">
-          {this.props.title}
+          {title}
         </Heading>
         <Flex
           css={`
