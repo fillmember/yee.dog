@@ -37,7 +37,7 @@ export class Animation {
       }, [])
     );
     this.mesh.animations.push(clip);
-    this.actions({
+    this.makeActions({
       reset: {
         weight: 0,
         paused: true,
@@ -45,8 +45,12 @@ export class Animation {
         zeroSlopeAtStart: false
       }
     });
+    return {
+      clip,
+      action: this.actions.reset
+    };
   }
-  clips(input) {
+  makeClips(input) {
     const keys = Object.keys(input);
     const durations = keys.map(key => {
       const tracks = input[key];
@@ -79,7 +83,7 @@ export class Animation {
     const name = this.mesh.skeleton.bones[boneIndex].name;
     return Animation.path(name, property);
   }
-  actions(input) {
+  makeActions(input) {
     this.actions = this.actions || {};
     Object.keys(input).forEach(key => {
       const action = this.mixer.clipAction(key);

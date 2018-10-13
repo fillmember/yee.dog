@@ -42,8 +42,8 @@ export default class Dog3D {
     });
     // Animation
     this.animation = new Animation(this.dog);
-    this.animation.clips(Clips);
-    this.animation.actions(Actions);
+    this.animation.makeClips(Clips);
+    this.animation.makeActions(Actions);
     this.ik.createAnimationClips();
     this.ik.createAnimationActions(this.animation);
     // Particles

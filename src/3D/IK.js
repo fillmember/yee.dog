@@ -75,7 +75,7 @@ export class DogIK {
   }
   createAnimationActions(animation) {
     Object.keys(this.clips).forEach(key => {
-      animation.actions({
+      animation.makeActions({
         [key]: {
           zeroSlopeAtEnd: false,
           zeroSlopeAtStart: false,
