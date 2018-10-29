@@ -104,7 +104,7 @@ export default class Dog3D {
           rate: 0,
           center: dog.skeleton.bones[BoneID.JawU_1],
           extend: [0.4, 0.1, 0.5],
-          offset: [0, -0.1, 1],
+          offset: [0, -0.1, 0.9],
           sprite: [0, 1],
           velocity: () => [
             Math.random() > 0.5 ? -0.03 : 0.03,
@@ -119,9 +119,9 @@ export default class Dog3D {
     //
   }
   update(dt) {
+    this.particles.update(dt);
     this.ik.update(dt);
     this.animation.update(dt);
-    this.particles.update(dt);
   }
   // Dog Behaviours
   lookAt(vector3) {
