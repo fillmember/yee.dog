@@ -131,11 +131,15 @@ export default function() {
     });
     //
     const wormAction = this.state.stage3D.dog.animation.actions.worm;
-    wormAction.weight = bool ? 0 : 1;
+    if (wormAction) {
+      wormAction.weight = bool ? 0 : 1;
+    }
+    const wormIK = this.state.stage3D.dog.ik.chains.worm;
+    if (wormIK) {
+      wormIK.influence = bool ? 0 : 0.1;
+    }
     const vlegAction = this.state.stage3D.dog.animation.actions.vleg;
     vlegAction.weight = bool ? 0.1 : 1;
-    const wormIK = this.state.stage3D.dog.ik.chains.worm;
-    wormIK.influence = bool ? 0 : 0.1;
   };
   this.surprise = bool => {
     TweenMax.to(
