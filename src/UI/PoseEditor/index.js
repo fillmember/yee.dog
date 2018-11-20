@@ -5,15 +5,15 @@ import { DogPetter } from "../../DogContext";
 import BoneID from "../../3D/BoneID.js";
 import BoneEdit from "./BoneEdit.js";
 
-const noop = n => n;
-const float1 = n => Math.round(n * 10) / 10;
-const radToDeg = n => float1(Math3.radToDeg(n));
-const degToRad = n => Math3.degToRad(n);
 class FloatInput extends React.Component {
+  static noop = n => n;
+  static pf = (n, p = 10) => Math.round(n * p) / p;
+  static radToDeg = n => FloatInput.pf(Math3.radToDeg(n), 100);
+  static degToRad = n => FloatInput.pf(Math3.degToRad(n), 100);
   static defaultProps = {
-    getter: float1,
-    setter: noop,
-    update: noop
+    getter: FloatInput.pf,
+    setter: FloatInput.noop,
+    update: FloatInput.noop
   };
   static _target = null;
   static globalMouseMove = evt => {
@@ -97,7 +97,6 @@ class ClipEditor extends React.Component {
     const { clip, dog, update } = this.props;
     const { selectedBoneIndex } = this.state;
     const selectedBone = dog.dog.skeleton.bones[selectedBoneIndex];
-    clip.tracks.forEach(t => {});
     return (
       <Box>
         <Flex>
@@ -133,8 +132,8 @@ class ClipEditor extends React.Component {
             <FloatInput
               update={update}
               object={selectedBone.rotation}
-              getter={radToDeg}
-              setter={degToRad}
+              getter={FloatInput.radToDeg}
+              setter={FloatInput.degToRad}
               property={"x"}
             />
           </Box>
@@ -152,8 +151,8 @@ class ClipEditor extends React.Component {
             <FloatInput
               update={update}
               object={selectedBone.rotation}
-              getter={radToDeg}
-              setter={degToRad}
+              getter={FloatInput.radToDeg}
+              setter={FloatInput.degToRad}
               property={"y"}
             />
           </Box>
@@ -171,8 +170,8 @@ class ClipEditor extends React.Component {
             <FloatInput
               update={update}
               object={selectedBone.rotation}
-              getter={radToDeg}
-              setter={degToRad}
+              getter={FloatInput.radToDeg}
+              setter={FloatInput.degToRad}
               property={"z"}
             />
           </Box>
@@ -195,41 +194,19 @@ export default class PoseEditor extends React.Component {
     dog.animation.actions.reset.weight = 1;
     dog.animation.actions.reset.weight = 0;
     stage.orbitcontrols.autoRotate = false;
+    stage.orbitcontrols.enablePan = true;
+    stage.orbitcontrols.enableZoom = true;
     update();
   }
   createNewClip({ stage, dog, update }) {
     const clipName = prompt("new clip name", "untitled_clip");
     this.resetDogPose({ stage, dog, update });
     dog.animation.update();
-    const clip = new AnimationClip(
+    const { clip, action } = dog.animation.createResetClip({
       clipName,
-      1,
-      dog.animation.mesh.skeleton.bones.reduce((tracks, bone) => {
-        const xyz = ["x", "y", "z"];
-        xyz.forEach(axis => {
-          const ts = [0, 1];
-          const rname = `${bone.name}.rotation[${axis}]`;
-          const rs = new Array(2).fill(bone.rotation[axis]);
-          const rtrack = new NumberKeyframeTrack(rname, ts, rs);
-          const pname = `${bone.name}.position[${axis}]`;
-          const ps = new Array(2).fill(bone.position[axis]);
-          const ptrack = new NumberKeyframeTrack(pname, ts, ps);
-          tracks.push(rtrack);
-          tracks.push(ptrack);
-        });
-        return tracks;
-      }, [])
-    );
-    dog.animation.mesh.animations.push(clip);
-    dog.animation.makeActions({
-      [clipName]: {
-        weight: 1,
-        paused: false,
-        zeroSlopeAtEnd: false,
-        zeroSlopeAtStart: false
-      }
+      initialWeight: 1,
+      paused: false
     });
-    const action = dog.animation.actions[clipName];
     this.setState({
       clip,
       action

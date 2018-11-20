@@ -1,4 +1,5 @@
 import { AnimationMixer, AnimationClip, NumberKeyframeTrack } from "three";
+import BoneID from "./BoneID.js";
 
 export class Animation {
   static path = (name, property) => `${name}.${property}`;
@@ -16,38 +17,81 @@ export class Animation {
     this.mixer = new AnimationMixer(mesh);
     this.createResetClip();
   }
-  createResetClip() {
+  path(boneIndex, property) {
+    const name = this.mesh.skeleton.bones[boneIndex].name;
+    return Animation.path(name, property);
+  }
+  update(dt) {
+    this.mixer.update(dt);
+  }
+  excludeBones(boneID) {
+    const {
+      Tail_3,
+      JawU_1,
+      JawL_1,
+      EarL_1,
+      EarR_1,
+      ArmL_3,
+      ArmR_3,
+      LegL_4,
+      LegR_4
+    } = BoneID;
+    return (
+      [
+        Tail_3,
+        JawU_1,
+        JawL_1,
+        EarL_1,
+        EarR_1,
+        ArmL_3,
+        ArmR_3,
+        LegL_4,
+        LegR_4
+      ].indexOf(boneID) === -1
+    );
+  }
+  createResetClip({
+    clipName = "reset",
+    initialWeight = 0,
+    paused = true
+  } = {}) {
     const clip = new AnimationClip(
-      "reset",
+      clipName,
       1,
-      this.mesh.skeleton.bones.reduce((tracks, bone) => {
-        const xyz = ["x", "y", "z"];
-        xyz.forEach(axis => {
-          const ts = [0, 1];
-          const rname = `${bone.name}.rotation[${axis}]`;
-          const rs = new Array(2).fill(bone.rotation[axis]);
-          const rtrack = new NumberKeyframeTrack(rname, ts, rs);
-          const pname = `${bone.name}.position[${axis}]`;
-          const ps = new Array(2).fill(bone.position[axis]);
-          const ptrack = new NumberKeyframeTrack(pname, ts, ps);
-          tracks.push(rtrack);
-          tracks.push(ptrack);
-        });
-        return tracks;
-      }, [])
+      this.mesh.skeleton.bones
+        .filter(this.excludeBones)
+        .reduce((tracks, bone) => {
+          const xyz = ["x", "y", "z"];
+          xyz.forEach(axis => {
+            const ts = [0];
+            const rname = `${bone.name}.rotation[${axis}]`;
+            const rs = new Array(1).fill(bone.rotation[axis]);
+            const rtrack = new NumberKeyframeTrack(rname, ts, rs);
+            const pname = `${bone.name}.position[${axis}]`;
+            const ps = new Array(1).fill(bone.position[axis]);
+            const ptrack = new NumberKeyframeTrack(pname, ts, ps);
+            const sname = `${bone.name}.scale[${axis}]`;
+            const ss = new Array(1).fill(bone.scale[axis]);
+            const strack = new NumberKeyframeTrack(sname, ts, ss);
+            tracks.push(rtrack);
+            tracks.push(ptrack);
+            tracks.push(strack);
+          });
+          return tracks;
+        }, [])
     );
     this.mesh.animations.push(clip);
     this.makeActions({
-      reset: {
-        weight: 0,
-        paused: true,
+      [clipName]: {
+        weight: initialWeight,
+        paused: paused,
         zeroSlopeAtEnd: false,
         zeroSlopeAtStart: false
       }
     });
     return {
       clip,
-      action: this.actions.reset
+      action: this.actions[clipName]
     };
   }
   makeClips(input) {
@@ -79,10 +123,6 @@ export class Animation {
       )
     );
   }
-  path(boneIndex, property) {
-    const name = this.mesh.skeleton.bones[boneIndex].name;
-    return Animation.path(name, property);
-  }
   makeActions(input) {
     this.actions = this.actions || {};
     Object.keys(input).forEach(key => {
@@ -92,8 +132,5 @@ export class Animation {
       action.play();
       this.actions[key] = action;
     });
-  }
-  update(dt) {
-    this.mixer.update(dt);
   }
 }
