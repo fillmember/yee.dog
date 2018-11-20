@@ -6,7 +6,6 @@ import FileProcessor from "./FileProcessor.js";
 import Stage3D from "./3D/Stage3D.js";
 import { DogProvider } from "./DogContext.js";
 import Audio from "./Audio.js";
-import Interface from "./UI/Interface.js";
 import AppEventHandlers from "./AppEventHandlers.js";
 import theme from "./theme.js";
 
@@ -47,16 +46,14 @@ class App extends Component {
     //
     AppEventHandlers.apply(this);
     //
-    this.state.stage3D
-      .load(process.env.PUBLIC_URL + "/model/wt.glb")
-      .then(() => {
-        this.$canvasContainer.current.appendChild(
-          this.state.stage3D.renderer.domElement
-        );
-        this.state.stage3D.start();
-        this.bind();
-        this.updateProvider({ type: "loaded" });
-      });
+    this.state.stage3D.load("/static/model/wt.glb").then(() => {
+      this.$canvasContainer.current.appendChild(
+        this.state.stage3D.renderer.domElement
+      );
+      this.state.stage3D.start();
+      this.bind();
+      this.updateProvider({ type: "loaded" });
+    });
   }
   componentWillUnmount() {
     this.unbind();
@@ -87,7 +84,7 @@ class App extends Component {
                 style={{ fontSize: 0, lineHeight: 0 }}
               />
               <Audio />
-              <Interface />
+              {this.props.children}
             </div>
           </DropZone>
         </DogProvider>

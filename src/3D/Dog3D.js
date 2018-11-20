@@ -20,6 +20,8 @@ export default class Dog3D {
     });
     dog.material = mat;
     dog.position.y = -0.4;
+    dog.skeleton.bones[BoneID.EarL_0].scale.set(1, 1.3, 1.1);
+    dog.skeleton.bones[BoneID.EarR_0].scale.set(1, 1.3, 1.1);
     // IK
     this.ik = new DogIK();
     this.ik.init({

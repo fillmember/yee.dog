@@ -119,6 +119,7 @@ class ClipEditor extends React.Component {
           </Box>
           <Box width={2 / 5}>position</Box>
           <Box width={2 / 5}>rotation</Box>
+          <Box width={2 / 5}>scale</Box>
         </Flex>
         <Flex>
           <Box width={1 / 5}>x</Box>
@@ -133,6 +134,15 @@ class ClipEditor extends React.Component {
             <FloatInput
               update={update}
               object={selectedBone.rotation}
+              getter={radToDeg}
+              setter={degToRad}
+              property={"x"}
+            />
+          </Box>
+          <Box width={2 / 5}>
+            <FloatInput
+              update={update}
+              object={selectedBone.scale}
               getter={radToDeg}
               setter={degToRad}
               property={"x"}
@@ -157,6 +167,15 @@ class ClipEditor extends React.Component {
               property={"y"}
             />
           </Box>
+          <Box width={2 / 5}>
+            <FloatInput
+              update={update}
+              object={selectedBone.scale}
+              getter={radToDeg}
+              setter={degToRad}
+              property={"y"}
+            />
+          </Box>
         </Flex>
         <Flex>
           <Box width={1 / 5}>z</Box>
@@ -171,6 +190,15 @@ class ClipEditor extends React.Component {
             <FloatInput
               update={update}
               object={selectedBone.rotation}
+              getter={radToDeg}
+              setter={degToRad}
+              property={"z"}
+            />
+          </Box>
+          <Box width={2 / 5}>
+            <FloatInput
+              update={update}
+              object={selectedBone.scale}
               getter={radToDeg}
               setter={degToRad}
               property={"z"}
