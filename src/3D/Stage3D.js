@@ -78,7 +78,7 @@ export default class Stage3D {
           this.scene.add(this.camera);
           //
           this.dog = new Dog({
-            obj3d: this.scene.getObjectByName("Mesh"),
+            obj3d: this.scene.getObjectByName("Wurstgang"),
             scene: this.scene
           });
           //

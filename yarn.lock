@@ -1963,6 +1963,12 @@ fbjs@^0.8.16, fbjs@^0.8.5:
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.18"
 
+fbx2gltf@^0.9.5:
+  version "0.9.5"
+  resolved "https://registry.yarnpkg.com/fbx2gltf/-/fbx2gltf-0.9.5.tgz#3a542ede377695c13a07b4cd86fc8d2de6e48587"
+  dependencies:
+    rimraf "^2.6.2"
+
 figgy-pudding@^3.1.0, figgy-pudding@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/figgy-pudding/-/figgy-pudding-3.5.1.tgz#862470112901c727a0e495a80744bd5baa1d6790"

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@zeit/next-css": "^1.0.1",
+    "fbx2gltf": "^0.9.5",
     "gsap": "^2.0.2",
     "lodash": "^4.17.11",
     "next": "^7.0.2",
@@ -21,16 +22,12 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "export": "next export"
+    "export": "next export",
+    "gltf": "fbx2gltf -vb ./design/wurstgang.fbx --output ./public/model/wt"
   },
   "devDependencies": {
     "babel-plugin-styled-components": "^1.7.1",
     "prettier": "^1.14.2"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"]
 }
