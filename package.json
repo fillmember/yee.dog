@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "fbx2gltf": "^0.9.5",
     "gsap": "^2.0.2",
     "lodash": "^4.17.11",
     "react": "^16.5.1",
@@ -16,6 +17,7 @@
     "three-orbit-controls": "^82.1.0"
   },
   "scripts": {
+    "gltf": "fbx2gltf -vb ./design/wurstgang.fbx --output ./public/model/wt",
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
@@ -25,10 +27,5 @@
     "babel-plugin-styled-components": "^1.7.1",
     "prettier": "^1.14.2"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"]
 }

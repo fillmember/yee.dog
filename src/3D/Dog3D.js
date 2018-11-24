@@ -19,7 +19,6 @@ export default class Dog3D {
       emissiveMap: dog.material.map
     });
     dog.material = mat;
-    dog.position.y = -0.4;
     // IK
     this.ik = new DogIK();
     this.ik.init({
