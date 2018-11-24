@@ -22,7 +22,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "export": "next export",
+    "export": "npm run build && next export",
     "gltf": "fbx2gltf -vb ./design/wurstgang.fbx --output ./public/model/wt"
   },
   "devDependencies": {
