@@ -23,7 +23,7 @@
     "build": "next build",
     "start": "next start",
     "export": "npm run build && next export",
-    "gltf": "fbx2gltf -vb ./design/wurstgang.fbx --output ./public/model/wt"
+    "gltf": "fbx2gltf -vb ./design/wurstgang.fbx --output ./static/model/wt"
   },
   "devDependencies": {
     "babel-plugin-styled-components": "^1.7.1",
