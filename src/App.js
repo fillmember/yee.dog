@@ -46,7 +46,7 @@ class App extends Component {
     //
     AppEventHandlers.apply(this);
     //
-    this.state.stage3D.load("/static/model/wt.glb").then(() => {
+    this.state.stage3D.load("/static/model/wt").then(() => {
       this.$canvasContainer.current.appendChild(
         this.state.stage3D.renderer.domElement
       );
