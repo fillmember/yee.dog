@@ -7,8 +7,11 @@ import theme from "./theme.js";
 
 class App extends Component {
   $canvasContainer = React.createRef();
-  componentDidMount() {
+  constructor(props) {
+    super(props);
     AppEventHandlers.apply(this);
+  }
+  componentDidMount() {
     DogStore.load("/static/model/wt").then(() => {
       this.$canvasContainer.current.appendChild(
         DogStore.stage3D.renderer.domElement
@@ -25,10 +28,8 @@ class App extends Component {
         <DropZone
           onDragEnter={this.onDragEnter}
           onDragOver={this.onDragOver}
-          onDragStart={this.onDragStart}
           onDrop={this.onDrop}
           onDragLeave={this.onDragLeave}
-          getDataTransferItems={this.getDataTransferItems}
           disableClick
           disablePreview
           activeStyle={{}}
