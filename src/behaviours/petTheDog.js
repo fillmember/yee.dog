@@ -25,7 +25,7 @@ export default class PetTheDog extends DoggoBehaviour {
     this.off("update", this.onUpdate);
   }
   transitionDuration = 0.5;
-  targetWeight = 1;
+  targetWeight = 0.6;
   onUpdate = throttle(() => {
     const action = DogStore.dog.animation.actions[this.action];
     if (action && this.bone) {

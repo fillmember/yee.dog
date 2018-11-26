@@ -1,7 +1,7 @@
 import { TweenMax, Power2 } from "gsap";
 import debounce from "lodash/debounce";
 import DoggoBehaviour from "./DoggoBehaviour";
-import { Clips, Actions } from "../3D/AnimationData";
+import { Clips, Actions } from "../data/animations";
 
 class Vleg extends DoggoBehaviour {
   onDogReady = dog => {

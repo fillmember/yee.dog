@@ -31,4 +31,7 @@ export default class DoggoBehaviour {
   onDisabled() {}
   onDogReady() {}
   onRemove() {}
+  renderUI() {
+    return false;
+  }
 }

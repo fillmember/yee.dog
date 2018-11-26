@@ -7,18 +7,8 @@ import {
   PerspectiveCamera,
   EventDispatcher
 } from "three";
-import MakeOrbitControls from "three-orbit-controls";
+import ThreeOrbitControls from "three-orbit-controls";
 import DoggoBehaviour from "./DoggoBehaviour";
-
-const THREEOrbitControls = MakeOrbitControls({
-  MOUSE,
-  Quaternion,
-  Spherical,
-  Vector3,
-  Vector2,
-  PerspectiveCamera,
-  EventDispatcher
-});
 
 class OrbitControl extends DoggoBehaviour {
   static defaultProps = {
@@ -33,7 +23,15 @@ class OrbitControl extends DoggoBehaviour {
   constructor() {
     super();
     this.on("update", this.onUpdate);
-    this.orbitcontrols = new THREEOrbitControls(
+    this.orbitcontrols = new (ThreeOrbitControls({
+      MOUSE,
+      Quaternion,
+      Spherical,
+      Vector3,
+      Vector2,
+      PerspectiveCamera,
+      EventDispatcher
+    }))(
       this.DogStore.stage3D.camera,
       this.DogStore.stage3D.renderer.domElement
     );

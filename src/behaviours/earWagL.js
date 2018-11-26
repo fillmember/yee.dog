@@ -1,5 +1,5 @@
 import DoggoBehaviour from "./DoggoBehaviour";
-import { Clips, Actions } from "../3D/AnimationData";
+import { Clips, Actions } from "../data/animations";
 
 class earWagL extends DoggoBehaviour {
   onDogReady = dog => {

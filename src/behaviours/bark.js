@@ -1,6 +1,6 @@
 import { TweenMax, Power2 } from "gsap";
 import DoggoBehaviour from "./DoggoBehaviour";
-import { Clips, Actions } from "../3D/AnimationData";
+import { Clips, Actions } from "../data/animations";
 
 class Bark extends DoggoBehaviour {
   static EVENT_BARK_START = "EVENT_BARK_START";

@@ -1,4 +1,5 @@
-import DoggoBehaviour from "./DoggoBehaviour.js";
+import DoggoBehaviour from "./DoggoBehaviour";
+import { InReact } from "./DoggoBehaviourReact";
 import DogStore from "../DogStore";
 import { DogIK } from "../3D/IK";
 
@@ -19,3 +20,8 @@ export default class BaseIK extends DoggoBehaviour {
     this.controller.update(dt);
   };
 }
+
+export const BehaviourBaseIKInReact = InReact(BaseIK, {
+  chains: require("../data/ik-chains.js").default
+});
+BehaviourBaseIKInReact.displayName = "BehaviourBaseIKInReact";
