@@ -1,4 +1,4 @@
-import BoneID from "./BoneID.js";
+import BoneID from "../3D/BoneID.js";
 import { Math as ThreeMath, LoopPingPong, InterpolateSmooth } from "three";
 
 const toRad = ThreeMath.degToRad;
