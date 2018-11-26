@@ -5,6 +5,17 @@ import { ParticleTextureMap01 } from "./3D/ParticleTextureMap.js";
 import DogStore from "./DogStore.js";
 
 export default function() {
+  // Helper Functions
+  this.transformMouseCoordinate = ({ offsetX, offsetY }) => {
+    const renderer = DogStore.stage3D.renderer;
+    if (renderer) {
+      const canvas = renderer.domElement;
+      const x = (offsetX / canvas.offsetWidth) * 2 - 1;
+      const y = -(offsetY / canvas.offsetHeight) * 2 + 1;
+      return { x, y };
+    }
+    return { x: -999, y: -999 };
+  };
   // Bind & Unbind
   this.bind = () => {
     window.addEventListener("resize", this.onResize);
@@ -37,12 +48,22 @@ export default function() {
       height: window.innerHeight
     });
   }, 1000 / 10);
+  /**
+   *
+   * Key Events
+   *
+   */
   this.onKeyDown = evt => {
     DogStore.emit(DogStore.Event.key_down, evt);
   };
   this.onKeyUp = evt => {
     DogStore.emit(DogStore.Event.key_up, evt);
   };
+  /**
+   *
+   * Mouse Events
+   *
+   */
   this.onMouseMove = throttle(evt => {
     DogStore.emit(DogStore.Event.pointer_move, evt);
   }, 1000 / 40);
@@ -52,120 +73,36 @@ export default function() {
   this.onMouseUp = evt => {
     DogStore.emit(DogStore.Event.pointer_up, evt);
   };
+  /**
+   *
+   * Drag Events
+   *
+   */
+  this.onDragEnter = evt => {
+    DogStore.emit("drag_enter", evt);
+    // this.openMouth(true);
+    // this.dragZoom(true);
+    // this.surprise(true);
+    // TweenMax.delayedCall(1.2, () => this.surprise(false));
+  };
+  // like mousemove
+  this.onDragOver = throttle(evt => {
+    DogStore.emit("drag_over", evt);
+    // const mouse = this.transformMouseCoordinate({
+    //   offsetX: evt.nativeEvent.offsetX * 1.8,
+    //   offsetY: evt.nativeEvent.offsetY * 1.8
+    // });
+    // mouse.y += 0.3;
+    // DogStore.stage3D.updatePointer(mouse);
+  }, 1000 / 30);
+  this.onDrop = files => {
+    DogStore.emit("drop", files);
+  };
+  this.onDragLeave = () => {
+    DogStore.emit("drag_leave");
+  };
 }
 
-// export default function() {
-//   this.events = new EventEmitter();
-//   // Helper Functions
-//   this.transformMouseCoordinate = ({ offsetX, offsetY }) => {
-//     const renderer = DogStore.stage3D.renderer;
-//     if (renderer) {
-//       const canvas = renderer.domElement;
-//       const x = (offsetX / canvas.offsetWidth) * 2 - 1;
-//       const y = -(offsetY / canvas.offsetHeight) * 2 + 1;
-//       return { x, y };
-//     }
-//     return { x: -999, y: -999 };
-//   };
-//   this.bark = bool => {
-//     DogStore.stage3D.dog && DogStore.stage3D.dog.openMouth(bool);
-//     this.audio.bark(bool);
-//   };
-//   this.openMouth = bool => {
-//     DogStore.stage3D.dog && DogStore.stage3D.dog.openMouth(bool);
-//   };
-//   // Bind & Unbind
-//   this.bind = () => {
-//     window.addEventListener("resize", this.onResize);
-//     window.addEventListener("keydown", this.onKeyDown);
-//     window.addEventListener("keyup", this.onKeyUp);
-//     const canvas = DogStore.stage3D.renderer.domElement;
-//     canvas.addEventListener("mousemove", this.onMouseMove);
-//     canvas.addEventListener("mousedown", this.onMouseDown);
-//     canvas.addEventListener("mouseup", this.onMouseUp);
-//     canvas.addEventListener("touchmove", this.onMouseMove);
-//     canvas.addEventListener("touchstart", this.onMouseDown);
-//     canvas.addEventListener("touchend", this.onMouseUp);
-//     //
-//     // Inter-module communication
-//     //
-//     // this.files.addEventListener("process", this.audio.onFileProcess);
-//     // this.files.addEventListener("start", this.audio.onFileStart);
-//     // this.files.addEventListener("process", DogStore.stage3D.dog.onFileProcess);
-//     // this.files.addEventListener("start", DogStore.stage3D.dog.onFileStart);
-//   };
-//   this.unbind = () => {
-//     window.removeEventListener("resize", this.onResize);
-//     window.removeEventListener("keydown", this.onKeyDown);
-//     window.removeEventListener("keyup", this.onKeyUp);
-//     const canvas = DogStore.stage3D.renderer.domElement;
-//     canvas.removeEventListener("mousemove", this.onMouseMove);
-//     canvas.removeEventListener("mousedown", this.onMouseDown);
-//     canvas.removeEventListener("mouseup", this.onMouseUp);
-//     canvas.removeEventListener("touchmove", this.onMouseMove);
-//     canvas.removeEventListener("touchstart", this.onMouseDown);
-//     canvas.removeEventListener("touchend", this.onMouseUp);
-//   };
-//   // Event Handlers
-//   this.onResize = debounce(() => {
-//     DogStore.events.emit(DogStore.Event.Resize);
-//     DogStore.stage3D.resize({
-//       width: window.innerWidth,
-//       height: window.innerHeight
-//     });
-//   }, 500);
-//   //
-//   const pressedKeys = {};
-//   this.onKeyDown = evt => {
-//     switch (evt.keyCode) {
-//       case 32:
-//         if (pressedKeys[32] === true) {
-//           return;
-//         }
-//         pressedKeys[32] = true;
-//         this.bark(true);
-//         break;
-//       default:
-//         break;
-//     }
-//   };
-//   this.onKeyUp = evt => {
-//     switch (evt.keyCode) {
-//       case 32:
-//         pressedKeys[32] = false;
-//         this.bark(false);
-//         break;
-//       default:
-//         break;
-//     }
-//   };
-//   //
-//   this.onMouseMove = evt => {
-//     const renderer = DogStore.stage3D.renderer;
-//     if (renderer) {
-//       const canvas = renderer.domElement;
-//       const x = (evt.offsetX / canvas.offsetWidth) * 2 - 1;
-//       const y = -(evt.offsetY / canvas.offsetHeight) * 2 + 1;
-//       DogStore.stage3D.updatePointer({ x, y });
-//     }
-//   };
-//   this.onMouseDown = evt => {
-//     this.onMouseMove(evt);
-//     // this.bark(true);
-//   };
-//   this.onMouseUp = evt => {
-//     this.onMouseMove(evt);
-//     // this.bark(false);
-//   };
-//   //
-//   this.onDragOver = evt => {
-//     const mouse = this.transformMouseCoordinate({
-//       offsetX: evt.nativeEvent.offsetX * 1.8,
-//       offsetY: evt.nativeEvent.offsetY * 1.8
-//     });
-//     mouse.y += 0.3;
-//     DogStore.stage3D.updatePointer(mouse);
-//   };
 //   this.dragZoom = bool => {
 //     const duration = 0.5;
 //     const camera = DogStore.stage3D.camera;
@@ -193,24 +130,6 @@ export default function() {
 //     }
 //     const vlegAction = DogStore.stage3D.dog.animation.actions.vleg;
 //     vlegAction.weight = bool ? 0.1 : 1;
-//   };
-//   this.surprise = bool => {
-//     TweenMax.to(
-//       DogStore.stage3D.dog.particles.systems.surprise.config.emitter,
-//       bool ? 0.5 : 0,
-//       {
-//         rate: bool ? 2 : 0
-//       }
-//     );
-//   };
-//   this.confused = bool => {
-//     TweenMax.to(
-//       DogStore.stage3D.dog.particles.systems.confused.config.emitter,
-//       0,
-//       {
-//         rate: bool ? 4 : 0
-//       }
-//     );
 //   };
 //   this.onDragEnter = () => {
 //     this.openMouth(true);
