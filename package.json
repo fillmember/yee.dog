@@ -3,13 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@zeit/next-css": "^1.0.1",
     "fbx2gltf": "^0.9.5",
     "gsap": "^2.0.2",
     "lodash": "^4.17.11",
-    "react": "^16.5.1",
-    "react-dom": "^16.5.1",
+    "mobx": "^5.6.0",
+    "mobx-react": "^5.4.2",
+    "next": "^7.0.2",
+    "next-images": "^1.0.1",
+    "react": "^16.7.0-alpha.2",
+    "react-dom": "^16.7.0-alpha.2",
     "react-dropzone": "^5.1.0",
-    "react-scripts": "2.0.4",
+    "react-use": "^4.10.0",
     "rebass": "2.3.4",
     "styled-components": "^3.4.9",
     "three": "^0.96.0",
@@ -17,15 +22,21 @@
     "three-orbit-controls": "^82.1.0"
   },
   "scripts": {
-    "gltf": "fbx2gltf -vb ./design/wurstgang.fbx --output ./public/model/wt",
-    "dev": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "export": "npm run build && next export",
+    "gltf": "fbx2gltf -vb ./design/wurstgang.fbx --output ./static/model/wt"
   },
   "devDependencies": {
     "babel-plugin-styled-components": "^1.7.1",
+    "babel-preset-mobx": "^2.0.0",
     "prettier": "^1.14.2"
   },
-  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"]
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

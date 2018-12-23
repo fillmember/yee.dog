@@ -1,6 +1,5 @@
 import React from "react";
 import { TweenMax } from "gsap";
-import FileProcessor from "./FileProcessor.js";
 
 export default class Audio {
   static MODE_SHORT = "MODE_SHORT";
@@ -77,15 +76,6 @@ export default class Audio {
     };
     this.fileReader.readAsArrayBuffer(file);
   }
-  onFileProcess = (file, type) => {
-    if (type === FileProcessor.TYPE_AUDIO) {
-      if (this.context === null) {
-        this.createAudioContext();
-      }
-      this.decodeAudioFile(file);
-    }
-  };
-  onFileStart = () => {};
   startBufferSourceNode(node, fadeDuration = 0) {
     return new Promise((resolve, reject) => {
       try {
@@ -120,6 +110,14 @@ export default class Audio {
     this.nodes.source = this.context.createBufferSource();
     this.nodes.source.buffer = this.audioBuffer;
     this.nodes.source.connect(this.nodes.analyser);
+  }
+  // public methods
+  use(file, mode = Audio.MODE_SHORT) {
+    if (this.context === null) {
+      this.createAudioContext();
+    }
+    this.decodeAudioFile(file);
+    this.mode = mode;
   }
   bark(bool) {
     if (this.context === null) {

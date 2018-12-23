@@ -1,5 +1,4 @@
 // ref: http://wiki.roblox.com/index.php?title=Inverse_kinematics#FABRIK
-// import Debug3 from "./DebugDraw.js";
 import { Vector3, Object3D, Math as Math3 } from "three";
 
 const last = arr => arr[arr.length - 1];
