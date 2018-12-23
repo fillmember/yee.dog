@@ -86,15 +86,9 @@ export default function() {
     // TweenMax.delayedCall(1.2, () => this.surprise(false));
   };
   // like mousemove
-  this.onDragOver = throttle(evt => {
+  this.onDragOver = evt => {
     DogStore.emit("drag_over", evt);
-    // const mouse = this.transformMouseCoordinate({
-    //   offsetX: evt.nativeEvent.offsetX * 1.8,
-    //   offsetY: evt.nativeEvent.offsetY * 1.8
-    // });
-    // mouse.y += 0.3;
-    // DogStore.stage3D.updatePointer(mouse);
-  }, 1000 / 30);
+  };
   this.onDrop = files => {
     DogStore.emit("drop", files);
   };

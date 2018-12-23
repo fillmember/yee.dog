@@ -6,7 +6,7 @@ import BoneID from "../3D/BoneID";
 class ParticleSystem extends DoggoBehaviour {
   onDogReady(dog) {
     const scene = this.DogStore.stage3D.scene;
-    this.particles = new ParticleSystem3D({
+    this.config = {
       confused: {
         max: 16,
         parent: scene,
@@ -74,7 +74,8 @@ class ParticleSystem extends DoggoBehaviour {
           lifespan: 0.7
         }
       }
-    });
+    };
+    this.particles = new ParticleSystem3D(this.config);
     this.on("update", this.onUpdate);
   }
   onUpdate = dt => {

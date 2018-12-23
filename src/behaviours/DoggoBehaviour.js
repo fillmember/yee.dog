@@ -34,4 +34,24 @@ export default class DoggoBehaviour {
   renderUI() {
     return false;
   }
+  //
+  getBehavioursByType(type) {
+    const resultArray = this.DogStore.behaviours.filter(
+      b => b.constructor === type
+    );
+    return resultArray;
+  }
+  getFirstBehaviourByType(type) {
+    const resultArray = this.getBehavioursByType(type);
+    return resultArray.length > 0 ? resultArray[0] : null;
+  }
+  require(type) {
+    const result = this.getFirstBehaviourByType(type);
+    if (!result) {
+      throw new Error(
+        `DoggoBehaviour ${this.constructor.name} requires ${type}. `
+      );
+    }
+    return result;
+  }
 }

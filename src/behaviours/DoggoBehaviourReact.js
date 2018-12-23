@@ -1,11 +1,13 @@
 import React from "react";
+import { observer } from "mobx-react";
+import { observable } from "mobx";
 import isEqual from "lodash/isEqual";
 import DogStore from "../DogStore";
 
+@observer
 export default class DoggoBehaviourReact extends React.Component {
-  state = {
-    behaviour: null
-  };
+  @observable
+  behaviour = null;
   getArguments(obj = this.props) {
     const { value, ...others } = obj;
     return others;
@@ -14,7 +16,7 @@ export default class DoggoBehaviourReact extends React.Component {
     const others = this.getArguments();
     const args = Object.keys(others);
     args.forEach(key => {
-      this.state.behaviour.set(key, others[key]);
+      this.behaviour.set(key, others[key]);
     });
   }
   componentDidUpdate(prevProps, prevState) {
@@ -27,17 +29,12 @@ export default class DoggoBehaviourReact extends React.Component {
   }
   componentDidMount() {
     const Behaviour = this.props.value;
-    const behaviour = new Behaviour();
-    this.setState(
-      {
-        behaviour
-      },
-      () => this.updateBehaviour()
-    );
-    DogStore.addBehaviour(behaviour);
+    this.behaviour = new Behaviour();
+    this.updateBehaviour();
+    DogStore.addBehaviour(this.behaviour);
   }
   render() {
-    return this.state.behaviour && this.state.behaviour.renderUI();
+    return this.behaviour && this.behaviour.renderUI();
   }
 }
 
