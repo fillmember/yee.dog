@@ -1,5 +1,3 @@
-import { observable, action } from "mobx";
-// import GLTFLoader from "three-gltf-loader";
 import Stage3D from "./3D/Stage3D.js";
 import EventEmitter from "events";
 
@@ -25,7 +23,6 @@ class DogStore {
   emit(evt, payload) {
     this.events.emit(evt, payload);
   }
-  @observable
   stage3D = new Stage3D({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -43,17 +40,13 @@ class DogStore {
       this.events.emit(this.Event.dog_ready, this.dog);
     });
   }
-  @observable
   dog = null;
   //
-  @observable
   behaviours = [];
-  @action
   addBehaviour(b) {
     this.behaviours.push(b);
     b.onAdd();
   }
-  @action
   removeBehaviour(b) {
     const index = this.behaviours.indexOf(b);
     if (index > -1) {

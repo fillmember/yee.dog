@@ -1,4 +1,3 @@
-import { action, observable } from "mobx";
 import DoggoBehaviour from "./DoggoBehaviour";
 import Bark from "./bark";
 import OrbitControl from "./orbitcontrol";

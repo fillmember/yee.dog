@@ -1,12 +1,8 @@
 import React from "react";
-import { observer } from "mobx-react";
-import { observable } from "mobx";
 import isEqual from "lodash/isEqual";
 import DogStore from "../DogStore";
 
-@observer
 export default class DoggoBehaviourReact extends React.Component {
-  @observable
   behaviour = null;
   getArguments(obj = this.props) {
     const { value, ...others } = obj;
