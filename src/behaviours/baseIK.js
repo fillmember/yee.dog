@@ -21,7 +21,7 @@ export default class BaseIK extends DoggoBehaviour {
   };
 }
 
-export const BehaviourBaseIKInReact = InReact(BaseIK, {
+export const DoggoBehaviourBaseIKInReact = InReact(BaseIK, {
   chains: require("../data/ik-chains.js").default
 });
-BehaviourBaseIKInReact.displayName = "BehaviourBaseIKInReact";
+DoggoBehaviourBaseIKInReact.displayName = "DoggoBehaviourBaseIKInReact";

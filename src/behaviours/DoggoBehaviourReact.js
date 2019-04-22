@@ -34,7 +34,10 @@ export default class DoggoBehaviourReact extends React.Component {
     DogStore.addBehaviour(this.behaviour);
   }
   render() {
-    return this.behaviour && this.behaviour.renderUI();
+    if (this.behaviour) {
+      return this.behaviour.renderUI();
+    }
+    return false;
   }
 }
 
