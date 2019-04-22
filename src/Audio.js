@@ -16,7 +16,7 @@ export default class Audio {
         this.state = {
           isAudioAllow: false,
           isAudioReady: false,
-          url: "/static/sound/dog.wav"
+          url: "/static/sound/bark.mp3"
         };
       }
       actionAllowAudio = () => {
