@@ -11,3 +11,17 @@ body {
 canvas {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
+
+.ui-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+.ui-container input,
+.ui-container button {
+  pointer-events: auto;
+}

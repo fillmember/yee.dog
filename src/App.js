@@ -37,14 +37,14 @@ class App extends Component {
           disabledStyle={{}}
           multiple={false}
         >
-          <div className="App">
-            <div
+          <main className="App">
+            <section
               className="3d-container"
               ref={this.$canvasContainer}
               style={{ fontSize: 0, lineHeight: 0 }}
             />
-            {this.props.children}
-          </div>
+            <section className="ui-container">{this.props.children}</section>
+          </main>
         </DropZone>
       </ThemeProvider>
     );
