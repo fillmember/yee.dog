@@ -25,5 +25,6 @@ export default () => (
     <DoggoBehaviour value={petTheDog} action={"earWagL"} bone={[BoneID.EarL_0, BoneID.EarL_1, BoneID.EarL_1]} />
     <DoggoBehaviour value={petTheDog} action={"earWagR"} bone={[BoneID.EarR_0, BoneID.EarR_1, BoneID.EarR_1]} />
     <DoggoBehaviour value={require("../behaviours/eatYourFiles").default} />
+    <DoggoBehaviour value={require("../behaviours/baseAudio").default} />
   </App>
 );

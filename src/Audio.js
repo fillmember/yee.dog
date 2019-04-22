@@ -10,13 +10,35 @@ export default class Audio {
     this.$mediaElement = React.createRef();
     this.reactComponent = class AudioComponent extends React.Component {
       static instance = null;
-      state = {
-        url: null
-      };
-      componentDidMount() {
+      constructor(props) {
+        super(props);
         audio.reactComponent.instance = this;
+        this.state = {
+          isAudioAllow: false,
+          isAudioReady: false,
+          url: "/static/sound/dog.wav"
+        };
       }
-      componentDidUpdate(previousProps, previousState) {
+      actionAllowAudio = () => {
+        const { url } = this.state;
+        const request = new XMLHttpRequest();
+        request.open("GET", url, true);
+        request.responseType = "arraybuffer";
+        request.onload = () => {
+          audio.createAudioContext();
+          audio.context.decodeAudioData(
+            request.response,
+            buffer => {
+              audio.audioBuffer = buffer;
+              this.setState({ isAudioReady: true });
+            },
+            console.error
+          );
+        };
+        request.send();
+        this.setState({ isAudioAllow: true });
+      };
+      componentDidUpdate(prevProps, previousState) {
         if (previousState.url !== this.state.url) {
           URL.revokeObjectURL(previousState.url);
         }
@@ -25,15 +47,18 @@ export default class Audio {
         audio.reactComponent.instance = null;
       }
       render() {
-        return (
-          <div>
-            <audio
-              ref={audio.$mediaElement}
-              src={this.state.url}
-              id="dog-sound"
-            />
-          </div>
-        );
+        const { isAudioAllow, isAudioReady } = this.state;
+        if (!isAudioAllow) {
+          return (
+            <button onClick={this.actionAllowAudio}>
+              Allow This Dog to Audibly Bark
+            </button>
+          );
+        }
+        if (!isAudioReady) {
+          return <span>Telling doggo the good news...</span>;
+        }
+        return false;
       }
     };
   }
@@ -62,19 +87,24 @@ export default class Audio {
   fileReader = new FileReader();
   audioBuffer = null;
   decodeAudioFile(file) {
-    this.fileReader.onload = () => {
-      const buffer = this.fileReader.result;
-      this.context.decodeAudioData(
-        buffer,
-        audioBuffer => {
-          this.audioBuffer = audioBuffer;
-          const durationInSec = audioBuffer.length / audioBuffer.sampleRate;
-          this.mode = durationInSec > 1 ? Audio.MODE_LONG : Audio.MODE_SHORT;
-        },
-        error => console.warn("Dog Audio: failed to decode audio data. ", error)
-      );
-    };
-    this.fileReader.readAsArrayBuffer(file);
+    return new Promise((resolve, reject) => {
+      this.fileReader.onload = () => {
+        const buffer = this.fileReader.result;
+        this.context.decodeAudioData(
+          buffer,
+          audioBuffer => {
+            this.audioBuffer = audioBuffer;
+            const durationInSec = audioBuffer.length / audioBuffer.sampleRate;
+            this.mode = durationInSec > 1 ? Audio.MODE_LONG : Audio.MODE_SHORT;
+          },
+          error =>
+            console.warn("Dog Audio: failed to decode audio data. ", error)
+        );
+        resolve(true);
+      };
+      this.fileReader.onerror = reject;
+      this.fileReader.readAsArrayBuffer(file);
+    });
   }
   startBufferSourceNode(node, fadeDuration = 0) {
     return new Promise((resolve, reject) => {
