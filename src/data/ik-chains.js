@@ -9,7 +9,7 @@ export default {
   },
   look: {
     joints: [BoneID.Shoulder, BoneID.Neck, BoneID.Head],
-    constraints: [10, 40, 30].map(v => v * 1.4),
+    constraints: [10, 40, 30].map(v => v * 1.2),
     influence: 0.1,
     clipWeight: 1
   }
