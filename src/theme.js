@@ -1,6 +1,6 @@
 export default {
   fonts: {
-    sans: `"Comfortaa", cursive`,
+    sans: `Verdana, Geneva, Tahoma, sans-serif`,
     mono: `"SF Mono", "Roboto Mono", Menlo, monospace`
   },
   colors: {
