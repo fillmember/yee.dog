@@ -6,7 +6,7 @@
     "@zeit/next-css": "^1.0.1",
     "fbx2gltf": "^0.9.5",
     "gsap": "^2.0.2",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "next": "^7.0.2",
     "next-images": "^1.0.1",
     "react": "^16.7.0-alpha.2",
