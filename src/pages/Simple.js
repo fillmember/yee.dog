@@ -13,10 +13,12 @@ export default () => (
     <DoggoBehaviour value={require("../behaviours/resize").default} />
     <DoggoBehaviour value={require("../behaviours/orbitcontrol").default} />
     <DoggoBehaviour value={require("../behaviours/baseMouseTo3D").default} />
+    <DoggoBehaviour value={require("../behaviours/bark").default} useMouse={true} />
     <DoggoBehaviour value={require("../behaviours/wag").default} />
     <DoggoBehaviour value={require("../behaviours/earWagL").default} />
     <DoggoBehaviour value={require("../behaviours/earWagR").default} />
     <DoggoBehaviour value={require("../behaviours/vleg").default} useMouse={true} />
+    <DoggoBehaviourBaseIKInReact />
     <DoggoBehaviour value={ikTargetToMouse} chain={"worm"} />
     <DoggoBehaviour value={ikTargetToMouse} chain={"look"} />
     <DoggoBehaviour value={petTheDog} action={"earWagL"} bone={[BoneID.EarL_0, BoneID.EarL_1, BoneID.EarL_1]} />
