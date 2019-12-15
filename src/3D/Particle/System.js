@@ -1,13 +1,24 @@
-import { Clock } from "three";
-import { Mesh } from "./Mesh.js";
-import { Geometry } from "./Geometry.js";
-import { BillboardMaterial } from "./BillboardMaterial.js";
+import { Clock, Material } from "three";
+import { Mesh } from "./Mesh";
+import { Geometry } from "./Geometry";
+import { BillboardMaterial } from "./BillboardMaterial";
 
 /**
  * physics enabled particle system
  */
 export class System extends Mesh {
+  particleCount;
+  iter = 0;
+  speed = 1;
+  clock = new Clock();
+  forces = [];
+  emitters = [];
+  config = undefined;
+  velocities;
+  accelerations;
+  attributes;
   constructor(geometry, material) {
+    super();
     if (typeof geometry === "number") {
       geometry = new Geometry(geometry);
       material = new BillboardMaterial();
@@ -15,14 +26,10 @@ export class System extends Mesh {
     super(geometry, material);
 
     this.particleCount = geometry.particleCount;
-    this.iter = 0;
-    this.speed = 1;
 
     this.material.defines.AGE = true;
 
-    this.clock = new Clock();
     this.clock.start();
-
     this.velocities = new Float32Array(this.particleCount * 3);
     this.accelerations = new Float32Array(this.particleCount * 3);
 
@@ -30,9 +37,6 @@ export class System extends Mesh {
       velocity: this.velocities,
       acceleration: this.accelerations
     };
-
-    this.forces = [];
-    this.emitters = [];
   }
 
   addForce(force) {

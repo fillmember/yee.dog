@@ -1,8 +1,15 @@
 import { AnimationClip, NumberKeyframeTrack, Euler } from "three";
-import { Animation } from "./Animation.js";
-import FABRIK from "./FABRIK.js";
+import { Animation } from "./Animation";
+import FABRIK from "./FABRIK";
+
+const identity = (axis, value) => value;
 
 export class DogIK {
+  config;
+  clips;
+  mesh;
+  chains;
+  solver;
   init(config) {
     this.config = config;
     const { mesh, chains } = this.config;
@@ -16,14 +23,14 @@ export class DogIK {
       const bones = joints.map(boneID => this.mesh.skeleton.bones[boneID]);
       this.chains[key] = new FABRIK.Chain({
         joints: bones,
-        influence,
-        constraints: constraints
+        influence
       });
     });
     this.solver = new FABRIK.Solver(this.chains);
   }
   update() {
     for (let key in this.chains) {
+      const { transform = identity } = this.config.chains[key];
       const chain = this.chains[key];
       chain.alignAllWithReference();
       chain.solve();
@@ -38,7 +45,7 @@ export class DogIK {
         if (isNaN(e[axis])) {
           return;
         }
-        track.values[0] = e[axis];
+        track.values[0] = transform(axis, e[axis]);
         track.values[1] = track.values[0];
       });
     }

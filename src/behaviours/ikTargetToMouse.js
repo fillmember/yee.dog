@@ -1,4 +1,4 @@
-import DoggoBehaviour from "./DoggoBehaviour.js";
+import DoggoBehaviour from "./DoggoBehaviour";
 import DogStore from "../DogStore";
 
 export default class ikTargetToMouse extends DoggoBehaviour {

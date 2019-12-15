@@ -1,13 +1,11 @@
 import { Texture, NearestFilter } from "three";
-import {
-  Emitter,
-  System,
-  Geometry,
-  BillboardMaterial
-} from "./Particle/index.js";
-import PARTICLE_TEXTURE from "./particle_tex_0.png";
+import { Emitter, System, Geometry, BillboardMaterial } from "./Particle/index";
 
 export default class ParticleSystems {
+  systems;
+  material;
+  config;
+  texture;
   constructor(configs) {
     this.createTexture();
     //
@@ -40,7 +38,7 @@ export default class ParticleSystems {
       this.texture.needsUpdate = true;
       this.material.needsUpdate = true;
     };
-    this.texture.image.src = PARTICLE_TEXTURE;
+    this.texture.image.src = require("./particle_tex_0.png");
   }
   update(dt) {
     Object.keys(this.systems).forEach(key => {

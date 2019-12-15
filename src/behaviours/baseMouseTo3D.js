@@ -1,5 +1,5 @@
 import throttle from "lodash/throttle";
-import DoggoBehaviour from "./DoggoBehaviour.js";
+import DoggoBehaviour from "./DoggoBehaviour";
 import DogStore from "../DogStore";
 export default class baseMouseTo3D extends DoggoBehaviour {
   static transformMouseCoordinate({ offsetX, offsetY }) {

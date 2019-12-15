@@ -1,6 +1,7 @@
-import DogStore from "./../DogStore.js";
+import DogStore from "../DogStore";
 
 export default class DoggoBehaviour {
+  DogStore;
   constructor() {
     this.DogStore = DogStore;
     this.on("dog_ready", dog => this.onDogReady(dog));
@@ -29,7 +30,7 @@ export default class DoggoBehaviour {
   onAdd() {}
   onEnabled() {}
   onDisabled() {}
-  onDogReady() {}
+  onDogReady(dog: unknown) {}
   onRemove() {}
   renderUI() {
     return false;

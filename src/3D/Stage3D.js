@@ -12,9 +12,9 @@ import {
   Vector3,
   Vector2
 } from "three";
-import GLTFLoader from "three-gltf-loader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
-import Dog from "./Dog3D.js";
+import Dog from "./Dog3D";
 
 export default class Stage3D {
   renderer = new WebGLRenderer();
@@ -47,19 +47,15 @@ export default class Stage3D {
         gltf => {
           this.scene = gltf.scene;
           this.scene.add(this.camera);
-          //
           this.dog = new Dog({
             obj3d: this.scene.getObjectByName("Wurstgang"),
             scene: this.scene
           });
-          //
           var light = new DirectionalLight(0xffffff, 1);
           light.position.set(0, 1, 0.5);
           this.scene.add(light);
-          //
           this.camera.add(this.mousePlane);
           this.mousePlane.position.set(0, 0, -25);
-          //
           resolve();
         },
         function() {},

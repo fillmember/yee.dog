@@ -1,9 +1,11 @@
 import { Math as Math3 } from "three";
 import DoggoBehaviour from "./DoggoBehaviour";
-import ParticleSystem3D from "./../3D/ParticleSystem.js";
+import ParticleSystem3D from "../3D/ParticleSystem";
 import BoneID from "../3D/BoneID";
 
 class ParticleSystem extends DoggoBehaviour {
+  config;
+  particles;
   onDogReady(dog) {
     const scene = this.DogStore.stage3D.scene;
     this.config = {

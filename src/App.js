@@ -1,9 +1,7 @@
 import React, { Component } from "react";
-import { Provider as ThemeProvider } from "rebass";
 import DropZone from "react-dropzone";
-import DogStore from "./DogStore.js";
-import AppEventHandlers from "./AppEventHandlers.js";
-import theme from "./theme.js";
+import DogStore from "./DogStore";
+import AppEventHandlers from "./AppEventHandlers";
 
 class App extends Component {
   $canvasContainer = React.createRef();
@@ -12,7 +10,7 @@ class App extends Component {
     AppEventHandlers.apply(this);
   }
   componentDidMount() {
-    DogStore.load("/static/model/wt").then(() => {
+    DogStore.load("/static/model/wt.glb").then(() => {
       this.$canvasContainer.current.appendChild(
         DogStore.stage3D.renderer.domElement
       );
@@ -24,29 +22,27 @@ class App extends Component {
   }
   render() {
     return (
-      <ThemeProvider theme={theme}>
-        <DropZone
-          onDragEnter={this.onDragEnter}
-          onDragOver={this.onDragOver}
-          onDrop={this.onDrop}
-          onDragLeave={this.onDragLeave}
-          disableClick
-          disablePreview
-          activeStyle={{}}
-          acceptStyle={{}}
-          disabledStyle={{}}
-          multiple={false}
-        >
-          <main className="App">
-            <section
-              className="3d-container"
-              ref={this.$canvasContainer}
-              style={{ fontSize: 0, lineHeight: 0 }}
-            />
-            <section className="ui-container">{this.props.children}</section>
-          </main>
-        </DropZone>
-      </ThemeProvider>
+      <DropZone
+        onDragEnter={this.onDragEnter}
+        onDragOver={this.onDragOver}
+        onDrop={this.onDrop}
+        onDragLeave={this.onDragLeave}
+        disableClick
+        disablePreview
+        activeStyle={{}}
+        acceptStyle={{}}
+        disabledStyle={{}}
+        multiple={false}
+      >
+        <main className="App">
+          <section
+            className="3d-container"
+            ref={this.$canvasContainer}
+            style={{ fontSize: 0, lineHeight: 0 }}
+          />
+          <section className="ui-container">{this.props.children}</section>
+        </main>
+      </DropZone>
     );
   }
 }

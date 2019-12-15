@@ -1,4 +1,4 @@
-// import Emitter from "./Particle/Emitter.js";
+// import Emitter from "./Particle/Emitter";
 // const lerp = Math3.lerp;
 // const pi2 = Math.PI * 2;
 // class MyForce {

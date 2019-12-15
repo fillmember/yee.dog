@@ -1,4 +1,4 @@
-import BoneID from "../3D/BoneID.js";
+import BoneID from "../3D/BoneID";
 import { Math as ThreeMath, LoopPingPong, InterpolateSmooth } from "three";
 
 const toRad = ThreeMath.degToRad;
@@ -76,7 +76,7 @@ export const Clips = {
       bone: BoneID.Pelvis,
       property: "rotation[x]",
       times: [0, 1],
-      values: [0, -20].map(toRad)
+      values: [0, 20].map(toRad)
     },
     {
       bone: BoneID.Spine,

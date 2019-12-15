@@ -1,5 +1,5 @@
 import { AnimationMixer, AnimationClip, NumberKeyframeTrack } from "three";
-import BoneID from "./BoneID.js";
+import BoneID from "./BoneID";
 
 export class Animation {
   static path = (name, property) => `${name}.${property}`;
@@ -11,6 +11,9 @@ export class Animation {
     const axis = arr2[1].substr(0, 1);
     return { object, property, axis };
   };
+  mesh;
+  mixer;
+  actions;
   constructor(mesh) {
     this.mesh = mesh;
     this.mesh.animations = [];

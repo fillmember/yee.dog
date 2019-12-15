@@ -6,17 +6,14 @@
     "@zeit/next-css": "^1.0.1",
     "fbx2gltf": "^0.9.5",
     "gsap": "^2.0.2",
-    "lodash": "^4.17.11",
-    "next": "^7.0.2",
-    "next-images": "^1.0.1",
-    "react": "^16.7.0-alpha.2",
-    "react-dom": "^16.7.0-alpha.2",
+    "lodash": "^4.17.15",
+    "next": "^9.1.5",
+    "next-images": "^1.2.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "react-dropzone": "^5.1.0",
-    "react-use": "^4.10.0",
-    "rebass": "2.3.4",
-    "styled-components": "^3.4.9",
-    "three": "^0.96.0",
-    "three-gltf-loader": "^1.96.0",
+    "react-use": "^13.12.2",
+    "three": "^0.111.0",
     "three-orbit-controls": "^82.1.0"
   },
   "scripts": {
@@ -27,13 +24,14 @@
     "gltf": "fbx2gltf -vb ./design/wurstgang.fbx --output ./static/model/wt"
   },
   "devDependencies": {
+    "@types/node": "^12.12.17",
+    "@types/react": "^16.9.16",
+    "@types/three": "^0.103.2",
     "babel-plugin-styled-components": "^1.7.1",
-    "prettier": "^1.14.2"
+    "prettier": "^1.14.2",
+    "typescript": "^3.7.3"
   },
   "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
+    "last 2 versions"
   ]
 }

@@ -1,6 +1,6 @@
 import React from "react";
-import DoggoBehaviour from "./DoggoBehaviour.js";
-import Audio from "../Audio.js";
+import DoggoBehaviour from "./DoggoBehaviour";
+import Audio from "../Audio";
 import Bark from "./bark";
 
 export default class BaseAudio extends DoggoBehaviour {

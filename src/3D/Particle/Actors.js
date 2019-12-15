@@ -1,4 +1,4 @@
-import { Force } from "./Force.js";
+import { Force } from "./Force";
 
 export class Attractor extends Force {
   constructor(px = 0, py = 0, pz = 0, mass = 100, spread = 1.5, deadzone = 1) {

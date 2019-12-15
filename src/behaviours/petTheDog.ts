@@ -5,6 +5,8 @@ import DoggoBehaviour from "./DoggoBehaviour";
 import DogStore from "../DogStore";
 
 export default class PetTheDog extends DoggoBehaviour {
+  action;
+  bone;
   constructor() {
     super();
     this.on("update", this.onUpdate);

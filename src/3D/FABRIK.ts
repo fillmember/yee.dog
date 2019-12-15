@@ -4,6 +4,7 @@ import { Vector3, Object3D, Math as Math3 } from "three";
 const last = arr => arr[arr.length - 1];
 
 class Node {
+  reference;
   constructor(reference) {
     this.reference = reference;
     this.alignWithReference();
@@ -21,9 +22,8 @@ class Node {
 class Joint extends Node {
   static noop = ref => ref;
   static negY = ref => ref.rotateY(Math.PI);
-  constructor({ reference, constraint }) {
+  constructor({ reference }) {
     super(reference);
-    this.constraint = constraint || 45;
   }
   localToWorldDirection(direction) {
     if (this.reference.parent) {
@@ -45,34 +45,22 @@ class Joint extends Node {
 
 class Target extends Node {}
 
-class Constraint {
-  static Z_AXIS = new Vector3(0, 0, 1);
-  static dir = new Vector3();
-  static parentDir = new Vector3();
-  static correctionAxis = new Vector3();
-  static apply(joint, angle = joint.constraint) {
-    this.dir.copy(joint.direction);
-    joint.localToWorldDirection(this.parentDir.copy(this.Z_AXIS));
-    this.parentDir.normalize();
-    const currentAngle = Math3.radToDeg(this.dir.angleTo(this.parentDir));
-    const needCorrection = currentAngle > angle;
-    if (needCorrection) {
-      this.dir.normalize();
-      this.correctionAxis.crossVectors(this.dir, this.parentDir).normalize();
-      this.parentDir.applyAxisAngle(this.correctionAxis, Math3.degToRad(angle));
-      joint.direction = this.parentDir;
-    }
-  }
-}
-
 class Solver {
+  chains;
   constructor(chains) {
     this.chains = chains;
   }
 }
 
 class Chain {
-  constructor({ joints, target, influence = 0.5, constraints }) {
+  influence;
+  tolerance;
+  maxIterations;
+  target;
+  joints;
+  lengths: number[];
+  totalLength: number;
+  constructor({ joints, target, influence = 0.5 }: any) {
     if (!target) {
       target = new Object3D();
       last(joints).getWorldPosition(target.position);
@@ -99,8 +87,7 @@ class Chain {
     this.joints = joints.map(
       (obj3d, index) =>
         new Joint({
-          reference: obj3d,
-          constraint: constraints[index]
+          reference: obj3d
         })
     );
     this.lengths = this.joints.reduce((a, v1, index, arr) => {
@@ -114,14 +101,12 @@ class Chain {
   }
   alignReferenceToJoint({ alpha, returnQuaternions }) {
     const result = {};
-    const originalQuaternions = [];
     const references = this.joints.map(j => j.reference);
+    const originalQuaternions = references.map(ref => ref.quaternion.clone());
     // Get result quaternions
     references.forEach((ref, i) => {
       let v = this.joints[i + 1] || this.target;
-      originalQuaternions.push(ref.quaternion.clone());
       ref.lookAt(v.position);
-      Constraint.apply(this.joints[i]);
       ref.quaternion.slerp(originalQuaternions[i], 1 - this.influence);
       if (returnQuaternions) {
         result[ref.name] = ref.quaternion.clone();
@@ -155,7 +140,7 @@ class Chain {
   }
   /*
   getQuaternions
-  same as apply, but instead of setting joints, get the rotated values as quaternions. 
+  same as apply, but instead of setting joints, get the rotated values as quaternions.
   */
   getQuaternions() {
     return this.alignReferenceToJoint({
@@ -262,9 +247,7 @@ class Chain {
   }
 }
 
-export default class FABRIK {
-  static Joint = Joint;
-  static Target = Target;
-  static Chain = Chain;
-  static Solver = Solver;
-}
+export default {
+  Chain,
+  Solver
+};
