@@ -10,7 +10,7 @@ class App extends Component {
     AppEventHandlers.apply(this);
   }
   componentDidMount() {
-    DogStore.load("/static/model/wt.glb").then(() => {
+    DogStore.load("/static/model/wt").then(() => {
       this.$canvasContainer.current.appendChild(
         DogStore.stage3D.renderer.domElement
       );
