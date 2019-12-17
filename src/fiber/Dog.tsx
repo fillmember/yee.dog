@@ -1,15 +1,37 @@
-import React, { useMemo, useEffect } from "react";
-import { useLoader } from "react-three-fiber";
+import React, { useMemo, useEffect, useContext, useReducer } from "react";
+import { useLoader, useFrame } from "react-three-fiber";
+import throttle from "lodash/throttle";
+import get from "lodash/get";
 import {
   LinearEncoding,
   MeshLambertMaterial,
   SkinnedMesh,
-  MeshStandardMaterial
+  MeshStandardMaterial,
+  Vector3
 } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
-export const DogContext = React.createContext({ mesh: null });
+export const DogContext = React.createContext({
+  mesh: null
+});
 export const { Provider: DogProvider, Consumer: DogPetter } = DogContext;
+
+const useBoneScreenPositions = (mesh, enabled = true) => {
+  const bones = get(mesh, "skeleton.bones", []);
+  const vs = useMemo(() => bones.map(() => new Vector3()), [bones]);
+  useFrame(
+    throttle(({ camera, mouse }) => {
+      if (!enabled || bones.length === 0) return;
+      vs.forEach((v, index) => {
+        const bone = bones[index];
+        v.setFromMatrixPosition(bone.matrixWorld).project(camera);
+        bone.userData.distanceToMouse = mouse.distanceToSquared(v);
+        bone.userData.screenPos = v;
+      });
+    }, 100)
+  );
+  return vs;
+};
 
 export function Dog({ children }) {
   const url = "/static/model/wt.glb";
@@ -19,7 +41,7 @@ export function Dog({ children }) {
     [gltf]
   );
   useEffect(() => {
-    mesh.scale.set(1, 1, 1);
+    if (!mesh) return;
     const { map } = mesh.material as MeshStandardMaterial;
     map.encoding = LinearEncoding;
     mesh.material = new MeshLambertMaterial({
@@ -30,15 +52,22 @@ export function Dog({ children }) {
       emissiveMap: map
     });
   }, [gltf]);
-  const dog = useMemo(() => {
-    return {
-      mesh
-    };
-  }, [gltf]);
+  useBoneScreenPositions(mesh);
   return (
-    <DogProvider value={dog}>
-      <primitive object={gltf.scene} />
+    <DogProvider
+      value={{
+        mesh
+      }}
+    >
+      {gltf.scene.children[0].children.map(c => (
+        <primitive key={c.name} object={c} />
+      ))}
       <group>{children}</group>
     </DogProvider>
   );
 }
+
+export const useDog = () => {
+  const { mesh } = useContext(DogContext);
+  return mesh;
+};

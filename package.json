@@ -23,7 +23,8 @@
     "build": "next build",
     "start": "next start",
     "export": "npm run build && next export",
-    "gltf": "fbx2gltf -vb ./design/wurstgang.fbx --output ./static/model/wt"
+    "gltf:binary": "fbx2gltf -vb ./design/wurstgang.fbx --output ./static/model/wt",
+    "gltf:json": "fbx2gltf -v ./design/wurstgang.fbx --output ./static/model/wt-json"
   },
   "devDependencies": {
     "@types/node": "^12.12.17",
