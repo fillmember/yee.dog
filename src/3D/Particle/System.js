@@ -3,48 +3,28 @@ import { Mesh } from "./Mesh";
 import { Geometry } from "./Geometry";
 import { BillboardMaterial } from "./BillboardMaterial";
 
-/**
- * physics enabled particle system
- */
 export class System extends Mesh {
   particleCount;
   iter = 0;
-  speed = 1;
-  clock = new Clock();
   forces = [];
   emitters = [];
-  config = undefined;
   velocities;
   accelerations;
   attributes;
   constructor(geometry, material) {
-    if (typeof geometry === "number") {
-      geometry = new Geometry(geometry);
-      material = new BillboardMaterial();
-    }
     super(geometry, material);
-
     this.particleCount = geometry.particleCount;
-
-    this.material.defines.AGE = true;
-
-    this.clock.start();
-    this.velocities = new Float32Array(this.particleCount * 3);
-    this.accelerations = new Float32Array(this.particleCount * 3);
-
     this.attributes = {
-      velocity: this.velocities,
-      acceleration: this.accelerations
+      velocity: new Float32Array(this.particleCount * 3),
+      acceleration: new Float32Array(this.particleCount * 3)
     };
   }
 
   addForce(force) {
-    force.system = this;
     this.forces.push(force);
   }
 
   addEmitter(emitter) {
-    emitter.system = this;
     this.emitters.push(emitter);
   }
 
@@ -56,7 +36,6 @@ export class System extends Mesh {
    * @param {Object} options options array containing settings for attributes
    */
   addParticle(translate, options = {}) {
-    options.tob = options.tob || this.clock.getElapsedTime();
     this.setParticle(this.iter, translate, options);
     this.iter = (this.iter + 1) % (this.particleCount - 1);
   }
@@ -69,14 +48,6 @@ export class System extends Mesh {
    * @param {Object} options  other attributes of particle
    */
   setParticle(iter, translate, options = {}) {
-    /* if the position is a Vector, convert it to an array */
-    if (translate.isVector3) translate = translate.toArray();
-    options.translate = translate;
-
-    /* by default we set size to 1*/
-    if (options.size === undefined) options.size = 1.0;
-
-    /* set all the attributes */
     for (var prop in options) {
       this.setAttribute(prop, iter, options[prop]);
     }
@@ -91,13 +62,9 @@ export class System extends Mesh {
    */
   setAttribute(name, iter, values) {
     if (!(values instanceof Array)) values = [values];
-
     var offset = iter * values.length;
     var attribute = this.getAttributeArray(name);
-
-    for (var i = 0; i < values.length; i++) {
-      attribute[offset + i] = values[i];
-    }
+    values.forEach((v, i) => (attribute[offset + i] = v));
   }
 
   /* more low level, use this if you know what you are doing */
@@ -114,33 +81,36 @@ export class System extends Mesh {
     return attribute.array;
   }
 
-  _tickEmitter(dt) {
-    this.emitters.forEach(emitter => {
-      emitter.update(this, dt);
-    });
+  updateEmittors(elapsedTime, dt) {
+    this.emitters.forEach(emitter => emitter.update(this, elapsedTime, dt));
   }
 
-  _tickPhysics() {
+  updateEffectors() {
     var translations = this.getAttributeArray("translate");
     this.forces.forEach(force => {
       for (var i3 = 0; i3 < this.particleCount * 3; i3 += 3) {
-        force.influence(i3, translations, this.velocities, this.accelerations);
+        force.influence(
+          i3,
+          translations,
+          this.attributes.velocity,
+          this.attributes.acceleration
+        );
       }
     });
   }
 
-  _tickMove() {
-    var translations = this.getAttributeArray("translate");
+  updateSystemAttributes() {
+    const translations = this.getAttributeArray("translate");
     for (var i = 0; i < this.particleCount * 3; i++) {
-      this.velocities[i] += this.accelerations[i];
-      translations[i] += this.velocities[i];
+      this.attributes.velocity[i] += this.attributes.acceleration[i];
+      translations[i] += this.attributes.velocity[i];
     }
   }
 
-  update(dt) {
-    this._tickEmitter(dt);
-    this._tickPhysics(dt);
-    this._tickMove(dt);
-    this.material.uniforms.time.value = this.clock.getElapsedTime();
+  update(elapsedTime, dt) {
+    this.updateEmittors(elapsedTime, dt);
+    this.updateEffectors(dt);
+    this.updateSystemAttributes();
+    this.material.uniforms.time.value = elapsedTime;
   }
 }
