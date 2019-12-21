@@ -47,29 +47,30 @@ export class Emitter {
     this.options = options;
   }
 
-  update(system, dt) {
+  update(system, elapsedTime, dt) {
     this.t += dt;
     if (this.t > computeInterval(this.options.enabled, this.options.rate)) {
-      this.emit(system);
+      this.emit(system, elapsedTime);
       this.t = 0;
     }
   }
-  emit(system) {
+  emit(system, elapsedTime) {
     const {
       options: { velocity, acceleration, position, sprite, size, lifespan }
     } = this;
-    const { velocities, accelerations } = system;
+    const {
+      attributes: { velocity: attrVel, acceleration: attrAcc }
+    } = system;
     // finally
     const i = system.iter * 3;
     const [x, y, z] = [i, i + 1, i + 2];
-    [velocities[x], velocities[y], velocities[z]] = getVec3(velocity);
-    [accelerations[x], accelerations[y], accelerations[z]] = getVec3(
-      acceleration
-    );
+    [attrVel[x], attrVel[y], attrVel[z]] = getVec3(velocity);
+    [attrAcc[x], attrAcc[y], attrAcc[z]] = getVec3(acceleration);
     system.addParticle(getVec3(position), {
       sprite: getNumber(sprite, 0),
       size: getNumber(size, 1),
-      lifespan: getNumber(lifespan, 1)
+      lifespan: getNumber(lifespan, 1),
+      tob: elapsedTime
     });
   }
 }
