@@ -115,9 +115,8 @@ export class System extends Mesh {
   }
 
   _tickEmitter(dt) {
-    var translations = this.getAttributeArray("translate");
     this.emitters.forEach(emitter => {
-      emitter.update(dt);
+      emitter.update(this, dt);
     });
   }
 

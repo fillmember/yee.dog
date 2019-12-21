@@ -1,9 +1,8 @@
 import random from "lodash/random";
-import { Vector3 } from "three";
+import memoize from "lodash/memoize";
 import isNumber from "lodash/isNumber";
 import isArray from "lodash/isArray";
 import isFunction from "lodash/isFunction";
-import { System } from "./System";
 
 type NumberTriplet = [number, number, number];
 type FunctionsReturning<T> = () => T;
@@ -36,33 +35,30 @@ function getVec3(
   return defaultValue;
 }
 
+const computeInterval = memoize(
+  (enabled, rate) => (enabled && rate > 0 ? 1 / rate : Infinity),
+  (enabled, rate) => enabled && rate
+);
+
 export class Emitter {
-  config: EmitterOptions;
-  system: any;
-  _lastTime: any;
-  constructor(config: EmitterOptions) {
-    this.config = config;
+  options: EmitterOptions;
+  t: number = 0;
+  constructor(options: EmitterOptions) {
+    this.options = options;
   }
-  update() {
-    if (this.config.rate === 0 || this.config.enabled === false) {
-      return;
-    }
-    const now = this.system.clock.getElapsedTime();
-    const deltaTime = now - this._lastTime;
-    const cooldownTime = this.config.rate > 0 ? 1 / this.config.rate : Infinity;
-    if (deltaTime > cooldownTime || isNaN(deltaTime)) {
-      this.emitParticle();
-      this._lastTime = now;
+
+  update(system, dt) {
+    this.t += dt;
+    if (this.t > computeInterval(this.options.enabled, this.options.rate)) {
+      this.emit(system);
+      this.t = 0;
     }
   }
-  emitParticle() {
+  emit(system) {
     const {
-      config: { velocity, acceleration, position, sprite, size, lifespan },
-      system
+      options: { velocity, acceleration, position, sprite, size, lifespan }
     } = this;
-    const {
-      system: { velocities, accelerations }
-    } = this;
+    const { velocities, accelerations } = system;
     // finally
     const i = system.iter * 3;
     const [x, y, z] = [i, i + 1, i + 2];
