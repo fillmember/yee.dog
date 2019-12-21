@@ -1,16 +1,11 @@
 import { useFrame, extend } from "react-three-fiber";
-import {
-  System,
-  Mesh,
-  Geometry,
-  Emitter,
-  BillboardMaterial
-} from "../3D/Particle";
+import { System, Mesh, Geometry, Emitter } from "../3D/Particle";
 import random from "lodash/random";
 import { useMemo, useRef, useEffect } from "react";
 import { useMaterial } from "./particlesystem/useMaterial";
 import { useEmitter } from "./particlesystem/useEmitter";
 import { BufferAttribute, Vector2 } from "three";
+import { NumberTriplet } from "./utils";
 
 extend({
   ParticleSystem: System,
@@ -26,24 +21,24 @@ type IParticleSystem = {
 //     count
 //   ]);
 
-const useOld = (particleCount: number = 64) => {
+const useOld = (particleCount: number = 8) => {
   const material = useMaterial("/static/images/particle_tex_0.png");
   const geometry = useMemo(() => new Geometry(particleCount), [particleCount]);
   const oldEmitter = new Emitter({
     enabled: true,
-    rate: 4,
+    rate: 8,
     position: [0, 0, 0],
-    acceleration: [0, 0.01, 0]
+    acceleration: () =>
+      [random(-1, 1, true), random(-1, 1, true), random(-1, 1, true)].map(
+        v => v / 200
+      ) as NumberTriplet
   });
   const system = useMemo(() => {
     const s = new System(geometry, material);
     s.addEmitter(oldEmitter);
     return s;
   }, []);
-  useFrame((state, delta) => {
-    eval("window.s = system");
-    system.update(delta);
-  });
+  useFrame(({ clock }, delta) => system.update(clock.getElapsedTime(), delta));
   return system;
 };
 
