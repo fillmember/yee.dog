@@ -1,4 +1,4 @@
-import { Clock, Material } from "three";
+import { Clock, Material, BufferAttribute, BufferGeometry } from "three";
 import { Mesh } from "./Mesh";
 import { Geometry } from "./Geometry";
 import { BillboardMaterial } from "./BillboardMaterial";
@@ -76,7 +76,9 @@ export class System extends Mesh {
    */
   getAttributeArray(name) {
     if (this.attributes[name]) return this.attributes[name];
-    var attribute = this.geometry.getAttribute(name);
+    var attribute = (this.geometry as BufferGeometry).getAttribute(
+      name
+    ) as BufferAttribute;
     attribute.needsUpdate = true;
     return attribute.array;
   }
@@ -109,8 +111,8 @@ export class System extends Mesh {
 
   update(elapsedTime, dt) {
     this.updateEmittors(elapsedTime, dt);
-    this.updateEffectors(dt);
+    this.updateEffectors();
     this.updateSystemAttributes();
-    this.material.uniforms.time.value = elapsedTime;
+    (this.material as BillboardMaterial).uniforms.time.value = elapsedTime;
   }
 }
