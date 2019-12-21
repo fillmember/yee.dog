@@ -1,24 +1,16 @@
-import { ShaderMaterial, Texture, ShaderMaterialParameters } from "three";
+import {
+  ShaderMaterial,
+  Texture,
+  ShaderMaterialParameters,
+  IUniform
+} from "three";
 
 type Props = {
   texture?: Texture;
-  uniforms?: Record<string, Uniform<any, any>>;
+  uniforms?: Record<string, IUniform>;
   columns?: number;
   rows?: number;
 } & ShaderMaterialParameters;
-type Uniform<Type, Value> = {
-  type: Type;
-  value?: Value;
-};
-type Uniforms = {
-  time: Uniform<"f", number>;
-  texture: Uniform<"t", Texture>;
-};
-type Defaults = {
-  fragmentShader: string;
-  vertexShader: string;
-  uniforms: Partial<Uniforms>;
-};
 
 /**
  * Material for the Particle System
@@ -28,39 +20,17 @@ type Defaults = {
 export class BillboardMaterial extends ShaderMaterial {
   columns: number;
   rows: number;
-  constructor(options?: Props) {
-    var columns = 1;
-    var rows = 1;
-
-    /* default options for the material, basically just the shaders */
-    var def: Defaults = {
+  constructor({ uniforms = {}, texture, columns = 1, rows = 1 }: Props) {
+    super({
+      vertexShader,
+      fragmentShader,
       uniforms: {
-        time: { type: "f", value: 1.0 }
+        time: { value: 1.0 },
+        texture: { value: texture },
+        ...uniforms
       },
-      vertexShader: vertexShader,
-      fragmentShader: fragmentShader
-    };
-
-    /* custom options can be passed and will be applied to the defaults */
-    for (var prop in options) {
-      /* uniforms will be added */
-      if (prop === "uniforms") {
-        for (var uniform in options.uniforms) {
-          def.uniforms[uniform] = options.uniforms[uniform];
-        }
-      } else if (prop === "texture") {
-        /* texture is a special case and will be added to uniforms */
-        def.uniforms.texture = def.uniforms.texture || {
-          type: "t",
-          value: options.texture
-        };
-      } else if (prop === "columns") columns = options.columns;
-      else if (prop === "rows") rows = options.columns;
-      /* add the rest */ else def[prop] = options[prop];
-    }
-
-    super(def);
-
+      transparent: true
+    });
     this.columns = columns;
     this.rows = rows;
   }
