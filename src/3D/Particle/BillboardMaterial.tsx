@@ -7,7 +7,6 @@ import {
 
 type Props = {
   texture?: Texture;
-  uniforms?: Record<string, IUniform>;
   columns?: number;
   rows?: number;
 } & ShaderMaterialParameters;
@@ -24,12 +23,16 @@ export class BillboardMaterial extends ShaderMaterial {
     super({
       vertexShader,
       fragmentShader,
+      defines: {
+        AGE: true
+      },
       uniforms: {
         time: { value: 1.0 },
         texture: { value: texture },
         ...uniforms
       },
-      transparent: true
+      transparent: true,
+      depthWrite: false
     });
     this.columns = columns;
     this.rows = rows;
