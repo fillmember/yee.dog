@@ -1,4 +1,24 @@
-import { ShaderMaterial } from "three";
+import { ShaderMaterial, Texture, ShaderMaterialParameters } from "three";
+
+type Props = {
+  texture?: Texture;
+  uniforms?: Record<string, Uniform<any, any>>;
+  columns?: number;
+  rows?: number;
+} & ShaderMaterialParameters;
+type Uniform<Type, Value> = {
+  type: Type;
+  value?: Value;
+};
+type Uniforms = {
+  time: Uniform<"f", number>;
+  texture: Uniform<"t", Texture>;
+};
+type Defaults = {
+  fragmentShader: string;
+  vertexShader: string;
+  uniforms: Partial<Uniforms>;
+};
 
 /**
  * Material for the Particle System
@@ -6,12 +26,14 @@ import { ShaderMaterial } from "three";
  * @class Material
  */
 export class BillboardMaterial extends ShaderMaterial {
-  constructor(options) {
+  columns: number;
+  rows: number;
+  constructor(options?: Props) {
     var columns = 1;
     var rows = 1;
 
     /* default options for the material, basically just the shaders */
-    var def = {
+    var def: Defaults = {
       uniforms: {
         time: { type: "f", value: 1.0 }
       },
@@ -24,7 +46,7 @@ export class BillboardMaterial extends ShaderMaterial {
       /* uniforms will be added */
       if (prop === "uniforms") {
         for (var uniform in options.uniforms) {
-          def.uniforms[uniform] = options.uniform[uniform];
+          def.uniforms[uniform] = options.uniforms[uniform];
         }
       } else if (prop === "texture") {
         /* texture is a special case and will be added to uniforms */
@@ -44,7 +66,7 @@ export class BillboardMaterial extends ShaderMaterial {
   }
 }
 
-export var vertexShader = `
+export const vertexShader = `
   attribute float size;
   attribute vec3 translate;
   attribute float sprite;
@@ -96,7 +118,7 @@ export var vertexShader = `
   }
 `;
 
-export var fragmentShader = `
+export const fragmentShader = `
   uniform sampler2D texture;
   varying vec2 vUv;
   varying vec3 vColor;

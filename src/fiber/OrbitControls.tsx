@@ -1,10 +1,10 @@
 import React, { useRef } from "react";
 import { OrbitControls as THREEOrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { useThree, useRender, extend, useFrame } from "react-three-fiber";
+import { useThree, useRender, extend } from "react-three-fiber";
 
 extend({ OrbitControls: THREEOrbitControls });
 
-export const OrbitControls = ({ target, ...rest }) => {
+export const OrbitControls = props => {
   const { camera } = useThree();
   const controls = useRef<THREEOrbitControls>();
   useRender(() => {
@@ -14,7 +14,7 @@ export const OrbitControls = ({ target, ...rest }) => {
     <orbitControls
       ref={controls}
       args={[camera, document.querySelector("canvas")]}
-      {...rest}
+      {...props}
     />
   );
 };

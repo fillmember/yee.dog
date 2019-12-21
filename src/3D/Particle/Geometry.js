@@ -74,30 +74,30 @@ export class Geometry extends InstancedBufferGeometry {
     /* add attributes to geometry
      * these attributes are shared for all particles */
     this.setIndex(new BufferAttribute(indices, 1));
-    this.addAttribute("position", new BufferAttribute(positions, 3, 1));
-    this.addAttribute("uv", new BufferAttribute(uvs, 2, 1));
+    this.setAttribute("position", new BufferAttribute(positions, 3, 1));
+    this.setAttribute("uv", new BufferAttribute(uvs, 2, 1));
 
     /* custom for every particle */
-    this.addAttribute(
+    this.setAttribute(
       "sprite",
       new InstancedBufferAttribute(sprites, 1, false, 1)
     );
-    this.addAttribute("size", new InstancedBufferAttribute(sizes, 1, false, 1));
-    this.addAttribute(
+    this.setAttribute("size", new InstancedBufferAttribute(sizes, 1, false, 1));
+    this.setAttribute(
       "translate",
       new InstancedBufferAttribute(translations, 3, false, 1)
     );
-    this.addAttribute(
+    this.setAttribute(
       "color",
       new InstancedBufferAttribute(colors, 3, false, 1)
     );
-    this.addAttribute(
+    this.setAttribute(
       "opacity",
       new InstancedBufferAttribute(opacities, 1, true, 1)
     );
-    this.addAttribute("id", new InstancedBufferAttribute(ids, 1, false, 1));
-    this.addAttribute("tob", new InstancedBufferAttribute(tobs, 1, false, 1));
-    this.addAttribute(
+    this.setAttribute("id", new InstancedBufferAttribute(ids, 1, false, 1));
+    this.setAttribute("tob", new InstancedBufferAttribute(tobs, 1, false, 1));
+    this.setAttribute(
       "lifespan",
       new InstancedBufferAttribute(lifespans, 1, false, 1)
     );

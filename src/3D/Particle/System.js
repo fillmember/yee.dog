@@ -18,7 +18,6 @@ export class System extends Mesh {
   accelerations;
   attributes;
   constructor(geometry, material) {
-    super();
     if (typeof geometry === "number") {
       geometry = new Geometry(geometry);
       material = new BillboardMaterial();
@@ -118,15 +117,7 @@ export class System extends Mesh {
   _tickEmitter(dt) {
     var translations = this.getAttributeArray("translate");
     this.emitters.forEach(emitter => {
-      emitter.tick(dt);
-      for (var i3 = 0; i3 < this.particleCount * 3; i3 += 3) {
-        emitter.influence(
-          i3,
-          translations,
-          this.velocities,
-          this.accelerations
-        );
-      }
+      emitter.update(dt);
     });
   }
 

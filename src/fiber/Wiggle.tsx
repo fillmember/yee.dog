@@ -7,7 +7,7 @@ export const Wiggle = ({
   amp = 1,
   speed = 0.1,
   vOffset = 0
-}) => {
+}): null => {
   const clock = useMemo(() => ({ t: 0 }), []);
   useFrame(() => {
     if (!object) return;

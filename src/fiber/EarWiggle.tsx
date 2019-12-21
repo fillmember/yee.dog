@@ -1,4 +1,3 @@
-import lerp from "lerp";
 import { useState, useMemo } from "react";
 import throttle from "lodash/throttle";
 import { Wiggle } from "./Wiggle";
@@ -8,10 +7,10 @@ type Props = {
   boneNames?: DogBoneName[];
   amp?: number;
 };
-export const BEarWiggle = ({
+export const EarWiggle = ({
   boneNames = ["EarL_0", "EarR_0"],
   amp = 0.1
-}: Props) => {
+}: Props): JSX.Element => {
   const bones = useDogBones(boneNames);
   const originalRotations = useMemo(
     () => bones.map(b => b && b.rotation.clone()),
@@ -35,16 +34,18 @@ export const BEarWiggle = ({
       );
     }, 1000)
   );
-  return bones.filter(Boolean).map((bone, index) => {
-    return (
-      <Wiggle
-        key={bone.name}
-        object={bone}
-        axis="y"
-        amp={intensities[index] * amp}
-        speed={0.2 + intensities[index] * 0.5}
-        vOffset={originalRotations[index].y}
-      />
-    );
-  });
+  return (
+    <>
+      {bones.filter(Boolean).map((bone, index) => (
+        <Wiggle
+          key={bone.name}
+          object={bone}
+          axis="y"
+          amp={intensities[index] * amp}
+          speed={0.2 + intensities[index] * 0.5}
+          vOffset={originalRotations[index].y}
+        />
+      ))}
+    </>
+  );
 };

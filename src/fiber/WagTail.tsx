@@ -14,7 +14,7 @@ export const WagTail = ({
   speed = 0.2,
   boneNames = ["Tail_0", "Tail_1", "Tail_2"],
   vOffsets = [-Math.PI, 0, 0]
-}: Props) => {
+}: Props): JSX.Element => {
   const bones = useDogBones(boneNames);
   const [intensity, setIntensity] = useState(1);
   useFrame(
@@ -25,16 +25,18 @@ export const WagTail = ({
       setIntensity(intensity * 0.9 + target * 0.1);
     }, 300)
   );
-  return bones
-    .filter(Boolean)
-    .map((bone, index) => (
-      <Wiggle
-        key={bone.name}
-        object={bone}
-        axis="z"
-        speed={speed + intensity * 0.1}
-        amp={0.3 - index * 0.1 + intensity * 0.2}
-        vOffset={vOffsets[index]}
-      />
-    ));
+  return (
+    <>
+      {bones.filter(Boolean).map((bone, index) => (
+        <Wiggle
+          key={bone.name}
+          object={bone}
+          axis="z"
+          speed={speed + intensity * 0.1}
+          amp={0.3 - index * 0.1 + intensity * 0.2}
+          vOffset={vOffsets[index]}
+        />
+      ))}
+    </>
+  );
 };

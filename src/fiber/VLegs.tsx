@@ -3,6 +3,6 @@ import { useDogBone, useDogBones } from "./utils";
 import { Wiggle } from "./Wiggle";
 import { useMemo } from "react";
 
-export const BVLegs = ({ doit }) => {
+export const VLegs = ({ doit }) => {
   return null;
 };

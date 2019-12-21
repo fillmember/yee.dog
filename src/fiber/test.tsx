@@ -2,12 +2,13 @@ import React, { Suspense } from "react";
 import { Canvas } from "react-three-fiber";
 import { OrbitControls } from "./OrbitControls";
 import { Dog } from "./Dog";
-import { DogDebugger } from "./BDogDebugger";
-import { DogBasicLookAt, ObjectLookAt } from "./BDogBasicLookAt";
-import { WagTail } from "./BWagTail";
-import { BEarWiggle } from "./BEarWiggle";
-import { BVLegs } from "./BVLegs";
-import { BDogLookAtTarget } from "./BDogLookAtTarget";
+import { DogDebugger } from "./DogDebugger";
+import { DogBasicLookAt } from "./DogBasicLookAt";
+import { WagTail } from "./WagTail";
+import { EarWiggle } from "./EarWiggle";
+import { VLegs } from "./VLegs";
+import { DogLookAtTarget } from "./DogLookAtTarget";
+import { ParticleSystem } from "./ParticleSystem";
 
 const DogRun = () => {
   return (
@@ -15,7 +16,7 @@ const DogRun = () => {
       style={{ width: "100vw", height: "100vh" }}
       camera={{ fov: 50, position: [0, 4, -15] }}
     >
-      <directionalLight position={[0, 1, 0.5]} />
+      <directionalLight position={[0, 10, -15]} />
       <OrbitControls
         autoRotate
         autoRotateSpeed={0.3}
@@ -27,18 +28,21 @@ const DogRun = () => {
       />
       <Suspense fallback={false}>
         <Dog>
-          {/* <DogDebugger /> */}
-          <BDogLookAtTarget>
-            {pos => (
+          <DogDebugger />
+          <DogLookAtTarget>
+            {target => (
               <>
-                <DogBasicLookAt target={pos} />
-                <BVLegs doit={pos[1] < 0} />
+                <DogBasicLookAt target={target} />
+                <VLegs doit={target[1] < 0} />
               </>
             )}
-          </BDogLookAtTarget>
+          </DogLookAtTarget>
           <WagTail />
-          <BEarWiggle />
+          <EarWiggle />
         </Dog>
+      </Suspense>
+      <Suspense fallback={false}>
+        <ParticleSystem />
       </Suspense>
     </Canvas>
   );

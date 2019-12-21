@@ -7,7 +7,7 @@ type Props = {
   children: (pos: NumberTriplet) => JSX.Element;
   debug?: boolean;
 };
-export const BDogLookAtTarget = ({ debug = false, children }: Props) => {
+export const DogLookAtTarget = ({ debug = false, children }: Props) => {
   const [pos, setPos] = useState<NumberTriplet>([0, 0, 0]);
   const v1 = useMemo(() => new Vector3(), []);
   useFrame(

@@ -59,9 +59,7 @@ export function Dog({ children }) {
         mesh
       }}
     >
-      {gltf.scene.children[0].children.map(c => (
-        <primitive key={c.name} object={c} />
-      ))}
+      <primitive object={gltf.scene} position={[3, 0, 0]} />
       <group>{children}</group>
     </DogProvider>
   );
