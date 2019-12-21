@@ -48,6 +48,7 @@ export class System extends Mesh {
    * @param {Object} options  other attributes of particle
    */
   setParticle(iter, translate, options = {}) {
+    this.setAttribute("translate", iter, translate);
     for (var prop in options) {
       this.setAttribute(prop, iter, options[prop]);
     }
