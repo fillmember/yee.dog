@@ -46,7 +46,6 @@ export class Emitter {
   constructor(options: EmitterOptions) {
     this.options = options;
   }
-
   update(system, elapsedTime, dt) {
     this.t += dt;
     if (this.t > computeInterval(this.options.enabled, this.options.rate)) {

@@ -1,19 +1,19 @@
-import { Clock, Material, BufferAttribute, BufferGeometry } from "three";
+import { BufferAttribute, BufferGeometry } from "three";
 import { Mesh } from "./Mesh";
 import { Geometry } from "./Geometry";
 import { BillboardMaterial } from "./BillboardMaterial";
 
 export class System extends Mesh {
-  particleCount;
   iter = 0;
   forces = [];
   emitters = [];
-  velocities;
-  accelerations;
-  attributes;
+  attributes: Record<string, Float32Array>;
+
+  get particleCount() {
+    return (this.geometry as Geometry).particleCount;
+  }
   constructor(geometry, material) {
     super(geometry, material);
-    this.particleCount = geometry.particleCount;
     this.attributes = {
       velocity: new Float32Array(this.particleCount * 3),
       acceleration: new Float32Array(this.particleCount * 3)
@@ -64,7 +64,7 @@ export class System extends Mesh {
   setAttribute(name, iter, values) {
     if (!(values instanceof Array)) values = [values];
     var offset = iter * values.length;
-    var attribute = this.getAttributeArray(name);
+    var attribute = this.getAttributeArray(name) as number[];
     values.forEach((v, i) => (attribute[offset + i] = v));
   }
 
@@ -75,7 +75,7 @@ export class System extends Mesh {
    * @param {String} name attribute name
    * @return {typed Array} the raw attribute array
    */
-  getAttributeArray(name) {
+  getAttributeArray(name: string): ArrayLike<number> | Float32Array {
     if (this.attributes[name]) return this.attributes[name];
     var attribute = (this.geometry as BufferGeometry).getAttribute(
       name
@@ -84,14 +84,15 @@ export class System extends Mesh {
     return attribute.array;
   }
 
-  updateEmittors(elapsedTime, dt) {
+  updateEmittors(elapsedTime: number, dt: number): void {
     this.emitters.forEach(emitter => emitter.update(this, elapsedTime, dt));
   }
 
-  updateEffectors() {
-    var translations = this.getAttributeArray("translate");
+  updateEffectors(): void {
+    const max = this.particleCount * 3;
+    const translations = this.getAttributeArray("translate");
     this.forces.forEach(force => {
-      for (var i3 = 0; i3 < this.particleCount * 3; i3 += 3) {
+      for (var i3 = 0; i3 < max; i3 += 3) {
         force.influence(
           i3,
           translations,
@@ -103,11 +104,10 @@ export class System extends Mesh {
   }
 
   updateSystemAttributes() {
-    const translations = this.getAttributeArray("translate");
-    for (var i = 0; i < this.particleCount * 3; i++) {
-      this.attributes.velocity[i] += this.attributes.acceleration[i];
-      translations[i] += this.attributes.velocity[i];
-    }
+    const translations = this.getAttributeArray("translate") as number[];
+    this.attributes.acceleration.forEach((a, i) => {
+      translations[i] += this.attributes.velocity[i] += a;
+    });
   }
 
   update(elapsedTime, dt) {

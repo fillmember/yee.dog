@@ -12,20 +12,18 @@ export class Geometry extends InstancedBufferGeometry {
     particleCount = 1024,
     tmpl = new PlaneBufferGeometry(1, 1, 1, 1)
   ) {
-    super(); // TODO: do something with normals
-
+    super();
+    // TODO: do something with normals
     /* setting up the instanced geometry. */
-
-    /* get the meat from the geometry */ var positions, indices, uvs;
+    /* get the meat from the geometry */
+    let positions, indices, uvs;
 
     if (tmpl instanceof BufferGeometry) {
       positions = tmpl.getAttribute("position").array;
       indices = tmpl.getIndex().array;
       uvs = tmpl.getAttribute("uv").array;
-    }
-
-    // TODO
-    else if (tmpl instanceof THREEGeometry) {
+    } else if (tmpl instanceof THREEGeometry) {
+      // TODO
       // positions = new Float32Array(tmpl.vertices)
       // indices = tmpl.getIndex().array
       // uvs = tmpl.getAttribute( 'uv' ).array

@@ -1,4 +1,9 @@
 export class Force {
   active = true;
-  influence(iter, positions, velocities, accelerations) {}
+  influence(
+    iter: number,
+    positions: number[],
+    velocities: number[],
+    accelerations: number[]
+  ): void {}
 }
