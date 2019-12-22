@@ -60,15 +60,16 @@ export class Emitter {
   public position?: EmitterOptionProperty<NumberTriplet>;
   public velocity?: EmitterOptionProperty<NumberTriplet>;
   public acceleration?: EmitterOptionProperty<NumberTriplet>;
-  private t: number = 0;
+  private t: number;
   constructor(options: EmitterOptions = {}) {
     Object.keys(defaultOptions).forEach(key => {
       this[key] = options[key] || defaultOptions[key];
     });
+    this.t = 100;
   }
   update(system, elapsedTime, dt) {
     this.t += dt;
-    if (this.t > computeInterval(this.enabled, this.rate)) {
+    if (this.t >= computeInterval(this.enabled, this.rate)) {
       this.emit(system, elapsedTime);
       this.t = 0;
     }

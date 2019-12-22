@@ -8,7 +8,7 @@ import { WagTail } from "./WagTail";
 import { EarWiggle } from "./EarWiggle";
 import { VLegs } from "./VLegs";
 import { DogLookAtTarget } from "./DogLookAtTarget";
-import { ParticleSystem } from "./ParticleSystem";
+import { DogParticles } from "./DogParticles";
 
 const DogRun = () => {
   return (
@@ -39,10 +39,8 @@ const DogRun = () => {
           </DogLookAtTarget>
           <WagTail />
           <EarWiggle />
+          <DogParticles />
         </Dog>
-      </Suspense>
-      <Suspense fallback={false}>
-        <ParticleSystem />
       </Suspense>
     </Canvas>
   );

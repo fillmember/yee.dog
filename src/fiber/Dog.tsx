@@ -11,6 +11,13 @@ import {
 } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
+export enum Mood {
+  Confused,
+  LoveStruck,
+  Surprised,
+  Amazed
+}
+
 export const DogContext = React.createContext({
   mesh: null
 });
@@ -59,7 +66,7 @@ export function Dog({ children }) {
         mesh
       }}
     >
-      <primitive object={gltf.scene} position={[3, 0, 0]} />
+      <primitive object={gltf.scene} />
       <group>{children}</group>
     </DogProvider>
   );
