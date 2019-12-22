@@ -7,7 +7,7 @@ import { AttributeName } from "./Geometry";
 import { NumberTriplet } from "./types";
 type FunctionsReturning<T> = () => T;
 type EmitterOptionProperty<T> = T | T[] | FunctionsReturning<T>;
-type EmitterOptions = {
+export type EmitterOptions = {
   enabled?: boolean;
   rate?: number;
   size?: EmitterOptionProperty<number>;
