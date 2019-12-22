@@ -2,6 +2,7 @@ import { BufferAttribute, BufferGeometry } from "three";
 import { Mesh } from "./Mesh";
 import { Geometry, AttributeName as GAttributeName } from "./Geometry";
 import { BillboardMaterial } from "./BillboardMaterial";
+import { NumberTriplet } from "./types";
 
 export enum SystemAttributeName {
   velocity = "velocity",
@@ -41,7 +42,10 @@ export class System extends Mesh {
    * @param {Array | THREE.Vector3} translate the position of the particle
    * @param {Object} options options array containing settings for attributes
    */
-  addParticle(translate, options = {}) {
+  addParticle(
+    translate: NumberTriplet,
+    options: Partial<Record<AttributeName, number | number[]>> = {}
+  ) {
     this.setParticle(this.iter, translate, options);
     this.iter = (this.iter + 1) % (this.particleCount - 1);
   }
@@ -55,23 +59,23 @@ export class System extends Mesh {
    */
   setParticle(
     iter: number,
-    translate: [number, number, number],
-    options: Record<string, number | number[]> = {}
+    translate: NumberTriplet,
+    options: Partial<Record<AttributeName, number | number[]>> = {}
   ) {
     this.setAttribute(GAttributeName.translate, iter, translate);
     for (var prop in options) {
-      this.setAttribute(prop, iter, options[prop]);
+      this.setAttribute(prop as AttributeName, iter, options[prop]);
     }
   }
 
   /**
    * set single namend attribute at single position. The attribute width will be infered from the amount of arguments supplied
    *
-   * @param {String} name Attribute name
+   * @param {AttributeName} name Attribute name
    * @param {Integer} iter which particle, 0..particleCount
    * @param {Number|Array of Numbers} values attribute values
    */
-  setAttribute(name: string, iter: number, values: number | number[]) {
+  setAttribute(name: AttributeName, iter: number, values: number | number[]) {
     if (!(values instanceof Array)) values = [values];
     var offset = iter * values.length;
     var attribute = this.getAttributeArray(name) as number[];
@@ -82,10 +86,10 @@ export class System extends Mesh {
   /**
    * returns the raw typed array for the attribute. Dirty flag will be set for you
    *
-   * @param {String} name attribute name
+   * @param {AttributeName} name attribute name
    * @return {typed Array} the raw attribute array
    */
-  getAttributeArray(name: string): ArrayLike<number> | Float32Array {
+  getAttributeArray(name: AttributeName): ArrayLike<number> | Float32Array {
     if (this.attributes[name]) return this.attributes[name];
     var attribute = (this.geometry as BufferGeometry).getAttribute(
       name

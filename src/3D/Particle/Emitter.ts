@@ -3,8 +3,8 @@ import memoize from "lodash/memoize";
 import isNumber from "lodash/isNumber";
 import isArray from "lodash/isArray";
 import isFunction from "lodash/isFunction";
-
-type NumberTriplet = [number, number, number];
+import { AttributeName } from "./Geometry";
+import { NumberTriplet } from "./types";
 type FunctionsReturning<T> = () => T;
 type EmitterOptionProperty<T> = T | T[] | FunctionsReturning<T>;
 type EmitterOptions = {
@@ -66,10 +66,10 @@ export class Emitter {
     [attrVel[x], attrVel[y], attrVel[z]] = getVec3(velocity);
     [attrAcc[x], attrAcc[y], attrAcc[z]] = getVec3(acceleration);
     system.addParticle(getVec3(position), {
-      sprite: getNumber(sprite, 0),
-      size: getNumber(size, 1),
-      lifespan: getNumber(lifespan, 1),
-      tob: elapsedTime
+      [AttributeName.sprite]: getNumber(sprite, 0),
+      [AttributeName.size]: getNumber(size, 1),
+      [AttributeName.lifespan]: getNumber(lifespan, 1),
+      [AttributeName.tob]: elapsedTime
     });
   }
 }
