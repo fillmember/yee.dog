@@ -1,13 +1,19 @@
 import { BufferAttribute, BufferGeometry } from "three";
 import { Mesh } from "./Mesh";
-import { Geometry } from "./Geometry";
+import { Geometry, AttributeName as GAttributeName } from "./Geometry";
 import { BillboardMaterial } from "./BillboardMaterial";
+
+export enum SystemAttributeName {
+  velocity = "velocity",
+  acceleration = "acceleration"
+}
+export type AttributeName = GAttributeName | SystemAttributeName;
 
 export class System extends Mesh {
   iter = 0;
   forces = [];
   emitters = [];
-  attributes: Record<string, Float32Array>;
+  attributes: Record<SystemAttributeName, Float32Array>;
 
   get particleCount() {
     return (this.geometry as Geometry).particleCount;
@@ -52,7 +58,7 @@ export class System extends Mesh {
     translate: [number, number, number],
     options: Record<string, number | number[]> = {}
   ) {
-    this.setAttribute("translate", iter, translate);
+    this.setAttribute(GAttributeName.translate, iter, translate);
     for (var prop in options) {
       this.setAttribute(prop, iter, options[prop]);
     }
@@ -94,7 +100,7 @@ export class System extends Mesh {
 
   updateEffectors(): void {
     const max = this.particleCount * 3;
-    const translations = this.getAttributeArray("translate");
+    const translations = this.getAttributeArray(GAttributeName.translate);
     this.forces.forEach(force => {
       for (var i3 = 0; i3 < max; i3 += 3) {
         force.influence(
@@ -109,7 +115,7 @@ export class System extends Mesh {
 
   updateSystemAttributes() {
     const attr = (this.geometry as Geometry).getAttribute(
-      "translate"
+      GAttributeName.translate
     ) as BufferAttribute;
     this.attributes.acceleration.forEach((a, i) => {
       this.attributes.velocity[i] += a;
