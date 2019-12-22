@@ -18,6 +18,17 @@ type EmitterOptions = {
   acceleration?: EmitterOptionProperty<NumberTriplet>;
 };
 
+const defaultOptions = {
+  enabled: true,
+  rate: 4,
+  size: 1,
+  sprite: 0,
+  lifespan: 1,
+  position: [0, 0, 0],
+  velocity: [0, 0.1, 0],
+  acceleration: [0, 0, 0]
+};
+
 function getNumber(input, defaultValue = 0): number {
   if (isNumber(input)) return input;
   if (isFunction(input)) return input();
@@ -41,22 +52,29 @@ const computeInterval = memoize(
 );
 
 export class Emitter {
-  options: EmitterOptions;
-  t: number = 0;
-  constructor(options: EmitterOptions) {
-    this.options = options;
+  public enabled: boolean;
+  public rate: number;
+  public size?: EmitterOptionProperty<number>;
+  public sprite?: EmitterOptionProperty<number>;
+  public lifespan?: EmitterOptionProperty<number>;
+  public position?: EmitterOptionProperty<NumberTriplet>;
+  public velocity?: EmitterOptionProperty<NumberTriplet>;
+  public acceleration?: EmitterOptionProperty<NumberTriplet>;
+  private t: number = 0;
+  constructor(options: EmitterOptions = {}) {
+    Object.keys(defaultOptions).forEach(key => {
+      this[key] = options[key] || defaultOptions[key];
+    });
   }
   update(system, elapsedTime, dt) {
     this.t += dt;
-    if (this.t > computeInterval(this.options.enabled, this.options.rate)) {
+    if (this.t > computeInterval(this.enabled, this.rate)) {
       this.emit(system, elapsedTime);
       this.t = 0;
     }
   }
   emit(system, elapsedTime) {
-    const {
-      options: { velocity, acceleration, position, sprite, size, lifespan }
-    } = this;
+    const { velocity, acceleration, position, sprite, size, lifespan } = this;
     const {
       attributes: { velocity: attrVel, acceleration: attrAcc }
     } = system;
@@ -66,9 +84,9 @@ export class Emitter {
     [attrVel[x], attrVel[y], attrVel[z]] = getVec3(velocity);
     [attrAcc[x], attrAcc[y], attrAcc[z]] = getVec3(acceleration);
     system.addParticle(getVec3(position), {
-      [AttributeName.sprite]: getNumber(sprite, 0),
-      [AttributeName.size]: getNumber(size, 1),
-      [AttributeName.lifespan]: getNumber(lifespan, 1),
+      [AttributeName.sprite]: getNumber(sprite, defaultOptions.sprite),
+      [AttributeName.size]: getNumber(size, defaultOptions.size),
+      [AttributeName.lifespan]: getNumber(lifespan, defaultOptions.lifespan),
       [AttributeName.tob]: elapsedTime
     });
   }
