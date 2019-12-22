@@ -47,7 +47,11 @@ export class System extends Mesh {
    * @param {array|THREE.Vector3} translate x y and z components of particle position
    * @param {Object} options  other attributes of particle
    */
-  setParticle(iter, translate, options = {}) {
+  setParticle(
+    iter: number,
+    translate: [number, number, number],
+    options: Record<string, number | number[]> = {}
+  ) {
     this.setAttribute("translate", iter, translate);
     for (var prop in options) {
       this.setAttribute(prop, iter, options[prop]);
@@ -61,7 +65,7 @@ export class System extends Mesh {
    * @param {Integer} iter which particle, 0..particleCount
    * @param {Number|Array of Numbers} values attribute values
    */
-  setAttribute(name, iter, values) {
+  setAttribute(name: string, iter: number, values: number | number[]) {
     if (!(values instanceof Array)) values = [values];
     var offset = iter * values.length;
     var attribute = this.getAttributeArray(name) as number[];
@@ -104,9 +108,12 @@ export class System extends Mesh {
   }
 
   updateSystemAttributes() {
-    const translations = this.getAttributeArray("translate") as number[];
+    const attr = (this.geometry as Geometry).getAttribute(
+      "translate"
+    ) as BufferAttribute;
     this.attributes.acceleration.forEach((a, i) => {
-      translations[i] += this.attributes.velocity[i] += a;
+      this.attributes.velocity[i] += a;
+      attr.set([attr.array[i] + this.attributes.velocity[i]], i);
     });
   }
 
