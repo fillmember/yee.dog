@@ -4,52 +4,86 @@ import {
   InstancedBufferGeometry
 } from "three";
 
+export enum AttributeName {
+  position = "position",
+  uv = "uv",
+  sprite = "sprite",
+  size = "size",
+  translate = "translate",
+  color = "color",
+  opacity = "opacity",
+  id = "id",
+  tob = "tob",
+  lifespan = "lifespan"
+}
+
 const arrPos = [-0.5, 0.5, 0, 0.5, 0.5, 0, -0.5, -0.5, 0, 0.5, -0.5, 0];
 const arrUV = [0, 1, 1, 1, 0, 0, 1, 0];
 const arrIndex = [0, 2, 1, 2, 3, 1];
+
+const f32Arr = (length): Float32Array => new Float32Array(length);
+
+const mapUVForSpriteMap = (columns: number, rows: number) => {
+  return (v, i) => v / (i % 2 ? rows : columns);
+};
 
 export class Geometry extends InstancedBufferGeometry {
   particleCount: number;
   constructor(particleCount: number = 1024) {
     super();
     this.particleCount = particleCount;
-    const indexes = new Uint16Array(arrIndex);
-    const positions = new Float32Array(arrPos);
-    const uvs = new Float32Array(arrUV);
-    const translations = new Float32Array(particleCount * 3);
-    const sprites = new Float32Array(particleCount);
-    const sizes = new Float32Array(particleCount);
-    const opacities = new Float32Array(particleCount).fill(1);
-    const colors = new Float32Array(particleCount * 3).fill(1);
-    const ids = new Float32Array(particleCount).map((_, i) => i);
-    const lifespans = new Float32Array(particleCount);
-    const tobs = new Float32Array(particleCount);
-    this.setIndex(new BufferAttribute(indexes, 1));
-    this.setAttribute("position", new BufferAttribute(positions, 3, true));
-    this.setAttribute("uv", new BufferAttribute(uvs, 2, true));
-    /* custom for every particle */
+    // Buffer Attributes
+    this.setIndex(new BufferAttribute(new Uint16Array(arrIndex), 1));
     this.setAttribute(
-      "sprite",
-      new InstancedBufferAttribute(sprites, 1, false, 1)
-    );
-    this.setAttribute("size", new InstancedBufferAttribute(sizes, 1, false, 1));
-    this.setAttribute(
-      "translate",
-      new InstancedBufferAttribute(translations, 3, false, 1)
+      AttributeName.position,
+      new BufferAttribute(new Float32Array(arrPos), 3, true)
     );
     this.setAttribute(
-      "color",
-      new InstancedBufferAttribute(colors, 3, false, 1)
+      AttributeName.uv,
+      new BufferAttribute(new Float32Array(arrUV), 2, true)
+    );
+    // Instanced Buffer Attrs: custom for each particle
+    this.setAttribute(
+      AttributeName.sprite,
+      new InstancedBufferAttribute(f32Arr(particleCount), 1, false, 1)
     );
     this.setAttribute(
-      "opacity",
-      new InstancedBufferAttribute(opacities, 1, true, 1)
+      AttributeName.size,
+      new InstancedBufferAttribute(f32Arr(particleCount), 1, false, 1)
     );
-    this.setAttribute("id", new InstancedBufferAttribute(ids, 1, false, 1));
-    this.setAttribute("tob", new InstancedBufferAttribute(tobs, 1, false, 1));
     this.setAttribute(
-      "lifespan",
-      new InstancedBufferAttribute(lifespans, 1, false, 1)
+      AttributeName.translate,
+      new InstancedBufferAttribute(f32Arr(particleCount * 3), 3, false, 1)
+    );
+    this.setAttribute(
+      AttributeName.color,
+      new InstancedBufferAttribute(
+        f32Arr(particleCount * 3).fill(1),
+        3,
+        false,
+        1
+      )
+    );
+    this.setAttribute(
+      AttributeName.opacity,
+      new InstancedBufferAttribute(f32Arr(particleCount).fill(1), 1, true, 1)
+    );
+    this.setAttribute(
+      AttributeName.id,
+      new InstancedBufferAttribute(
+        f32Arr(particleCount).map((_, i) => i),
+        1,
+        false,
+        1
+      )
+    );
+    this.setAttribute(
+      AttributeName.tob,
+      new InstancedBufferAttribute(f32Arr(particleCount), 1, false, 1)
+    );
+    this.setAttribute(
+      AttributeName.lifespan,
+      new InstancedBufferAttribute(f32Arr(particleCount), 1, false, 1)
     );
   }
 
@@ -58,13 +92,11 @@ export class Geometry extends InstancedBufferGeometry {
    *
    * @param  {number} columns num of columns
    * @param  {number} rows num of rows
-   * @param  {boolean} prepareGeometry set tro to change geometry (proportions), too
    */
-  prepareSpritemaps(columns, rows) {
-    const attrUV = this.getAttribute("uv");
-    for (let i = 0; i < attrUV.count; i++) {
-      attrUV.array[i * 2 + 0] /= columns;
-      attrUV.array[i * 2 + 1] /= rows;
-    }
+  prepareSpritemaps(columns: number, rows: number): void {
+    const attrUV = this.getAttribute(AttributeName.uv) as BufferAttribute;
+    attrUV.copyArray(
+      (attrUV.array as number[]).map(mapUVForSpriteMap(columns, rows))
+    );
   }
 }
