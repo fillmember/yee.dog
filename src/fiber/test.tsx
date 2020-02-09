@@ -9,6 +9,8 @@ import { EarWiggle } from "./EarWiggle";
 import { VLegs } from "./VLegs";
 import { DogLookAtTarget } from "./DogLookAtTarget";
 import { DogParticles } from "./DogParticles";
+import { DogIK, DogIKGroup } from "./ik/dogik";
+import { NumberTriplet } from "../3D/Particle/types";
 
 const DogRun = () => {
   return (
@@ -23,8 +25,8 @@ const DogRun = () => {
         enableDamping
         rotateSpeed={2}
         damingFactor={0.05}
-        enableZoom={false}
-        enablePan={false}
+        enableZoom={process.env.NODE_ENV === "development"}
+        enablePan={process.env.NODE_ENV === "development"}
       />
       <Suspense fallback={false}>
         <Dog>
@@ -32,14 +34,19 @@ const DogRun = () => {
           <DogLookAtTarget>
             {target => (
               <>
-                <DogBasicLookAt target={target} />
-                <VLegs doit={target[1] < 0} />
+                {/* <DogBasicLookAt target={target} />
+                <VLegs doit={target[1] < 0} /> */}
+                <DogIK
+                  target={target}
+                  boneNames={["Spine", "Shoulder", "Neck", "Head"]}
+                />
               </>
             )}
           </DogLookAtTarget>
           <WagTail />
           <EarWiggle />
-          <DogParticles />
+          {/* <DogIKGroup /> */}
+          {/* <DogParticles /> */}
         </Dog>
       </Suspense>
     </Canvas>

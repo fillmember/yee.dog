@@ -7,19 +7,30 @@ import { useThree } from "react-three-fiber";
 import { ParticleTextureMap01 } from "../3D/ParticleTextureMap";
 import { EmitterOptions } from "../3D/Particle/Emitter";
 
+enum ParticleSet {
+  Confused,
+  Loved
+}
+
 const map: Record<
-  string,
-  Partial<EmitterOptions> & { positionFn?: Function; effectFn?: Function }
+  ParticleSet,
+  Partial<EmitterOptions> & {
+    positionFn?: Function;
+    effectFn?: Function;
+    count?: number;
+  }
 > = {
-  confused: {
+  [ParticleSet.Confused]: {
     rate: 2,
+    count: 16,
     lifespan: [0.7, 1, 1.5],
     sprite: ParticleTextureMap01["?"],
-    velocity: () => [0, 0.02, 0] as NumberTriplet,
-    size: [0.25, 0.5, 0.7]
+    velocity: () => [0, 0.015, 0] as NumberTriplet,
+    size: [0.5, 0.75, 1]
   },
-  loved: {
+  [ParticleSet.Loved]: {
     rate: 2.5,
+    count: 16,
     lifespan: [1, 1.5, 2],
     sprite: ParticleTextureMap01["❤"],
     velocity: () =>
@@ -28,23 +39,15 @@ const map: Record<
         0.015,
         random(-0.0025, 0.0025, true)
       ] as NumberTriplet,
-    size: [0.25, 0.5, 0.7]
-  },
-  surprised: {
-    rate: 0.5,
-    lifespan: 2.25,
-    size: 2,
-    velocity: [0, 0, 0],
-    sprite: ParticleTextureMap01["!"],
-    positionFn: ({ x, y, z }) => [x, y + 1.7, z] as NumberTriplet
+    size: [0.5, 0.75, 1]
   }
 };
 
 export const HeadParticles = () => {
   const { clock } = useThree();
   const head = useDogBone("Head");
-  const { velocity, sprite, lifespan, rate, size, positionFn } = map[
-    "surprised"
+  const { velocity, sprite, lifespan, rate, size, positionFn, count } = map[
+    ParticleSet.Confused
   ];
   const emitterOptions = useMemo(
     () => ({
@@ -71,7 +74,7 @@ export const HeadParticles = () => {
     }),
     [head]
   );
-  return <ParticleSystem count={32} emitterOptions={emitterOptions} />;
+  return <ParticleSystem count={count} emitterOptions={emitterOptions} />;
 };
 
 const temp = new Vector3(0, 0, 0);

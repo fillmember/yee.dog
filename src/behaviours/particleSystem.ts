@@ -1,6 +1,6 @@
 import { Math as Math3 } from "three";
 import DoggoBehaviour from "./DoggoBehaviour";
-import ParticleSystem3D from "../3D/ParticleSystem";
+import ParticleSystem3D from "../3D/OldParticleSystem";
 import BoneID from "../3D/BoneID";
 
 class ParticleSystem extends DoggoBehaviour {

@@ -1,4 +1,3 @@
-import "../css/reset.css";
-import "../css/basic.css";
+import "../css/style.css";
 
 export default (props): JSX.Element => <main {...props} />;

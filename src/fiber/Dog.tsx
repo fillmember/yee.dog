@@ -56,7 +56,9 @@ export function Dog({ children }) {
       color: 0x444444,
       map,
       emissive: 0xffffff,
-      emissiveMap: map
+      emissiveMap: map,
+      opacity: process.env.NODE_ENV === "development" ? 0.8 : undefined,
+      transparent: process.env.NODE_ENV === "development"
     });
   }, [gltf]);
   useBoneScreenPositions(mesh);

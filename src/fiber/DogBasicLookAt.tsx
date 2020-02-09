@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { useFrame } from "react-three-fiber";
-import { Quaternion, Euler, Vector3, Object3D } from "three";
+import { Quaternion, Euler, Object3D } from "three";
 import clamp from "lodash/clamp";
 import { NumberTriplet, useDogBones } from "./utils";
 
