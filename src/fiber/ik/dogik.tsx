@@ -1,10 +1,9 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
-import { Bone, Vector3, Object3D } from "three";
+import React, { useMemo, useRef } from "react";
+import { Vector3, Object3D, Geometry } from "three";
 import { useFrame } from "react-three-fiber";
 import sum from "lodash/sum";
 import last from "lodash/last";
 import first from "lodash/first";
-import forEach from "lodash/forEach";
 import { useDogBones, NumberTriplet, DogBoneName } from "../utils";
 
 function cost(tip: Vector3, target: Vector3) {
@@ -55,10 +54,9 @@ export const DogIK = ({
     [initialWorldPositions]
   );
   const totalLength = useMemo(() => sum(lengths), [lengths]);
+  const targetAsV3 = useMemo(() => new Vector3().fromArray(target), target);
   useFrame(() => {
-    const len = currentWorldPositions.length;
     const base = first(initialWorldPositions);
-    const targetAsV3 = new Vector3().fromArray(target);
     const vectorFromBaseToTarget = new Vector3().subVectors(base, targetAsV3);
     const distanceBaseToTarget = vectorFromBaseToTarget.length();
     const outOfReach = totalLength <= distanceBaseToTarget;
@@ -93,7 +91,7 @@ export const DogIK = ({
           currentWorldPositions,
           (current, index): void => {
             // 1. Set the tip at the target
-            if (index === len - 1) {
+            if (current === last(currentWorldPositions)) {
               current.copy(targetAsV3);
               return;
             }
@@ -136,22 +134,37 @@ export const DogIK = ({
       }
     }
   });
+  const ref = useRef<Geometry>();
+  useFrame(() => {
+    if (ref.current) {
+      ref.current.verticesNeedUpdate = true;
+    }
+  });
   return (
     <>
       {currentWorldPositions.map((v, index) => (
-        <mesh key={index} position={v.toArray()}>
-          <boxBufferGeometry attach="geometry" args={[0.3, 0.3, 0.3]} />
-          <meshBasicMaterial
-            attach="material"
-            color={["red", "orange", "yellow", "blue"][index]}
-          />
-          {/* <Dom>{bones[index].name}</Dom> */}
-        </mesh>
+        <group key={index}>
+          <mesh position={v.toArray()}>
+            <boxBufferGeometry attach="geometry" args={[0.15, 0.15, 0.15]} />
+            <meshBasicMaterial
+              attach="material"
+              color={["red", "orange", "yellow", "blue"][index]}
+            />
+          </mesh>
+        </group>
       ))}
-      <mesh position={target}>
-        <sphereBufferGeometry attach="geometry" args={[0.4, 0.4, 0.4]} />
-        <meshBasicMaterial attach="material" color={"red"} />
-      </mesh>
+      <line>
+        <geometry
+          ref={ref}
+          attach="geometry"
+          vertices={currentWorldPositions}
+        />
+        <lineBasicMaterial attach="material" color={0xffffff} linewidth={4} />
+      </line>
+      <line>
+        <geometry attach="geometry" vertices={initialWorldPositions} />
+        <lineBasicMaterial attach="material" color={0x000000} linewidth={4} />
+      </line>
     </>
   );
 };
@@ -180,3 +193,52 @@ export const DogIKGroup = () => {
     </>
   );
 };
+
+/* More Notes
+
+
+h1. Branching
+
+A - Pelvis -> Shoulder
+A1 - Shoulder -> Head
+A2 - Shoulder -> ArmL_3
+
+1. Work backwards to the sub-base
+
+A1.backward()
+A2.backward()
+
+2. get the centroid, set as next part of chain's target and solve
+	-- (we're going backwards, then forwards by using solve for chainA)
+
+A.target = _.mean( A1.currentPositions[0] , A2.currentPositions[1] )
+
+A.solve() // i.e. A.backward() + A.forward()
+
+A1.currentPositions[0].copy( last( A.currentPositions ) )
+A2.currentPositions[1].copy( last( A.currentPositions ) )
+
+A1.forward()
+A2.forward()
+
+
+h1. Constraints
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*/
