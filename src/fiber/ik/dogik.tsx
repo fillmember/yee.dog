@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from "react";
-import { Vector3, Object3D, Geometry } from "three";
-import { useFrame } from "react-three-fiber";
+import { Vector3, Object3D, Geometry, Math as MathUtil } from "three";
+import { useFrame, createPortal } from "react-three-fiber";
 import sum from "lodash/sum";
 import last from "lodash/last";
 import first from "lodash/first";
@@ -34,6 +34,9 @@ function computeLengths(worldPositions: Vector3[]): number[] {
   });
 }
 
+const reusableVector = new Vector3();
+const reusableVector2 = new Vector3();
+
 export const DogIK = ({
   target,
   boneNames
@@ -55,9 +58,52 @@ export const DogIK = ({
   );
   const totalLength = useMemo(() => sum(lengths), [lengths]);
   const targetAsV3 = useMemo(() => new Vector3().fromArray(target), target);
+  const constrain = (vector: Vector3, index: number): Vector3 => {
+    if (index === 0) {
+      return vector;
+    }
+    const target =
+      index > 1
+        ? reusableVector2.subVectors(
+            currentWorldPositions[index - 1],
+            currentWorldPositions[index - 2]
+          )
+        : reusableVector2.subVectors(
+            initialWorldPositions[1],
+            initialWorldPositions[0]
+          );
+    target.setLength(vector.length());
+    const useAxisOfThisBone = bones[index - 1];
+    useAxisOfThisBone.updateWorldMatrix(false, false);
+    const axisX = useAxisOfThisBone.localToWorld(new Vector3(1, 0, 0)); // left <-> right
+    const axisY = useAxisOfThisBone.localToWorld(new Vector3(0, 1, 0)); // up <-> down
+    const vectorX = vector.clone().projectOnPlane(axisX);
+    const targetX = target.clone().projectOnPlane(axisX);
+    const vectorY = vector.clone().projectOnPlane(axisY);
+    const targetY = target.clone().projectOnPlane(axisY);
+    // const compareToThisVectorFlattendToBoneXAxis = compareToThisVector.projectOnPlane(
+    //   useAxisOfThisBone.localToWorld(new Vector3(1, 0, 0))
+    // );
+    // const compareToThisVectorFlattendToBoneYAxis = compareToThisVector.projectOnPlane(
+    //   useAxisOfThisBone.localToWorld(new Vector3(0, 1, 0))
+    // );
+    const dotX = vectorX.dot(targetX);
+    const cosThetaX = dotX / vectorX.length() / targetX.length();
+
+    const diffX = vectorX.angleTo(targetX);
+    const diffY = vectorY.angleTo(targetY);
+    if (index === 1) {
+      console.log(
+        cosThetaX.toFixed(4)
+        // MathUtil.radToDeg(diffY).toFixed(0)
+      );
+      // vector.lerp(target, 1);
+    }
+    return vector;
+  };
   useFrame(() => {
     const base = first(initialWorldPositions);
-    const vectorFromBaseToTarget = new Vector3().subVectors(base, targetAsV3);
+    const vectorFromBaseToTarget = new Vector3().subVectors(targetAsV3, base);
     const distanceBaseToTarget = vectorFromBaseToTarget.length();
     const outOfReach = totalLength <= distanceBaseToTarget;
     if (outOfReach) {
@@ -67,9 +113,11 @@ export const DogIK = ({
         .setLength(totalLength);
       let a = 0;
       currentWorldPositions.forEach((current, index) => {
-        current
-          .copy(base)
-          .sub(cappedVectorFromBaseToTarget.clone().setLength(a));
+        const vectorFromPreviousToCurrent = cappedVectorFromBaseToTarget
+          .clone()
+          .setLength(a);
+        constrain(vectorFromPreviousToCurrent, index);
+        current.copy(base).add(vectorFromPreviousToCurrent);
         a += lengths[index];
       });
     } else {
@@ -98,7 +146,7 @@ export const DogIK = ({
             // 2. Find the line between current and previous.
             const previousExecutedIndex = index + 1;
             const prev = currentWorldPositions[previousExecutedIndex];
-            const vectorFromPreviousToCurrent = new Vector3()
+            const vectorFromPreviousToCurrent = reusableVector
               .subVectors(current, prev)
               .setLength(lengths[index]);
             // 3. Set current on the found line, with distance of its length to previous
@@ -123,9 +171,11 @@ export const DogIK = ({
             const previousExecutedIndex = index - 1;
             // 2. Find the line between current and next
             const prev = currentWorldPositions[previousExecutedIndex];
-            const vectorFromPreviousToCurrent = new Vector3()
+            const vectorFromPreviousToCurrent = reusableVector
               .subVectors(current, prev)
               .setLength(lengths[index - 1]);
+            // New: Constrain
+            constrain(vectorFromPreviousToCurrent, index);
             current.addVectors(prev, vectorFromPreviousToCurrent);
           }
         );
@@ -165,6 +215,7 @@ export const DogIK = ({
         <geometry attach="geometry" vertices={initialWorldPositions} />
         <lineBasicMaterial attach="material" color={0x000000} linewidth={4} />
       </line>
+      {bones.map(bone => createPortal(<axesHelper args={[80]} />, bone))}
     </>
   );
 };

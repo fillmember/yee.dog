@@ -12,7 +12,7 @@ export const DogDebugger = () => {
   eval("window.dog = mesh");
   return (
     <group>
-      <skeletonHelper name="DogDebugger.SkeletonHelper" args={[pelvis]} />
+      {/* <skeletonHelper name="DogDebugger.SkeletonHelper" args={[pelvis]} /> */}
       {mesh.skeleton.bones.map(bone =>
         createPortal(<axesHelper args={[80]} />, bone)
       )}

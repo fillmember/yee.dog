@@ -30,7 +30,7 @@ const DogRun = () => {
       />
       <Suspense fallback={false}>
         <Dog>
-          <DogDebugger />
+          {/* <DogDebugger /> */}
           <DogLookAtTarget>
             {target => (
               <>
