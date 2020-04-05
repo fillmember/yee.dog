@@ -11,6 +11,7 @@ export enum SystemAttributeName {
 export type AttributeName = GAttributeName | SystemAttributeName;
 
 export class System extends Mesh {
+  config: any = null;
   iter = 0;
   forces = [];
   emitters = [];
