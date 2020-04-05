@@ -1,4 +1,4 @@
-import { useMemo, useContext, useEffect } from "react";
+import { useMemo, useContext } from "react";
 import { useFrame } from "react-three-fiber";
 import { AnimationMixer, AnimationClip } from "three";
 import { DogContext } from "../context";

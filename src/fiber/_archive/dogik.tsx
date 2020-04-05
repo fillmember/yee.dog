@@ -1,5 +1,5 @@
 import React, { useMemo, useRef } from "react";
-import { Vector3, Object3D, Geometry, MathUtils } from "three";
+import { Vector3, Object3D, Geometry } from "three";
 import { useFrame, createPortal } from "react-three-fiber";
 import sum from "lodash/sum";
 import last from "lodash/last";

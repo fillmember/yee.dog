@@ -36,5 +36,5 @@ export const DogBark = () => {
       0.5
     );
   });
-  return consent && <Audio />;
+  return null;
 };
