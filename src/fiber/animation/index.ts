@@ -1,6 +1,6 @@
-import { useMemo, useContext } from "react";
+import { useMemo, useContext, useEffect } from "react";
 import { useFrame } from "react-three-fiber";
-import { AnimationMixer } from "three";
+import { AnimationMixer, AnimationClip } from "three";
 import { DogContext } from "../context";
 
 export const useAnimationSystem = (mesh) => {
@@ -13,6 +13,12 @@ export const useAnimationSystem = (mesh) => {
   return [mixer];
 };
 
-export const useAnimationClip = () => {
-  return useContext(DogContext);
+export const useAnimationClip = (json) => {
+  const { mixer } = useContext(DogContext);
+  const clip = useMemo(() => AnimationClip.parse(json), []);
+  const action = useMemo(
+    () => mixer.existingAction(clip) || mixer.clipAction(clip),
+    [clip]
+  );
+  return { clip, action };
 };

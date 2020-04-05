@@ -1,6 +1,10 @@
 import React, { useContext } from "react";
+import { SkinnedMesh, AnimationMixer } from "three";
 
-export const DogContext = React.createContext({
+export const DogContext = React.createContext<{
+  mesh: SkinnedMesh;
+  mixer: AnimationMixer;
+}>({
   mesh: null,
   mixer: null,
 });

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useFrame } from "react-three-fiber";
-import { Quaternion, Euler, Object3D } from "three";
+import { Quaternion, Euler, Object3D, MathUtils } from "three";
 import clamp from "lodash/clamp";
 import { useDogBones } from "../hooks/useDogBone";
 import { NumberTriplet } from "../types";
@@ -45,38 +45,23 @@ type PropsDogBasicLookAt = {
   target: NumberTriplet;
 };
 
+const rad = (v) => v * MathUtils.DEG2RAD;
+
 export const DogBasicLookAt = ({ target }: PropsDogBasicLookAt) => {
-  const [head, neck, shoulder, spine] = useDogBones([
-    "Head",
-    "Neck",
-    "Shoulder",
-    "Spine",
-  ]);
+  const [head, neck] = useDogBones(["Head", "Neck"]);
   return (
     <>
       <ObjectLookAt
-        range={[0.8, 0.5, 0.2]}
+        range={[30, 30, 30].map(rad) as NumberTriplet}
         object={head}
         target={target}
         lerp={0.3}
       />
       <ObjectLookAt
-        range={[0.6, 0.8, 0.0]}
+        range={[15, 15, 15].map(rad) as NumberTriplet}
         object={neck}
         target={target}
         lerp={0.2}
-      />
-      <ObjectLookAt
-        range={[0.2, 0, 0]}
-        object={shoulder}
-        target={target}
-        lerp={0.1}
-      />
-      <ObjectLookAt
-        range={[0.1, 0.1, 0]}
-        object={spine}
-        target={target}
-        lerp={0.1}
       />
     </>
   );

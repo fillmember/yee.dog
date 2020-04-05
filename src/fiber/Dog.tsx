@@ -16,6 +16,7 @@ export function Dog({ children }) {
   );
   useBoneScreenPositions(mesh);
   const [mixer] = useAnimationSystem(mesh);
+  eval("window.dog = mesh");
   return (
     <DogProvider
       value={{

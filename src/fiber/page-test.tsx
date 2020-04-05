@@ -6,12 +6,14 @@ import { DogBasicLookAt } from "./components/DogBasicLookAt";
 import { WagTail } from "./components/WagTail";
 import { EarWiggle } from "./components/EarWiggle";
 import { DogLookAtTarget } from "./components/DogLookAtTarget";
+import { VLegs } from "./components/VLegs";
 
 const LookAt = () => (
   <DogLookAtTarget>
     {(target) => (
       <>
         <DogBasicLookAt target={target} />
+        <VLegs target={target} />
       </>
     )}
   </DogLookAtTarget>

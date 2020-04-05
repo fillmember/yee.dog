@@ -1,153 +1,132 @@
 import round from "lodash/round";
-import { Math as MathUtils } from "three";
+import { useEffect } from "react";
+import { MathUtils, Vector3 } from "three";
 import { useFrame } from "react-three-fiber";
-import { useDogBone, useDogBones } from "../hooks/useDogBone";
-import { Wiggle } from "./Wiggle";
-import { useMemo } from "react";
+import { useAnimationClip } from "../animation";
+import { useDogBone } from "../hooks/useDogBone";
 
-const rzOffset = 0.35;
-const rz0 = [Math.PI, Math.PI];
-const rz1 = [Math.PI - rzOffset, Math.PI + rzOffset];
-
-const toRad = MathUtils.degToRad;
-
-const animation = [
-  {
-    bone: "LegL_0",
-    property: "rotation.x",
-    times: [0, 1],
-    values: [-90, -90],
-  },
-  {
-    bone: "LegR_0",
-    property: "rotation.x",
-    times: [0, 1],
-    values: [-90, -90],
-  },
-  {
-    bone: "LegL_0",
-    property: "rotation.y",
-    times: [0, 1],
-    values: [0, 5],
-  },
-  {
-    bone: "LegR_0",
-    property: "rotation.y",
-    times: [0, 1],
-    values: [0, -5],
-  },
-  {
-    bone: "Pelvis",
-    property: "rotation.x",
-    times: [0, 1],
-    values: [0, 20],
-  },
-  {
-    bone: "Spine",
-    property: "rotation.x",
-    times: [0, 1],
-    values: [0, 15],
-  },
-  {
-    bone: "Shoulder",
-    property: "rotation.x",
-    times: [0, 1],
-    values: [0, 15],
-  },
-  {
-    bone: "ArmL_0",
-    property: "rotation.y",
-    times: [0, 1],
-    values: [0, 35],
-  },
-  {
-    bone: "ArmR_0",
-    property: "rotation.y",
-    times: [0, 1],
-    values: [0, -35],
-  },
-  {
-    bone: "ArmL_0",
-    property: "rotation.x",
-    times: [0, 1],
-    values: [-90, -70],
-  },
-  {
-    bone: "ArmR_0",
-    property: "rotation.x",
-    times: [0, 1],
-    values: [-90, -70],
-  },
-  {
-    bone: "ArmL_1",
-    property: "rotation[z]",
-    times: [0, 1],
-    values: [0, 0],
-  },
-  {
-    bone: "ArmR_1",
-    property: "rotation[z]",
-    times: [0, 1],
-    values: [0, 0],
-  },
-  {
-    bone: "ArmL_2",
-    property: "rotation.x",
-    times: [0, 1],
-    values: [-90, -70],
-  },
-  {
-    bone: "ArmR_2",
-    property: "rotation.x",
-    times: [0, 1],
-    values: [-90, -70],
-  },
-  {
-    bone: "ArmL_2",
-    property: "rotation.z",
-    times: [0, 1],
-    values: [0, 20],
-  },
-  {
-    bone: "ArmR_2",
-    property: "rotation.z",
-    times: [0, 1],
-    values: [0, -20],
-  },
-];
-
-export const VLegs = ({ doit }) => {
-  const [armL, armR] = useDogBones(["ArmL_0", "ArmR_0"]);
-  const [shoulder, spine, pelvis] = useDogBones([
-    "Shoulder",
-    "Spine",
-    "Pelvis",
-  ]);
-  // const p0 = useMemo(() => {
-  //   return [armL.position.clone(), armR.position.clone()];
-  // }, [armL, armR]);
-  // const p1 = useMemo(() => {
-  //   const [pl, pr] = p0.map((v) => v.clone());
-  //   pl.x -= 30;
-  //   pr.x += 30;
-  //   pl.z -= 50;
-  //   pr.z -= 50;
-  //   return [pl, pr];
-  // }, [p0]);
-  // useFrame(() => {
-  //   let [ltrz, rtrz] = doit ? rz1 : rz0;
-  //   armL.rotation.z += (ltrz - armL.rotation.z) * 0.1;
-  //   armR.rotation.z += (rtrz - armR.rotation.z) * 0.1;
-  //   // let [ltp, rtp] = doit ? p1 : p0;
-  //   // armL.position.lerp(ltp, 0.1);
-  //   // armR.position.lerp(rtp, 0.1);
-  // });
+const rad = (v) => v * MathUtils.DEG2RAD;
+const arr = (val = 0, len = 2) => new Array(len).fill(val);
+const range = (r) => (v, i) => v + r * (i % 2 ? -1 : 1);
+const negate = (v) => v * -1;
+const r2 = (v = 0, r) => arr(rad(v), 2).map(range(rad(r)));
+const duration = 2;
+const times = [0, 2];
+const jsonX = {
+  name: "jsonX",
+  duration,
+  tracks: [
+    {
+      type: "number",
+      name: "Spine.rotation[y]",
+      times,
+      values: r2(0, -30),
+    },
+    {
+      type: "number",
+      name: "Spine.rotation[z]",
+      times,
+      values: r2(0, 30),
+    },
+    {
+      type: "number",
+      name: "Shoulder.rotation[y]",
+      times,
+      values: r2(0, -30),
+    },
+  ],
+};
+const jsonY = {
+  name: "jsonY",
+  duration,
+  tracks: [
+    {
+      type: "number",
+      name: "Pelvis.rotation[x]",
+      times,
+      values: r2(-90, 20),
+    },
+    {
+      type: "number",
+      name: "Spine.rotation[x]",
+      times,
+      values: r2(-270, 10),
+    },
+    {
+      type: "number",
+      name: "Shoulder.rotation[x]",
+      times,
+      values: r2(45, 15),
+    },
+    {
+      type: "number",
+      name: "LegL_0.rotation[x]",
+      times: [0, 1, 2],
+      values: [-120, -90, -120].map(rad),
+    },
+    {
+      type: "number",
+      name: "LegR_0.rotation[x]",
+      times: [0, 1, 2],
+      values: [-120, -90, -120].map(rad),
+    },
+    {
+      type: "number",
+      name: "ArmL_0.rotation[z]",
+      times: [0, 1, 2],
+      values: [190, 180, 200].map(negate).map(rad),
+    },
+    {
+      type: "number",
+      name: "ArmR_0.rotation[z]",
+      times: [0, 1, 2],
+      values: [190, 180, 200].map(rad),
+    },
+    {
+      type: "number",
+      name: "ArmL_0.rotation[x]",
+      times: [0, 1, 2],
+      values: [35, -45, 45].map(rad),
+    },
+    {
+      type: "number",
+      name: "ArmR_0.rotation[x]",
+      times: [0, 1, 2],
+      values: [35, -45, 45].map(rad),
+    },
+    {
+      type: "number",
+      name: "Tail_0.rotation[x]",
+      times,
+      values: [35, -45].map(rad),
+    },
+  ],
+};
+const v = new Vector3();
+const v2 = new Vector3();
+const v3 = new Vector3();
+const fn2 = (x) => MathUtils.mapLinear(x, 5, -5, 0, duration);
+const fn = (head, target) => {
+  head.getWorldPosition(v);
+  v2.subVectors(v3.fromArray(target), v);
+  return [v2.x, v2.y].map(fn2);
+};
+export const VLegs = ({ target }) => {
+  const head = useDogBone("Head");
+  const { action: ax } = useAnimationClip(jsonX);
+  const { action: ay } = useAnimationClip(jsonY);
+  useEffect(() => {
+    ax.timeScale = 0;
+    ax.time = 0.5;
+    ay.time = 0.5;
+    ay.timeScale = 0;
+    ax.play();
+    ay.play();
+  }, []);
   useFrame(() => {
-    armL.rotation.x = -0.8 + Math.max(0, shoulder.rotation.x);
-    armR.rotation.x = -0.8 + Math.max(0, shoulder.rotation.x);
-    // armL.rotation.z =
-    //   -3.14 - Math.min(0.6, Math.abs(shoulder.rotation.x + 0.3));
-    // armR.rotation.z = 3.14 + Math.min(0.6, Math.abs(shoulder.rotation.x + 0.3));
+    const [tx, ty] = fn(head, target);
+    ax.time = MathUtils.lerp(ax.time, tx, 0.5);
+    ay.time = MathUtils.lerp(ay.time, ty, 0.5);
   });
   return null;
 };
