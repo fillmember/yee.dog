@@ -1,15 +1,15 @@
 import React, { useRef } from "react";
 import { OrbitControls as THREEOrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { useThree, useRender, extend } from "react-three-fiber";
+import { useThree, useFrame, extend } from "react-three-fiber";
 
 extend({ OrbitControls: THREEOrbitControls });
 
-export const OrbitControls = props => {
+export const OrbitControls = (props) => {
   const { camera } = useThree();
   const controls = useRef<THREEOrbitControls>();
-  useRender(() => {
+  useFrame(() => {
     controls.current && controls.current.update();
-  }, false);
+  });
   return (
     <orbitControls
       ref={controls}

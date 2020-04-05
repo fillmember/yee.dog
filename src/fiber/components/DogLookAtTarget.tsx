@@ -1,6 +1,6 @@
 import { useFrame } from "react-three-fiber";
 import { useMemo, useState } from "react";
-import { NumberTriplet } from "./utils";
+import { NumberTriplet } from "../types";
 import { Vector3 } from "three";
 import throttle from "lodash/throttle";
 type Props = {

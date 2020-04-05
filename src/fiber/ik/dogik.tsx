@@ -4,7 +4,7 @@ import { useFrame, createPortal } from "react-three-fiber";
 import sum from "lodash/sum";
 import last from "lodash/last";
 import first from "lodash/first";
-import { useDogBones, NumberTriplet, DogBoneName } from "../utils";
+import { useDogBones, NumberTriplet, DogBoneName } from "../hooks/useDogBone";
 
 function cost(tip: Vector3, target: Vector3) {
   return tip.distanceTo(target);
@@ -20,8 +20,8 @@ function reverseForeach<T>(
 }
 
 function object3DToWorldPositions(obj3d: Object3D): Vector3 {
-  obj3d.updateWorldMatrix(true, false);
-  return obj3d.getWorldPosition(new Vector3());
+  obj3d?.updateWorldMatrix(true, false);
+  return obj3d?.getWorldPosition(new Vector3());
 }
 
 function computeLengths(worldPositions: Vector3[]): number[] {
@@ -39,7 +39,7 @@ const reusableVector2 = new Vector3();
 
 export const DogIK = ({
   target,
-  boneNames
+  boneNames,
 }: {
   target: NumberTriplet;
   boneNames: DogBoneName[];
@@ -50,10 +50,10 @@ export const DogIK = ({
     boneNames
   );
   const lengths = useMemo(() => computeLengths(initialWorldPositions), [
-    initialWorldPositions
+    initialWorldPositions,
   ]);
   const currentWorldPositions = useMemo(
-    () => initialWorldPositions.map(v => v.clone()),
+    () => initialWorldPositions.map((v) => v.clone()),
     [initialWorldPositions]
   );
   const totalLength = useMemo(() => sum(lengths), [lengths]);
@@ -92,13 +92,13 @@ export const DogIK = ({
 
     const diffX = vectorX.angleTo(targetX);
     const diffY = vectorY.angleTo(targetY);
-    if (index === 1) {
-      console.log(
-        cosThetaX.toFixed(4)
-        // MathUtil.radToDeg(diffY).toFixed(0)
-      );
-      // vector.lerp(target, 1);
-    }
+    // if (index === 1) {
+    //   // console.log(
+    //   //   cosThetaX.toFixed(4)
+    //   //   // MathUtil.radToDeg(diffY).toFixed(0)
+    //   // );
+    //   // vector.lerp(target, 1);
+    // }
     return vector;
   };
   useFrame(() => {
@@ -194,7 +194,7 @@ export const DogIK = ({
     <>
       {currentWorldPositions.map((v, index) => (
         <group key={index}>
-          <mesh position={v.toArray()}>
+          <mesh position={v}>
             <boxBufferGeometry attach="geometry" args={[0.15, 0.15, 0.15]} />
             <meshBasicMaterial
               attach="material"
@@ -215,7 +215,7 @@ export const DogIK = ({
         <geometry attach="geometry" vertices={initialWorldPositions} />
         <lineBasicMaterial attach="material" color={0x000000} linewidth={4} />
       </line>
-      {bones.map(bone => createPortal(<axesHelper args={[80]} />, bone))}
+      {bones.map((bone) => createPortal(<axesHelper args={[80]} />, bone))}
     </>
   );
 };

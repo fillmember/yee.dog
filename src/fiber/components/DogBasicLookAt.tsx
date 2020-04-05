@@ -2,7 +2,8 @@ import { useMemo } from "react";
 import { useFrame } from "react-three-fiber";
 import { Quaternion, Euler, Object3D } from "three";
 import clamp from "lodash/clamp";
-import { NumberTriplet, useDogBones } from "./utils";
+import { useDogBones } from "../hooks/useDogBone";
+import { NumberTriplet } from "../types";
 
 export const limit = (value, center, range = 0.1) => {
   const min = center - range;
@@ -14,7 +15,7 @@ export const ObjectLookAt = ({
   object,
   target,
   lerp,
-  range: [rx, ry, rz]
+  range: [rx, ry, rz],
 }: {
   object: Object3D;
   target: NumberTriplet;
@@ -45,24 +46,35 @@ type PropsDogBasicLookAt = {
 };
 
 export const DogBasicLookAt = ({ target }: PropsDogBasicLookAt) => {
-  const [head, neck, shoulder] = useDogBones(["Head", "Neck", "Shoulder"]);
+  const [head, neck, shoulder, spine] = useDogBones([
+    "Head",
+    "Neck",
+    "Shoulder",
+    "Spine",
+  ]);
   return (
     <>
       <ObjectLookAt
-        range={[0.5, 0.5, 0.2]}
+        range={[0.8, 0.5, 0.2]}
         object={head}
         target={target}
         lerp={0.3}
       />
       <ObjectLookAt
-        range={[0.3, 0.8, 0.1]}
+        range={[0.6, 0.8, 0.0]}
         object={neck}
         target={target}
         lerp={0.2}
       />
       <ObjectLookAt
-        range={[0.1, 0, 0]}
+        range={[0.2, 0, 0]}
         object={shoulder}
+        target={target}
+        lerp={0.1}
+      />
+      <ObjectLookAt
+        range={[0.1, 0.1, 0]}
+        object={spine}
         target={target}
         lerp={0.1}
       />

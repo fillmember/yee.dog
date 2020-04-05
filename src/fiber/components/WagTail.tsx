@@ -1,6 +1,7 @@
 import throttle from "lodash/throttle";
 import { Wiggle } from "./Wiggle";
-import { useDogBones, DogBoneName } from "./utils";
+import { useDogBones } from "../hooks/useDogBone";
+import { DogBoneName } from '../types'
 import { useFrame } from "react-three-fiber";
 import { useState } from "react";
 
@@ -19,7 +20,7 @@ export const WagTail = ({
   const [intensity, setIntensity] = useState(1);
   useFrame(
     throttle(() => {
-      const target = bones.some(b => b && b.userData.distanceToMouse < 0.01)
+      const target = bones.some(b => b?.userData.distanceToMouse < 0.01)
         ? 1
         : 0;
       setIntensity(intensity * 0.9 + target * 0.1);

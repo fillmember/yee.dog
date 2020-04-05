@@ -12,9 +12,9 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-dropzone": "^5.1.0",
-    "react-three-fiber": "^3.0.17",
+    "react-three-fiber": "^4.0.25",
     "react-use": "^13.12.2",
-    "three": "^0.111.0",
+    "three": "^0.115.0",
     "three-orbit-controls": "^82.1.0"
   },
   "scripts": {

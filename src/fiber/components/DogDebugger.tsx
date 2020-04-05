@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
-import { DogContext } from "./Dog";
+import { DogContext } from "../context";
 import { createPortal } from "react-three-fiber";
-import BoneID from "../3D/BoneID";
+import BoneID from "../../3D/BoneID";
 
 export const DogDebugger = () => {
   const { mesh } = useContext(DogContext);
@@ -13,7 +13,7 @@ export const DogDebugger = () => {
   return (
     <group>
       {/* <skeletonHelper name="DogDebugger.SkeletonHelper" args={[pelvis]} /> */}
-      {mesh.skeleton.bones.map(bone =>
+      {mesh.skeleton.bones.map((bone) =>
         createPortal(<axesHelper args={[80]} />, bone)
       )}
     </group>

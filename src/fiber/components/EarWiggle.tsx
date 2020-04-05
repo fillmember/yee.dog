@@ -1,7 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import throttle from "lodash/throttle";
 import { Wiggle } from "./Wiggle";
-import { useDogBones, DogBoneName } from "./utils";
+import { useDogBones } from "../hooks/useDogBone";
+import { DogBoneName } from "../types";
 import { useFrame } from "react-three-fiber";
 type Props = {
   boneNames?: DogBoneName[];
@@ -9,11 +10,11 @@ type Props = {
 };
 export const EarWiggle = ({
   boneNames = ["EarL_0", "EarR_0"],
-  amp = 0.1
+  amp = 0.1,
 }: Props): JSX.Element => {
   const bones = useDogBones(boneNames);
   const originalRotations = useMemo(
-    () => bones.map(b => b && b.rotation.clone()),
+    () => bones.map((b) => b && b.rotation.clone()),
     [bones]
   );
   const [intensities, setIntensities] = useState<number[]>(
@@ -23,10 +24,10 @@ export const EarWiggle = ({
     throttle(() => {
       setIntensities(
         bones
-          .map(b =>
+          .map((b) =>
             b &&
             (b.userData.distanceToMouse < 0.02 ||
-              b.children.some(c => c.userData.distanceToMouse < 0.005))
+              b.children.some((c) => c.userData.distanceToMouse < 0.005))
               ? 1
               : 0
           )
