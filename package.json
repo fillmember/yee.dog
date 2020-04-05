@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/node": "^12.12.17",
+    "@types/react": "^16.9.16",
+    "@types/three": "^0.103.2",
     "lodash": "^4.17.15",
     "next": "^9.3.4",
     "react": "^16.13.1",
@@ -12,6 +15,7 @@
     "react-use": "^13.12.2",
     "three": "^0.115.0",
     "three-orbit-controls": "^82.1.0",
+    "typescript": "^3.7.3",
     "use-sound": "^1.0.1"
   },
   "scripts": {
@@ -23,12 +27,8 @@
     "gltf:json": "fbx2gltf -v ./design/wurstgang.fbx --output ./static/model/wt-json"
   },
   "devDependencies": {
-    "@types/node": "^12.12.17",
-    "@types/react": "^16.9.16",
-    "@types/three": "^0.103.2",
     "fbx2gltf": "^0.9.7-p1",
-    "prettier": "^1.14.2",
-    "typescript": "^3.7.3"
+    "prettier": "^1.14.2"
   },
   "browserslist": [
     "last 2 versions"
