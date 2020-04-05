@@ -1,7 +1,5 @@
-import noop from "lodash/noop";
 import React, { useContext } from "react";
 import { SkinnedMesh, AnimationMixer } from "three";
-import { Mood } from "./types/mood";
 
 type DogContextType = {
   mesh: SkinnedMesh;

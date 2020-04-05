@@ -6,6 +6,7 @@ import { useMemo } from "react";
 import { useThree } from "react-three-fiber";
 import { ParticleTextureMap01 } from "../../3D/ParticleTextureMap";
 import { EmitterOptions } from "../../3D/Particle/Emitter";
+import { useEmotionContext } from "../emotion";
 
 enum ParticleSet {
   Confused,
@@ -25,7 +26,7 @@ const map: Record<
     count: 16,
     lifespan: [0.7, 1, 1.5],
     sprite: ParticleTextureMap01["?"],
-    velocity: () => [0, 0.015, 0] as number[],
+    velocity: () => [0, 0.015, 0],
     size: [0.5, 0.75, 1],
   },
   [ParticleSet.Loved]: {
@@ -42,13 +43,18 @@ const map: Record<
     size: [0.5, 0.75, 1],
   },
 };
-
-export const HeadParticles = () => {
+const temp = new Vector3(0, 0, 0);
+export const HeadParticles = ({
+  velocity,
+  sprite,
+  lifespan,
+  rate,
+  size,
+  positionFn,
+  count,
+}) => {
   const { clock } = useThree();
   const head = useDogBone("Head");
-  const { velocity, sprite, lifespan, rate, size, positionFn, count } = map[
-    ParticleSet.Confused
-  ];
   const emitterOptions = useMemo(
     () => ({
       enabled: !!head,
@@ -77,11 +83,41 @@ export const HeadParticles = () => {
   return <ParticleSystem count={count} emitterOptions={emitterOptions} />;
 };
 
-const temp = new Vector3(0, 0, 0);
-export const DogParticles = () => {
+export const HeadParticlesWithEmotion = () => {
+  const [{ curious, surprised }] = useEmotionContext();
+  const isCurious = curious > 0.5;
+  const isSurprised = surprised > 0.5;
+  const sprite = useMemo(() => {
+    if (isCurious) {
+      return [ParticleTextureMap01["?"]];
+    }
+    if (isSurprised) {
+      return [ParticleTextureMap01["!"]];
+    }
+    return [ParticleTextureMap01["0"], ParticleTextureMap01["1"]];
+  }, [isCurious, isSurprised]);
+  const rate = useMemo(() => {
+    if (isCurious) return curious * 10;
+    if (isSurprised) return 1;
+    return 0;
+  }, [curious, isCurious, isSurprised]);
+  const lifespan = useMemo(() => {
+    if (isCurious) return [0.7, 1, 1.5];
+    if (isSurprised) return 2;
+  }, [isCurious, isSurprised]);
   return (
-    <group>
-      <HeadParticles />
-    </group>
+    <HeadParticles
+      rate={rate}
+      velocity={() => [
+        random(-0.01, 0.01, true),
+        0.015,
+        random(-0.01, 0.01, true),
+      ]}
+      sprite={sprite}
+      lifespan={lifespan}
+      size={[1]}
+      count={32}
+      positionFn={null}
+    />
   );
 };

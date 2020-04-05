@@ -8,7 +8,9 @@ export const OrbitControls = (props) => {
   const { camera } = useThree();
   const controls = useRef<THREEOrbitControls>();
   useFrame(() => {
-    controls.current && controls.current.update();
+    const o = controls.current;
+    // console.log(o);
+    o && o.update();
   });
   return (
     <orbitControls
