@@ -20,7 +20,9 @@
   },
   "scripts": {
     "dev": "next",
-    "build": "npm run build && next export",
+    "build": "next build",
+    "start": "next start",
+    "export": "npm run build && next export",
     "gltf:binary": "fbx2gltf -vb ./design/wurstgang.fbx --output ./static/model/wt",
     "gltf:json": "fbx2gltf -v ./design/wurstgang.fbx --output ./static/model/wt-json"
   },
