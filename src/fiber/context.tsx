@@ -1,10 +1,14 @@
+import noop from "lodash/noop";
 import React, { useContext } from "react";
 import { SkinnedMesh, AnimationMixer } from "three";
+import { Mood } from "./types/mood";
 
-export const DogContext = React.createContext<{
+type DogContextType = {
   mesh: SkinnedMesh;
   mixer: AnimationMixer;
-}>({
+};
+
+export const DogContext = React.createContext<DogContextType>({
   mesh: null,
   mixer: null,
 });

@@ -122,8 +122,8 @@ export const VLegs = ({ target }) => {
   }, []);
   useFrame(() => {
     const [tx, ty] = fn(head, target);
-    ax.time = MathUtils.lerp(ax.time, tx, 0.5);
-    ay.time = MathUtils.lerp(ay.time, ty, 0.5);
+    ax.time = MathUtils.lerp(ax.time, tx, 0.1);
+    ay.time = MathUtils.lerp(ay.time, ty, 0.1);
   });
   return null;
 };

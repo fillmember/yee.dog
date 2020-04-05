@@ -22,6 +22,7 @@ export const DogLookAtTarget = ({ debug = false, children }: Props) => {
   return (
     <>
       {debug && (
+        // @ts-ignore
         <mesh position={pos}>
           <boxBufferGeometry attach="geometry" args={[0.2, 0.2, 0.2]} />
           <meshNormalMaterial attach="material" />

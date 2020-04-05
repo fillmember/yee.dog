@@ -54,13 +54,13 @@ export const DogBasicLookAt = ({ target }: PropsDogBasicLookAt) => {
         range={[30, 30, 30].map(rad)}
         object={head}
         target={target}
-        lerp={0.3}
+        lerp={0.1}
       />
       <ObjectLookAt
         range={[15, 15, 15].map(rad)}
         object={neck}
         target={target}
-        lerp={0.2}
+        lerp={0.06}
       />
     </>
   );

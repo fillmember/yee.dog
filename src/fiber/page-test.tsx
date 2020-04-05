@@ -9,6 +9,10 @@ import { DogLookAtTarget } from "./components/DogLookAtTarget";
 import { VLegs } from "./components/VLegs";
 import { DogParticles } from "./components/DogParticles";
 import { DogBark } from "./components/DogBark";
+import {
+  withDropZone,
+  DogFileInteraction,
+} from "./components/DogFileInteraction";
 
 const LookAt = () => (
   <DogLookAtTarget>
@@ -21,7 +25,7 @@ const LookAt = () => (
   </DogLookAtTarget>
 );
 
-const DogRun = () => {
+const DogRun = ({ dropProps }) => {
   return (
     <Canvas
       style={{ width: "100vw", height: "100vh" }}
@@ -50,9 +54,10 @@ const DogRun = () => {
           <EarWiggle />
           <DogParticles />
           <DogBark />
+          <DogFileInteraction {...dropProps} />
         </Dog>
       </Suspense>
     </Canvas>
   );
 };
-export default DogRun;
+export default withDropZone(DogRun);
