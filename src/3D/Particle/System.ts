@@ -1,3 +1,4 @@
+import forEach from "lodash/forEach";
 import { BufferAttribute, BufferGeometry } from "three";
 import { Mesh } from "./Mesh";
 import { Geometry, AttributeName as GAttributeName } from "./Geometry";
@@ -98,7 +99,7 @@ export class System extends Mesh {
   }
 
   updateEmittors(elapsedTime: number, dt: number): void {
-    this.emitters.forEach((emitter) => emitter.update(this, elapsedTime, dt));
+    forEach(this.emitters, (emitter) => emitter.update(this, elapsedTime, dt));
   }
 
   updateEffectors(): void {

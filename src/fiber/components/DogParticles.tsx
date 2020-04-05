@@ -72,7 +72,7 @@ export const HeadParticles = () => {
       sprite,
       velocity,
     }),
-    [head]
+    [velocity, sprite, lifespan, rate, size, positionFn, count]
   );
   return <ParticleSystem count={count} emitterOptions={emitterOptions} />;
 };

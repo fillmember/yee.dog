@@ -1,52 +1,51 @@
-import { useState, useMemo, useEffect } from "react";
-import throttle from "lodash/throttle";
-import { Wiggle } from "./Wiggle";
-import { useDogBones } from "../hooks/useDogBone";
+import { useEffect } from "react";
+import { LoopPingPong } from "three";
 import { DogBoneName } from "../types";
 import { useFrame } from "react-three-fiber";
-type Props = {
-  boneNames?: DogBoneName[];
-  amp?: number;
-};
-export const EarWiggle = ({
-  boneNames = ["EarL_0", "EarR_0"],
-  amp = 0.1,
-}: Props): JSX.Element => {
-  const bones = useDogBones(boneNames);
-  const originalRotations = useMemo(
-    () => bones.map((b) => b && b.rotation.clone()),
-    [bones]
-  );
-  const [intensities, setIntensities] = useState<number[]>(
-    boneNames.map(() => 0)
-  );
-  useFrame(
-    throttle(() => {
-      setIntensities(
-        bones
-          .map((b) =>
-            b &&
-            (b.userData.distanceToMouse < 0.02 ||
-              b.children.some((c) => c.userData.distanceToMouse < 0.005))
-              ? 1
-              : 0
-          )
-          .map((a, index) => intensities[index] * 0.9 + a * 0.1)
-      );
-    }, 1000)
-  );
-  return (
-    <>
-      {bones.filter(Boolean).map((bone, index) => (
-        <Wiggle
-          key={bone.name}
-          object={bone}
-          axis="y"
-          amp={intensities[index] * amp}
-          speed={0.2 + intensities[index] * 0.5}
-          vOffset={originalRotations[index].y}
-        />
-      ))}
-    </>
-  );
+import { arrOf, lerp } from "../utils/functional";
+import { useAnimationClip } from "../animation";
+import { useDogBones } from "../hooks/useDogBone";
+
+const json = (boneName: DogBoneName, n: number) => ({
+  name: `wiggle-${boneName}`,
+  duration: 2,
+  tracks: [
+    {
+      type: "number",
+      name: `${boneName}.rotation[y]`,
+      times: [0, 1, 2],
+      values: arrOf(0.59 * n, 3).map((v, i) => v + (i - 1) * 0.2 * n),
+    },
+  ],
+});
+const jsonL = json("EarL_0", 1);
+const jsonR = json("EarR_0", -1);
+const mapBool = (vTrue = 1, vFalse = 0) => bool => bool ? vTrue : vFalse;
+const boolTo01 = mapBool(1,0)
+const isCloseToMouse = (b) => b?.userData.distanceToMouse < 0.02 || b?.children.some((c) => c.userData.distanceToMouse < 0.005)
+const boolToScale = mapBool(170,120)
+const boolToAlpha = mapBool(0.1,0.2)
+
+export const EarWiggle: React.FC = () => {
+  const bones = useDogBones(['EarL_0', "EarR_0"])
+  const animations = [useAnimationClip(jsonL), useAnimationClip(jsonR)];
+  useEffect(() => {
+    animations.forEach(({ action }) => {
+      action.setLoop(LoopPingPong, Infinity);
+      action.timeScale = 170;
+      action.weight = 0;
+      action.play();
+    });
+  }, []);
+  useFrame(() => {
+    const proximity = bones.map(isCloseToMouse)
+    const weights = proximity.map(boolTo01)
+    const scales = proximity.map(boolToScale)
+    const alphas = proximity.map(boolToAlpha)
+    animations.forEach(({action}, index) => {
+      action.weight = lerp( action.weight, weights[index], alphas[index])
+      action.timeScale = lerp( action.timeScale, scales[index], alphas[index])
+    })
+  })
+  return null;
 };

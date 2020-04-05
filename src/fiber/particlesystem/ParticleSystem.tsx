@@ -7,7 +7,7 @@ import { useMaterial } from "./useMaterial";
 
 extend({
   ParticleSystem: System,
-  ParticleEmitter: Emitter
+  ParticleEmitter: Emitter,
 });
 type IParticleSystem = {
   count?: number;
@@ -17,7 +17,7 @@ type IParticleSystem = {
 export const ParticleSystem = ({
   count = 4,
   emitterOptions = {},
-  effect = noop
+  effect = noop,
 }: IParticleSystem) => {
   const refSystem = useRef(null);
   const material = useMaterial("/static/images/particle_tex_0.png");

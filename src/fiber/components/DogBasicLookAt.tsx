@@ -32,7 +32,7 @@ export const ObjectLookAt = ({
       return;
     }
     qCurrent.copy(object.quaternion);
-    object.lookAt(...target);
+    object.lookAt(target[0], target[1], target[2]);
     object.rotateY(Math.PI);
     object.rotation.x = limit(object.rotation.x, rOriginal.x, rx);
     object.rotation.y = limit(object.rotation.y, rOriginal.y, ry);
