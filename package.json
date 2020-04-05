@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "fbx2gltf": "^0.9.7-p1",
     "lodash": "^4.17.15",
     "next": "^9.3.4",
     "react": "^16.13.1",
@@ -27,7 +26,7 @@
     "@types/node": "^12.12.17",
     "@types/react": "^16.9.16",
     "@types/three": "^0.103.2",
-    "babel-plugin-styled-components": "^1.7.1",
+    "fbx2gltf": "^0.9.7-p1",
     "prettier": "^1.14.2",
     "typescript": "^3.7.3"
   },
