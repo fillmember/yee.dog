@@ -8,6 +8,7 @@ import { EarWiggle } from "./components/EarWiggle";
 import { DogLookAtTarget } from "./components/DogLookAtTarget";
 import { VLegs } from "./components/VLegs";
 import { DogParticles } from "./components/DogParticles";
+import { DogBark } from "./components/DogBark";
 
 const LookAt = () => (
   <DogLookAtTarget>
@@ -48,6 +49,7 @@ const DogRun = () => {
           <WagTail />
           <EarWiggle />
           <DogParticles />
+          <DogBark />
         </Dog>
       </Suspense>
     </Canvas>

@@ -14,7 +14,7 @@ const json = (boneName: DogBoneName, n: number) => ({
       type: "number",
       name: `${boneName}.rotation[y]`,
       times: [0, 1, 2],
-      values: arrOf(0.59 * n, 3).map((v, i) => v + (i - 1) * 0.2 * n),
+      values: arrOf(0.59 * n, 3).map((v, i) => v + (i - 1) * 0.3 * n),
     },
   ],
 });
@@ -23,7 +23,7 @@ const jsonR = json("EarR_0", -1);
 const mapBool = (vTrue = 1, vFalse = 0) => bool => bool ? vTrue : vFalse;
 const boolTo01 = mapBool(1,0)
 const isCloseToMouse = (b) => b?.userData.distanceToMouse < 0.02 || b?.children.some((c) => c.userData.distanceToMouse < 0.005)
-const boolToScale = mapBool(170,120)
+const boolToScale = mapBool(210,120)
 const boolToAlpha = mapBool(0.1,0.2)
 
 export const EarWiggle: React.FC = () => {

@@ -15,7 +15,8 @@
     "react-three-fiber": "^4.0.25",
     "react-use": "^13.12.2",
     "three": "^0.115.0",
-    "three-orbit-controls": "^82.1.0"
+    "three-orbit-controls": "^82.1.0",
+    "use-sound": "^1.0.1"
   },
   "scripts": {
     "dev": "next",
