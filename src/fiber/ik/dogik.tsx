@@ -1,10 +1,11 @@
 import React, { useMemo, useRef } from "react";
-import { Vector3, Object3D, Geometry, Math as MathUtil } from "three";
+import { Vector3, Object3D, Geometry, MathUtils } from "three";
 import { useFrame, createPortal } from "react-three-fiber";
 import sum from "lodash/sum";
 import last from "lodash/last";
 import first from "lodash/first";
-import { useDogBones, NumberTriplet, DogBoneName } from "../hooks/useDogBone";
+import { useDogBones } from "../hooks/useDogBone";
+import { DogBoneName } from "../types";
 
 function cost(tip: Vector3, target: Vector3) {
   return tip.distanceTo(target);
@@ -41,7 +42,7 @@ export const DogIK = ({
   target,
   boneNames,
 }: {
-  target: NumberTriplet;
+  target: number[];
   boneNames: DogBoneName[];
 }): JSX.Element => {
   const bones = useDogBones(boneNames);
@@ -226,19 +227,19 @@ export const DogIKGroup = () => {
   return (
     <>
       <DogIK
-        target={legR.position.toArray() as NumberTriplet}
+        target={legR.position.toArray() as number[]}
         boneNames={["LegR_0", "LegR_1", "LegR_2", "LegR_3"]}
       />
       <DogIK
-        target={legL.position.toArray() as NumberTriplet}
+        target={legL.position.toArray() as number[]}
         boneNames={["LegL_0", "LegL_1", "LegL_2", "LegL_3"]}
       />
       <DogIK
-        target={armR.position.toArray() as NumberTriplet}
+        target={armR.position.toArray() as number[]}
         boneNames={["ArmR_0", "ArmR_1", "ArmR_2"]}
       />
       <DogIK
-        target={armL.position.toArray() as NumberTriplet}
+        target={armL.position.toArray() as number[]}
         boneNames={["ArmL_0", "ArmL_1", "ArmL_2"]}
       />
     </>

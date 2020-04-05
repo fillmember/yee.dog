@@ -34,7 +34,7 @@ export type DogBoneName =
   | "LegR_2"
   | "LegR_3"
   | "LegR_4";
-export type NumberTriplet = [number, number, number];
+export type number[] = number[];
 export enum Mood {
   Confused,
   LoveStruck,

@@ -1,14 +1,14 @@
 import { useFrame } from "react-three-fiber";
 import { useMemo, useState } from "react";
-import { NumberTriplet } from "../types";
+
 import { Vector3 } from "three";
 import throttle from "lodash/throttle";
 type Props = {
-  children: (pos: NumberTriplet) => JSX.Element;
+  children: (pos: number[]) => JSX.Element;
   debug?: boolean;
 };
 export const DogLookAtTarget = ({ debug = false, children }: Props) => {
-  const [pos, setPos] = useState<NumberTriplet>([0, 0, 0]);
+  const [pos, setPos] = useState<number[]>([0, 0, 0]);
   const v1 = useMemo(() => new Vector3(), []);
   useFrame(
     throttle(({ camera, mouse }) => {
@@ -17,7 +17,7 @@ export const DogLookAtTarget = ({ debug = false, children }: Props) => {
         .sub(camera.position)
         .normalize()
         .multiplyScalar(6);
-      setPos(v1.add(camera.position).toArray() as NumberTriplet);
+      setPos(v1.add(camera.position).toArray() as number[]);
     }, 50)
   );
   return (

@@ -4,7 +4,7 @@ import isNumber from "lodash/isNumber";
 import isArray from "lodash/isArray";
 import isFunction from "lodash/isFunction";
 import { AttributeName } from "./Geometry";
-import { NumberTriplet } from "./types";
+
 type FunctionsReturning<T> = () => T;
 type EmitterOptionProperty<T> = T | T[] | FunctionsReturning<T>;
 export type EmitterOptions = {
@@ -13,9 +13,9 @@ export type EmitterOptions = {
   size?: EmitterOptionProperty<number>;
   sprite?: EmitterOptionProperty<number>;
   lifespan?: EmitterOptionProperty<number>;
-  position?: EmitterOptionProperty<NumberTriplet>;
-  velocity?: EmitterOptionProperty<NumberTriplet>;
-  acceleration?: EmitterOptionProperty<NumberTriplet>;
+  position?: EmitterOptionProperty<number[]>;
+  velocity?: EmitterOptionProperty<number[]>;
+  acceleration?: EmitterOptionProperty<number[]>;
 };
 
 const defaultOptions = {
@@ -26,7 +26,7 @@ const defaultOptions = {
   lifespan: 1,
   position: [0, 0, 0],
   velocity: [0, 0.1, 0],
-  acceleration: [0, 0, 0]
+  acceleration: [0, 0, 0],
 };
 
 function getNumber(input, defaultValue = 0): number {
@@ -36,10 +36,7 @@ function getNumber(input, defaultValue = 0): number {
   return defaultValue;
 }
 
-function getVec3(
-  input,
-  defaultValue: NumberTriplet = [0, 0, 0]
-): NumberTriplet {
+function getVec3(input, defaultValue: number[] = [0, 0, 0]): number[] {
   if (isArray(input)) return input;
   if (isFunction(input)) return input();
   if (isNumber(input)) return [input, input, input];
@@ -57,12 +54,12 @@ export class Emitter {
   public size?: EmitterOptionProperty<number>;
   public sprite?: EmitterOptionProperty<number>;
   public lifespan?: EmitterOptionProperty<number>;
-  public position?: EmitterOptionProperty<NumberTriplet>;
-  public velocity?: EmitterOptionProperty<NumberTriplet>;
-  public acceleration?: EmitterOptionProperty<NumberTriplet>;
+  public position?: EmitterOptionProperty<number[]>;
+  public velocity?: EmitterOptionProperty<number[]>;
+  public acceleration?: EmitterOptionProperty<number[]>;
   private t: number;
   constructor(options: EmitterOptions = {}) {
-    Object.keys(defaultOptions).forEach(key => {
+    Object.keys(defaultOptions).forEach((key) => {
       this[key] = options[key] || defaultOptions[key];
     });
     this.t = 100;
@@ -77,7 +74,7 @@ export class Emitter {
   emit(system, elapsedTime) {
     const { velocity, acceleration, position, sprite, size, lifespan } = this;
     const {
-      attributes: { velocity: attrVel, acceleration: attrAcc }
+      attributes: { velocity: attrVel, acceleration: attrAcc },
     } = system;
     // finally
     const i = system.iter * 3;
@@ -88,7 +85,7 @@ export class Emitter {
       [AttributeName.sprite]: getNumber(sprite, defaultOptions.sprite),
       [AttributeName.size]: getNumber(size, defaultOptions.size),
       [AttributeName.lifespan]: getNumber(lifespan, defaultOptions.lifespan),
-      [AttributeName.tob]: elapsedTime
+      [AttributeName.tob]: elapsedTime,
     });
   }
 }

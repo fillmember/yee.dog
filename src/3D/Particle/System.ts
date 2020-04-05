@@ -2,11 +2,10 @@ import { BufferAttribute, BufferGeometry } from "three";
 import { Mesh } from "./Mesh";
 import { Geometry, AttributeName as GAttributeName } from "./Geometry";
 import { BillboardMaterial } from "./BillboardMaterial";
-import { NumberTriplet } from "./types";
 
 export enum SystemAttributeName {
   velocity = "velocity",
-  acceleration = "acceleration"
+  acceleration = "acceleration",
 }
 export type AttributeName = GAttributeName | SystemAttributeName;
 
@@ -23,7 +22,7 @@ export class System extends Mesh {
     super(geometry, material);
     this.attributes = {
       velocity: new Float32Array(this.particleCount * 3),
-      acceleration: new Float32Array(this.particleCount * 3)
+      acceleration: new Float32Array(this.particleCount * 3),
     };
   }
 
@@ -43,7 +42,7 @@ export class System extends Mesh {
    * @param {Object} options options array containing settings for attributes
    */
   addParticle(
-    translate: NumberTriplet,
+    translate: number[],
     options: Partial<Record<AttributeName, number | number[]>> = {}
   ) {
     this.setParticle(this.iter, translate, options);
@@ -59,7 +58,7 @@ export class System extends Mesh {
    */
   setParticle(
     iter: number,
-    translate: NumberTriplet,
+    translate: number[],
     options: Partial<Record<AttributeName, number | number[]>> = {}
   ) {
     this.setAttribute(GAttributeName.translate, iter, translate);
@@ -99,13 +98,13 @@ export class System extends Mesh {
   }
 
   updateEmittors(elapsedTime: number, dt: number): void {
-    this.emitters.forEach(emitter => emitter.update(this, elapsedTime, dt));
+    this.emitters.forEach((emitter) => emitter.update(this, elapsedTime, dt));
   }
 
   updateEffectors(): void {
     const max = this.particleCount * 3;
     const translations = this.getAttributeArray(GAttributeName.translate);
-    this.forces.forEach(force => {
+    this.forces.forEach((force) => {
       for (var i3 = 0; i3 < max; i3 += 3) {
         force.influence(
           i3,

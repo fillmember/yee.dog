@@ -4,12 +4,10 @@ import { MathUtils, Vector3 } from "three";
 import { useFrame } from "react-three-fiber";
 import { useAnimationClip } from "../animation";
 import { useDogBone } from "../hooks/useDogBone";
+import { rad, arrOf, negate } from "../utils/functional";
 
-const rad = (v) => v * MathUtils.DEG2RAD;
-const arr = (val = 0, len = 2) => new Array(len).fill(val);
 const range = (r) => (v, i) => v + r * (i % 2 ? -1 : 1);
-const negate = (v) => v * -1;
-const r2 = (v = 0, r) => arr(rad(v), 2).map(range(rad(r)));
+const r2 = (v = 0, r) => arrOf(rad(v), 2).map(range(rad(r)));
 const duration = 2;
 const times = [0, 2];
 const jsonX = {

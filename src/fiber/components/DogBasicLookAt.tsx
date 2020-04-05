@@ -3,7 +3,8 @@ import { useFrame } from "react-three-fiber";
 import { Quaternion, Euler, Object3D, MathUtils } from "three";
 import clamp from "lodash/clamp";
 import { useDogBones } from "../hooks/useDogBone";
-import { NumberTriplet } from "../types";
+
+import { rad } from "../utils/functional";
 
 export const limit = (value, center, range = 0.1) => {
   const min = center - range;
@@ -18,9 +19,9 @@ export const ObjectLookAt = ({
   range: [rx, ry, rz],
 }: {
   object: Object3D;
-  target: NumberTriplet;
+  target: number[];
   lerp: number;
-  range: NumberTriplet;
+  range: number[];
 }): null => {
   const [rOriginal, qCurrent] = useMemo<[Euler, Quaternion]>(
     () => [object && object.rotation.clone(), new Quaternion()],
@@ -42,23 +43,21 @@ export const ObjectLookAt = ({
 };
 
 type PropsDogBasicLookAt = {
-  target: NumberTriplet;
+  target: number[];
 };
-
-const rad = (v) => v * MathUtils.DEG2RAD;
 
 export const DogBasicLookAt = ({ target }: PropsDogBasicLookAt) => {
   const [head, neck] = useDogBones(["Head", "Neck"]);
   return (
     <>
       <ObjectLookAt
-        range={[30, 30, 30].map(rad) as NumberTriplet}
+        range={[30, 30, 30].map(rad)}
         object={head}
         target={target}
         lerp={0.3}
       />
       <ObjectLookAt
-        range={[15, 15, 15].map(rad) as NumberTriplet}
+        range={[15, 15, 15].map(rad)}
         object={neck}
         target={target}
         lerp={0.2}

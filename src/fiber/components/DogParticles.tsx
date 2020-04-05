@@ -1,7 +1,7 @@
 import { ParticleSystem } from "../particlesystem/ParticleSystem";
 import random from "lodash/random";
 import { Vector3 } from "three";
-import { NumberTriplet, useDogBone } from "../hooks/useDogBone";
+import { useDogBone } from "../hooks/useDogBone";
 import { useMemo } from "react";
 import { useThree } from "react-three-fiber";
 import { ParticleTextureMap01 } from "../../3D/ParticleTextureMap";
@@ -25,7 +25,7 @@ const map: Record<
     count: 16,
     lifespan: [0.7, 1, 1.5],
     sprite: ParticleTextureMap01["?"],
-    velocity: () => [0, 0.015, 0] as NumberTriplet,
+    velocity: () => [0, 0.015, 0] as number[],
     size: [0.5, 0.75, 1],
   },
   [ParticleSet.Loved]: {
@@ -38,7 +38,7 @@ const map: Record<
         random(-0.0025, 0.0025, true),
         0.015,
         random(-0.0025, 0.0025, true),
-      ] as NumberTriplet,
+      ] as number[],
     size: [0.5, 0.75, 1],
   },
 };
@@ -54,7 +54,7 @@ export const HeadParticles = () => {
       enabled: !!head,
       rate,
       size,
-      position: (): NumberTriplet => {
+      position: (): number[] => {
         const sin = 0.6 * Math.sin(clock.elapsedTime * random(8, 12));
         const cos = 0.6 * Math.sin(clock.elapsedTime * random(8, 12));
         head.getWorldPosition(temp);
