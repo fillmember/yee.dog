@@ -10,7 +10,7 @@ const mapBool = (vTrue = 1, vFalse = 0) => bool => bool ? vTrue : vFalse;
 const boolTo01 = mapBool(1,0)
 const isCloseToMouse = (b) => b?.userData.distanceToMouse < 0.01 || b?.children.some((c) => c.userData.distanceToMouse < 0.0025)
 
-export const EarWiggle: React.FC<{bones: DogBoneName[];}> = ({bones}) => {
+export const EarWiggle: React.FC<{bones?: DogBoneName[];}> = ({bones}) => {
   const boneObjs = useDogBones(bones)
   const y0 = useMemo(() => boneObjs.map(b => b?.rotation.y) , boneObjs)
   const [proximity, setProximity] = useState<number[]>(boneObjs.map(just0))
