@@ -100,8 +100,8 @@ const jsonY = {
     {
       type: "number",
       name: "Tail_0.rotation[x]",
-      times: [0, 0.75, 1.25, 2],
-      values: [35, 5, 5, -45].map(rad),
+      times: [0, 0.5, 1],
+      values: [35, -10, -45].map(rad),
     },
   ],
 };
