@@ -3,33 +3,32 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@zeit/next-css": "^1.0.1",
-    "fbx2gltf": "^0.9.5",
-    "gsap": "^2.0.2",
+    "@types/node": "^12.12.17",
+    "@types/react": "^16.9.16",
+    "@types/three": "^0.103.2",
+    "gsap": "^3.2.6",
     "lodash": "^4.17.15",
-    "next": "^9.1.5",
-    "next-images": "^1.2.0",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-dropzone": "^5.1.0",
-    "react-use": "^13.12.2",
-    "three": "^0.111.0",
-    "three-orbit-controls": "^82.1.0"
+    "next": "^9.3.4",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-dropzone": "^10.2.2",
+    "react-three-fiber": "^4.0.25",
+    "three": "^0.115.0",
+    "three-orbit-controls": "^82.1.0",
+    "typescript": "^3.7.3",
+    "use-sound": "^1.0.1"
   },
   "scripts": {
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "export": "npm run build && next export",
-    "gltf": "fbx2gltf -vb ./design/wurstgang.fbx --output ./static/model/wt"
+    "export": "next export",
+    "gltf:binary": "fbx2gltf -vb ./design/wurstgang.fbx --output ./public/static/model/wt",
+    "gltf:json": "fbx2gltf -v ./design/wurstgang.fbx --output ./public/static/model/wt-json"
   },
   "devDependencies": {
-    "@types/node": "^12.12.17",
-    "@types/react": "^16.9.16",
-    "@types/three": "^0.103.2",
-    "babel-plugin-styled-components": "^1.7.1",
-    "prettier": "^1.14.2",
-    "typescript": "^3.7.3"
+    "fbx2gltf": "^0.9.7-p1",
+    "prettier": "^1.14.2"
   },
   "browserslist": [
     "last 2 versions"

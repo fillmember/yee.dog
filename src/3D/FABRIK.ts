@@ -1,7 +1,7 @@
 // ref: http://wiki.roblox.com/index.php?title=Inverse_kinematics#FABRIK
-import { Vector3, Object3D, Math as Math3 } from "three";
+import { Vector3, Object3D } from "three";
 
-const last = arr => arr[arr.length - 1];
+const last = (arr) => arr[arr.length - 1];
 
 class Node {
   reference;
@@ -20,8 +20,8 @@ class Node {
 }
 
 class Joint extends Node {
-  static noop = ref => ref;
-  static negY = ref => ref.rotateY(Math.PI);
+  static noop = (ref) => ref;
+  static negY = (ref) => ref.rotateY(Math.PI);
   constructor({ reference }) {
     super(reference);
   }
@@ -87,7 +87,7 @@ class Chain {
     this.joints = joints.map(
       (obj3d, index) =>
         new Joint({
-          reference: obj3d
+          reference: obj3d,
         })
     );
     this.lengths = this.joints.reduce((a, v1, index, arr) => {
@@ -101,8 +101,8 @@ class Chain {
   }
   alignReferenceToJoint({ alpha, returnQuaternions }) {
     const result = {};
-    const references = this.joints.map(j => j.reference);
-    const originalQuaternions = references.map(ref => ref.quaternion.clone());
+    const references = this.joints.map((j) => j.reference);
+    const originalQuaternions = references.map((ref) => ref.quaternion.clone());
     // Get result quaternions
     references.forEach((ref, i) => {
       let v = this.joints[i + 1] || this.target;
@@ -135,7 +135,7 @@ class Chain {
   apply(alpha = this.influence) {
     return this.alignReferenceToJoint({
       alpha,
-      returnQuaternions: false
+      returnQuaternions: false,
     });
   }
   /*
@@ -145,7 +145,7 @@ class Chain {
   getQuaternions() {
     return this.alignReferenceToJoint({
       alpha: 0,
-      returnQuaternions: true
+      returnQuaternions: true,
     });
   }
   /*
@@ -243,11 +243,11 @@ class Chain {
   */
   alignAllWithReference() {
     this.target.alignWithReference();
-    this.joints.forEach(j => j.alignWithReference());
+    this.joints.forEach((j) => j.alignWithReference());
   }
 }
 
 export default {
   Chain,
-  Solver
+  Solver,
 };
