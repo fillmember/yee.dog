@@ -16,7 +16,7 @@ export function emit<T>(event: string, payload: T) {
   emitter.emit(event, payload);
 }
 
-export const useLatestEventPayload = (event: string, initialState: any) => {
+export const useLatestEventPayload = (event: string, initialState?: any) => {
   const [state, setState] = useState(initialState);
   useEffect(() => subscribe(event, setState), [event]);
   return state;

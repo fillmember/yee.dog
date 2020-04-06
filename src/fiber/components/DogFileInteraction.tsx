@@ -3,10 +3,11 @@ import { useDropzone } from "react-dropzone";
 import { useCallback, useState, useEffect, useMemo, useRef } from "react";
 import { useFrame, createPortal } from "react-three-fiber";
 import { ParticleTextureMap01 } from "../../3D/ParticleTextureMap";
-import { useDogBone } from "../hooks/useDogBone";
+import { useDogBone, useDogBones } from "../hooks/useDogBone";
 import { ParticleSystem } from '../particlesystem/ParticleSystem';
 import { EmitterOptions } from '../../3D/Particle/Emitter';
-import { emit } from '../DogEvent';
+import { emit, useLatestEventPayload } from '../DogEvent';
+import { lerp, rad, mapL } from '../utils/functional';
 export enum Event {
   Surprised = 'dog-file-interaction-surprised',
   Eating = 'dog-file-interaction-eating',
@@ -90,7 +91,7 @@ export const Eating: React.FC<{ enabled?: boolean; filename?: string }> = ({ ena
     }
   }, [rate])
   useFrame(() => {
-    setRate(prev => prev >= 1 ? prev - 0.05 : 0)
+    setRate(prev => prev >= 1 ? prev - 0.0888 : 0)
   })
   const bone = useDogBone("JawU_1");
   const emitterOptions: EmitterOptions = useMemo(
@@ -113,6 +114,25 @@ export const Eating: React.FC<{ enabled?: boolean; filename?: string }> = ({ ena
   return <>{createPortal(<ParticleSystem count={32} emitterOptions={emitterOptions} />, bone)}</>
 };
 export const DogFileInteraction = ({ state, file }) => {
+  const isEating = useLatestEventPayload(Event.Eating)
+  const isSurprised = useLatestEventPayload(Event.Surprised)
+  const [jawL, jawU] = useDogBones(["JawL_0", "JawU_0"]);
+  useFrame(({clock:{elapsedTime}}) => {
+    if (isEating) {
+      jawL.rotation.x = rad(mapL(Math.sin(elapsedTime * 35), -1, 1, -60,-32.587))
+    } else if (isSurprised) {
+      jawU.rotation.x = lerp(
+        jawU.rotation.x,
+        rad(-28),
+        0.5
+      );
+      jawL.rotation.x = lerp(
+        jawL.rotation.x,
+        rad(-65),
+        0.5
+      );
+    }
+  })
   return (
     <>
       <Surprised enabled={state === 'enter'} />

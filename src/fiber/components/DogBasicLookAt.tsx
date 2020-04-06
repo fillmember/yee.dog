@@ -42,19 +42,6 @@ export const ObjectLookAt = ({
   });
   return null;
 };
-const transformTarget = (target, barking) => {
-  const [x, y, z] = target;
-  let oZ = 0;
-  let oY = 0;
-  if (barking) {
-    if (y > 0) {
-      oY = 20;
-    } else {
-      oZ = z > 0 ? 20 : -20;
-    }
-  }
-  return [x, y + oY, z + oZ];
-};
 export const DogBasicLookAt = ({
   bones,
   target,
@@ -66,9 +53,6 @@ export const DogBasicLookAt = ({
   range: number[][];
   lerp: number[];
 }) => {
-  const [barking, setBarking] = useState(null);
-  const tt = transformTarget(target, barking);
-  useEffect(() => subscribe("bark", setBarking), []);
   return (
     <>
       {useDogBones(bones)
@@ -77,9 +61,9 @@ export const DogBasicLookAt = ({
           <ObjectLookAt
             key={bone.name}
             object={bone}
-            target={tt}
+            target={target}
             range={range[index]}
-            lerp={lerp[index] * (barking ? 1.5 : 1)}
+            lerp={lerp[index]}
           />
         ))}
     </>
@@ -89,5 +73,5 @@ export const DogBasicLookAt = ({
 DogBasicLookAt.defaultProps = {
   bones: ["Head", "Neck"],
   range: [[30, 30, 30].map(rad), [15, 15, 15].map(rad)],
-  lerp: [0.06, 0.1],
+  lerp: [0.03, 0.05],
 };

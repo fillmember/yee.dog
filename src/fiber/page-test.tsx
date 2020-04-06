@@ -16,6 +16,20 @@ import {
 import { DogConfusedByCameraSpeed } from "./components/DogConfusedByCameraSpeed";
 import { EventHandler } from "./DogEvent";
 
+const transformTarget = (target, barking) => {
+  const [x, y, z] = target;
+  let oZ = 0;
+  let oY = 0;
+  if (barking) {
+    if (y > 0) {
+      oY = 20;
+    } else {
+      oZ = z > 0 ? 20 : -20;
+    }
+  }
+  return [x, y + oY, z + oZ];
+};
+
 const DogRun = ({ dropProps }) => {
   return (
     <Canvas
@@ -40,12 +54,23 @@ const DogRun = ({ dropProps }) => {
         }
       >
         <Dog>
-          <DogLookAtTarget>
+          <DogLookAtTarget debug>
             {(target) => (
-              <>
-                <DogBasicLookAt target={target} />
-                <VLegs target={target} />
-              </>
+              <EventHandler events={["bark", Event.Eating]}>
+                {([barking, eating]) => {
+                  return (
+                    <>
+                      <DogBasicLookAt
+                        target={transformTarget(target, barking)}
+                        lerp={DogBasicLookAt.defaultProps.lerp.map(
+                          (v) => (barking ? 1.5 : 1) * v
+                        )}
+                      />
+                      <VLegs target={eating ? [0, -2, -10] : target} />
+                    </>
+                  );
+                }}
+              </EventHandler>
             )}
           </DogLookAtTarget>
           <WagTail />
