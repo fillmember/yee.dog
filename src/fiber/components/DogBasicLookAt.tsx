@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { useFrame } from "react-three-fiber";
-import { Quaternion, Euler, Object3D, MathUtils } from "three";
+import { Quaternion, Euler, Object3D } from "three";
 import clamp from "lodash/clamp";
 import { useDogBones } from "../hooks/useDogBone";
-
 import { rad } from "../utils/functional";
+import { DogBoneName } from "../types";
 
 export const limit = (value, center, range = 0.1) => {
   const min = center - range;
@@ -44,24 +44,33 @@ export const ObjectLookAt = ({
 
 type PropsDogBasicLookAt = {
   target: number[];
+  bones: DogBoneName[];
+  range: number[][];
+  lerp: number[];
 };
 
-export const DogBasicLookAt = ({ target }: PropsDogBasicLookAt) => {
-  const [head, neck] = useDogBones(["Head", "Neck"]);
-  return (
-    <>
-      <ObjectLookAt
-        range={[30, 30, 30].map(rad)}
-        object={head}
-        target={target}
-        lerp={0.1}
-      />
-      <ObjectLookAt
-        range={[15, 15, 15].map(rad)}
-        object={neck}
-        target={target}
-        lerp={0.06}
-      />
-    </>
-  );
+export const DogBasicLookAt = ({
+  bones,
+  target,
+  range,
+  lerp,
+}: PropsDogBasicLookAt) => (
+  <>
+    {useDogBones(bones)
+      .filter(Boolean)
+      .map((bone, index) => (
+        <ObjectLookAt
+          object={bone}
+          target={target}
+          range={range[index]}
+          lerp={lerp[index]}
+        />
+      ))}
+  </>
+);
+
+DogBasicLookAt.defaultProps = {
+  bones: ["Head", "Neck"],
+  range: [[30, 30, 30].map(rad), [15, 15, 15].map(rad)],
+  lerp: [0.06, 0.1],
 };

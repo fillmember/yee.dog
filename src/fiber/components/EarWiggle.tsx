@@ -16,6 +16,6 @@ export const EarWiggle: React.FC = () => {
     setProximity(prev=>prev.map((v,i) => lerp(v,p1[i],0.2)))
   })
   return <>{
-    bones.map((bone,i) => <Wiggle key={bone.name} object={bone} axis="y" vOffset={y0[i]} amp={0.2 * proximity[i]} speed={0.7} />)
+    bones.filter(Boolean).map((bone,i) => <Wiggle key={bone.name} object={bone} axis="y" vOffset={y0[i]} amp={0.2 * proximity[i]} speed={0.7} />)
   }</>;
 };
