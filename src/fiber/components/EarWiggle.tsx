@@ -22,8 +22,8 @@ const jsonL = json("EarL_0", 1);
 const jsonR = json("EarR_0", -1);
 const mapBool = (vTrue = 1, vFalse = 0) => bool => bool ? vTrue : vFalse;
 const boolTo01 = mapBool(1,0)
-const isCloseToMouse = (b) => b?.userData.distanceToMouse < 0.02 || b?.children.some((c) => c.userData.distanceToMouse < 0.005)
-const boolToScale = mapBool(100,30)
+const isCloseToMouse = (b) => b?.userData.distanceToMouse < 0.01 || b?.children.some((c) => c.userData.distanceToMouse < 0.0025)
+const boolToScale = () => 100
 const boolToAlpha = mapBool(0.1,0.2)
 
 export const EarWiggle: React.FC = () => {
@@ -32,7 +32,7 @@ export const EarWiggle: React.FC = () => {
   useEffect(() => {
     animations.forEach(({ action }) => {
       action.setLoop(LoopPingPong, Infinity);
-      action.timeScale = boolToScale(false);
+      action.timeScale = boolToScale();
       action.weight = boolTo01(false);
       action.play();
     });
@@ -45,6 +45,7 @@ export const EarWiggle: React.FC = () => {
     animations.forEach(({action}, index) => {
       action.weight = lerp( action.weight, weights[index], alphas[index])
       action.timeScale = lerp( action.timeScale, scales[index], 0.5)
+      console.log(action.timeScale)
     })
   })
   return null;
