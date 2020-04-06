@@ -11,7 +11,7 @@ export const DogBark: React.FC<{ enabled?: boolean }> = ({
   const [mouseDown, setMouseDown] = useState(false);
   useEffect(() => {
     if (!enabled) return;
-    const onMouseDown = (evt) => {
+    const onMouseDown = () => {
       setMouseDown(true);
       emit("bark", true);
     };
