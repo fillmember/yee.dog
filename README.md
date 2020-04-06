@@ -4,16 +4,8 @@ A digital dog for everyone to pet.
 
 ## To-Dos:
 
-- [ ] Script: Unity-like, component based architecture (DoggoBehaviour)
-- [ ] Design: design a default barking audio
-- [ ] Script: make custom barking sound available via DoggoBehaviour
-- [ ] Feature: walking dog
-- [ ] 3D: clean up model weighting
-- [ ] Script: clean up particle system works and merge it back to its own repo. 
-- [ ] Design: make animating easier, stop using C4D (poor integration)
 - [ ] Feature: A bone for the dog
 - [ ] Feature: Some basic UI (different interactions, objects for the dog, etc. )
-- [ ] Future: Port to Unity.
 
 ## License
 
