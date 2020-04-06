@@ -27,7 +27,7 @@ export const DogConfusedByCameraSpeed = () => {
         [x, y, z].map((value, index) => {
           const [evaluate, velocity] = velocityObservers[index];
           evaluate(value);
-          return Math.abs(velocity.current) * 1.5;
+          return Math.abs(velocity.current) / 1.5;
         })
       )
     );
@@ -40,7 +40,6 @@ export const DogConfusedByCameraSpeed = () => {
       lifespan={[0.7, 1, 1.5]}
       size={1}
       count={6}
-      positionFn={null}
     />
   );
 };
