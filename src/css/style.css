@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap");
+
 html,
 body {
   background: #1b8547;
@@ -6,7 +8,7 @@ body {
 }
 
 body {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-family: "Quicksand", sans-serif;
   color: #f2f2f2;
 }
 

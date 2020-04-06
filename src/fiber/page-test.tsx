@@ -45,8 +45,8 @@ const DogRun = ({ dropProps }) => {
       />
       <Suspense
         fallback={
-          <Dom>
-            <h1>loading</h1>
+          <Dom center>
+            <h1>loading...</h1>
           </Dom>
         }
       >
