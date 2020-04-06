@@ -1,6 +1,5 @@
 import { useRef } from "react";
-import { useFrame } from "react-three-fiber";
-import { lerp } from "../utils/functional";
+import { lerp } from "../fiber/utils/functional";
 
 export const useValueVelocity = ({
   initialValue = 0,

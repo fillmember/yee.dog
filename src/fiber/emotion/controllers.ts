@@ -1,5 +1,5 @@
 import { useDogBones } from "../hooks/useDogBone";
-import { useValueVelocity } from "../hooks/useValueVelocity";
+import { useValueVelocity } from "../../hooks/useValueVelocity";
 import { useFrame } from "react-three-fiber";
 import { Mood } from "./types";
 import { mapL } from "../utils/functional";
