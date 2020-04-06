@@ -16,7 +16,9 @@ const useVV = () =>
     decreaseMomentum: 0.5,
     increaseMomentum: 0.5,
   });
-export const DogConfusedByCameraSpeed = () => {
+export const DogConfusedByCameraSpeed: React.FC<{
+  rateMultiplier?: number;
+}> = ({ rateMultiplier = 1 }) => {
   const [rate, setRate] = useState(0);
   const velocityObservers = [useVV(), useVV(), useVV()];
   useFrame(({ camera, clock: { elapsedTime } }) => {
@@ -34,7 +36,7 @@ export const DogConfusedByCameraSpeed = () => {
   });
   return (
     <HeadParticles
-      rate={rate}
+      rate={rate * rateMultiplier}
       velocity={velocity}
       sprite={ParticleTextureMap01["?"]}
       lifespan={[0.7, 1, 1.5]}
