@@ -1,7 +1,7 @@
 import random from 'lodash/random'
 import { useDropzone } from "react-dropzone";
-import { useCallback, useState, useEffect, useMemo, useRef } from "react";
-import { useFrame, createPortal } from "react-three-fiber";
+import { useCallback, useState, useEffect, useMemo } from "react";
+import { useFrame, createPortal, useThree } from "react-three-fiber";
 import { ParticleTextureMap01 } from "../../3D/ParticleTextureMap";
 import { useDogBone, useDogBones } from "../hooks/useDogBone";
 import { ParticleSystem } from '../particlesystem/ParticleSystem';
@@ -19,6 +19,7 @@ enum DropState {
 }
 
 export const withDropZone = (Component) => () => {
+  const [mouse, setMousePosition] = useState<{x:number;y:number}>({x:0,y:0});
   const [state, setState] = useState<DropState>(null);
   const [file, setFile] = useState(null);
   const onDrop = useCallback((acceptedFiles) => {
@@ -31,6 +32,11 @@ export const withDropZone = (Component) => () => {
     setState(DropState.Dropped);
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    preventDropOnDocument: true,
+    noDragEventsBubbling: false,
+    onDragOver(e) {
+      setMousePosition({x:e.clientX,y:e.clientY})
+    },
     onDrop,
     onDragEnter: () => {
       setState(DropState.Enter);
@@ -44,7 +50,7 @@ export const withDropZone = (Component) => () => {
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()} />
-      <Component dropProps={{ isDragActive, state, file }} />
+      <Component dropProps={{ isDragActive, state, file, mouse }} />
     </div>
   );
 };
@@ -113,7 +119,9 @@ export const Eating: React.FC<{ enabled?: boolean; filename?: string }> = ({ ena
   );
   return <>{createPortal(<ParticleSystem count={32} emitterOptions={emitterOptions} />, bone)}</>
 };
-export const DogFileInteraction = ({ state, file }) => {
+export const DogFileInteraction = ({ state, file, mouse }) => {
+  const { events } = useThree();
+  events.onPointerMove({clientX: mouse.x, clientY: mouse.y});
   const isEating = useLatestEventPayload(Event.Eating)
   const isSurprised = useLatestEventPayload(Event.Surprised)
   const [jawL, jawU] = useDogBones(["JawL_0", "JawU_0"]);
