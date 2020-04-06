@@ -57,19 +57,17 @@ const DogRun = ({ dropProps }) => {
           <DogLookAtTarget debug>
             {(target) => (
               <EventHandler events={["bark", Event.Eating]}>
-                {([barking, eating]) => {
-                  return (
-                    <>
-                      <DogBasicLookAt
-                        target={transformTarget(target, barking)}
-                        lerp={DogBasicLookAt.defaultProps.lerp.map(
-                          (v) => (barking ? 1.5 : 1) * v
-                        )}
-                      />
-                      <VLegs target={eating ? [0, -2, -10] : target} />
-                    </>
-                  );
-                }}
+                {([barking, eating]) => (
+                  <>
+                    <DogBasicLookAt
+                      target={transformTarget(target, barking)}
+                      lerp={DogBasicLookAt.defaultProps.lerp.map(
+                        (v) => (barking ? 1.5 : 1) * v
+                      )}
+                    />
+                    <VLegs target={eating ? [0, -2, -10] : target} />
+                  </>
+                )}
               </EventHandler>
             )}
           </DogLookAtTarget>
