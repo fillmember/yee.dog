@@ -12,8 +12,7 @@ import {
   withDropZone,
   DogFileInteraction,
 } from "./components/DogFileInteraction";
-import { Emotion } from "./emotion";
-import { HeadParticlesWithEmotion } from "./components/DogParticles";
+import { DogConfusedByCameraSpeed } from "./components/DogConfusedByCameraSpeed";
 
 const DogRun = ({ dropProps }) => {
   return (
@@ -50,10 +49,8 @@ const DogRun = ({ dropProps }) => {
           <WagTail />
           <EarWiggle />
           <DogBark />
-          <Emotion>
-            <HeadParticlesWithEmotion />
-            <DogFileInteraction {...dropProps} />
-          </Emotion>
+          <DogConfusedByCameraSpeed />
+          <DogFileInteraction {...dropProps} />
         </Dog>
       </Suspense>
     </Canvas>

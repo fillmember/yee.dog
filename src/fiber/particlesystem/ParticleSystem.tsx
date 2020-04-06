@@ -9,7 +9,7 @@ extend({
   ParticleSystem: System,
   ParticleEmitter: Emitter,
 });
-type IParticleSystem = {
+export type IParticleSystem = {
   count?: number;
   emitterOptions?: EmitterOptions;
   effect?: Function;
