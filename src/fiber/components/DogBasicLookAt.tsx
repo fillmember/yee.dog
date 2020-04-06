@@ -73,5 +73,5 @@ export const DogBasicLookAt = ({
 DogBasicLookAt.defaultProps = {
   bones: ["Head", "Neck"],
   range: [[30, 30, 30].map(rad), [15, 15, 15].map(rad)],
-  lerp: [0.03, 0.05],
+  lerp: [0.015, 0.025],
 };

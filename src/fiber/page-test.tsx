@@ -42,9 +42,11 @@ const DogRun = ({ dropProps }) => {
         autoRotateSpeed={0.3}
         enableDamping
         rotateSpeed={2}
+        target={[0, 1, 0]}
         damingFactor={0.05}
         enableZoom={process.env.NODE_ENV === "development"}
         enablePan={process.env.NODE_ENV === "development"}
+        maxDistance={15}
       />
       <Suspense
         fallback={

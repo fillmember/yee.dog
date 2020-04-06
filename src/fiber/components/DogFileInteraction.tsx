@@ -120,12 +120,21 @@ export const Eating: React.FC<{ enabled?: boolean; filename?: string }> = ({ ena
   return <>{createPortal(<ParticleSystem count={32} emitterOptions={emitterOptions} />, bone)}</>
 };
 export const DogFileInteraction = ({ state, file, mouse }) => {
-  const { events } = useThree();
+  const { events, camera } = useThree();
   events.onPointerMove({clientX: mouse.x, clientY: mouse.y});
   const isEating = useLatestEventPayload(Event.Eating)
   const isSurprised = useLatestEventPayload(Event.Surprised)
   const [jawL, jawU] = useDogBones(["JawL_0", "JawU_0"]);
   useFrame(({clock:{elapsedTime}}) => {
+    switch (state) {
+      case 'enter':
+        camera.zoom = lerp(camera.zoom, 2, 0.1)
+        break;
+      default:
+        camera.zoom = lerp(camera.zoom, 1, 0.1)
+        break;
+    }
+    camera.updateProjectionMatrix()
     if (isEating) {
       jawL.rotation.x = rad(mapL(Math.sin(elapsedTime * 35), -1, 1, -60,-32.587))
     } else if (isSurprised) {
