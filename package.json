@@ -23,8 +23,8 @@
     "build": "next build",
     "start": "next start",
     "export": "next export",
-    "gltf:binary": "fbx2gltf -vb ./design/wurstgang.fbx --output ./static/model/wt",
-    "gltf:json": "fbx2gltf -v ./design/wurstgang.fbx --output ./static/model/wt-json"
+    "gltf:binary": "fbx2gltf -vb ./design/wurstgang.fbx --output ./public/static/model/wt",
+    "gltf:json": "fbx2gltf -v ./design/wurstgang.fbx --output ./public/static/model/wt-json"
   },
   "devDependencies": {
     "fbx2gltf": "^0.9.7-p1",
