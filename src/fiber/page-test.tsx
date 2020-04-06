@@ -54,7 +54,7 @@ const DogRun = ({ dropProps }) => {
         }
       >
         <Dog>
-          <DogLookAtTarget debug>
+          <DogLookAtTarget>
             {(target) => (
               <EventHandler events={["bark", Event.Eating]}>
                 {([barking, eating]) => (
