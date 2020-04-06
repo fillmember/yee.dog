@@ -8,7 +8,7 @@ import { useBoneScreenPositions } from "./hooks/useBoneScreenPositions";
 import { DogProvider } from "./context";
 
 export function Dog({ children }) {
-  const url = "/static/model/wt-json_out/wt-json.gltf";
+  const url = "/static/model/wt.glb";
   const gltf = useLoader(GLTFLoader, url);
   const mesh = useMemo(
     () => gltf.scene.getObjectByName("Wurstgang") as SkinnedMesh,
