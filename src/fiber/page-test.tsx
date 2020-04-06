@@ -11,8 +11,10 @@ import { DogBark } from "./components/DogBark";
 import {
   withDropZone,
   DogFileInteraction,
+  Event,
 } from "./components/DogFileInteraction";
 import { DogConfusedByCameraSpeed } from "./components/DogConfusedByCameraSpeed";
+import { EventHandler } from "./DogEvent";
 
 const DogRun = ({ dropProps }) => {
   return (
@@ -48,9 +50,19 @@ const DogRun = ({ dropProps }) => {
           </DogLookAtTarget>
           <WagTail />
           <EarWiggle />
-          <DogBark />
-          <DogConfusedByCameraSpeed />
           <DogFileInteraction {...dropProps} />
+          <EventHandler events={[Event.Eating, Event.Surprised]}>
+            {([isEating, isSurprised]) => (
+              <>
+                <DogBark enabled={!isEating && !isSurprised} />
+              </>
+            )}
+          </EventHandler>
+          <EventHandler events={[Event.Surprised]}>
+            {([isSurprised]) => (
+              <DogConfusedByCameraSpeed rateMultiplier={isSurprised ? 0 : 1} />
+            )}
+          </EventHandler>
         </Dog>
       </Suspense>
     </Canvas>
