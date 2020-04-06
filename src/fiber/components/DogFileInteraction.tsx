@@ -6,7 +6,11 @@ import { ParticleTextureMap01 } from "../../3D/ParticleTextureMap";
 import { useDogBone } from "../hooks/useDogBone";
 import { ParticleSystem } from '../particlesystem/ParticleSystem';
 import { EmitterOptions } from '../../3D/Particle/Emitter';
-
+import { emit } from '../DogEvent';
+export enum Event {
+  Surprised = 'dog-file-interaction-surprised',
+  Eating = 'dog-file-interaction-eating',
+}
 enum DropState {
   Enter = "enter",
   Leave = "leave",
@@ -49,8 +53,10 @@ export const Surprised: React.FC<{enabled: boolean}> = ({enabled}) => {
   useEffect(() => {
     if (enabled) {
       setActive(true)
+      emit(Event.Surprised, true)
       setTimeout(() => {
         setActive(false)
+        emit(Event.Surprised, false)
       },3000)
     }
   }, [enabled])
@@ -75,8 +81,14 @@ export const Eating: React.FC<{ enabled?: boolean; filename?: string }> = ({ ena
   useEffect(() => {
     if (enabled) {
       setRate(16)
+      emit(Event.Eating, true)
     }
   },[enabled])
+  useEffect(() => {
+    if (rate === 0) {
+      emit(Event.Eating, false)
+    }
+  }, [rate])
   useFrame(() => {
     setRate(prev => prev >= 1 ? prev - 0.05 : 0)
   })
