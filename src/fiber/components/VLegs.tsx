@@ -33,6 +33,18 @@ const jsonX = {
     },
   ],
 };
+const leg0rx = {
+  times: [0, 0.5, 1.5, 2],
+  values: [-120, -90, -90, -120].map(rad),
+};
+const arm0rz = (f = 1) => ({
+  times: [0, 0.5, 1, 2],
+  values: [190, 180, 180, 200].map((v) => v * f).map(rad),
+});
+const arm0rx = {
+  times: [0, 0.5, 1, 2],
+  values: [35, -45, -45, 45].map(rad),
+};
 const jsonY = {
   name: "jsonY",
   duration,
@@ -58,44 +70,38 @@ const jsonY = {
     {
       type: "number",
       name: "LegL_0.rotation[x]",
-      times: [0, 1, 2],
-      values: [-120, -90, -120].map(rad),
+      ...leg0rx,
     },
     {
       type: "number",
       name: "LegR_0.rotation[x]",
-      times: [0, 1, 2],
-      values: [-120, -90, -120].map(rad),
+      ...leg0rx,
     },
     {
       type: "number",
       name: "ArmL_0.rotation[z]",
-      times: [0, 1, 2],
-      values: [190, 180, 200].map(negate).map(rad),
+      ...arm0rz(-1),
     },
     {
       type: "number",
       name: "ArmR_0.rotation[z]",
-      times: [0, 1, 2],
-      values: [190, 180, 200].map(rad),
+      ...arm0rz(1),
     },
     {
       type: "number",
       name: "ArmL_0.rotation[x]",
-      times: [0, 1, 2],
-      values: [35, -45, 45].map(rad),
+      ...arm0rx,
     },
     {
       type: "number",
       name: "ArmR_0.rotation[x]",
-      times: [0, 1, 2],
-      values: [35, -45, 45].map(rad),
+      ...arm0rx,
     },
     {
       type: "number",
       name: "Tail_0.rotation[x]",
-      times,
-      values: [35, -45].map(rad),
+      times: [0, 0.75, 1.25, 2],
+      values: [35, 5, 5, -45].map(rad),
     },
   ],
 };
