@@ -7,7 +7,6 @@ import { WagTail } from "./components/WagTail";
 import { EarWiggle } from "./components/EarWiggle";
 import { DogLookAtTarget } from "./components/DogLookAtTarget";
 import { VLegs } from "./components/VLegs";
-// import { DogParticles } from "./components/DogParticles";
 import { DogBark } from "./components/DogBark";
 import {
   withDropZone,
@@ -15,17 +14,6 @@ import {
 } from "./components/DogFileInteraction";
 import { Emotion } from "./emotion";
 import { HeadParticlesWithEmotion } from "./components/DogParticles";
-
-const LookAt = () => (
-  <DogLookAtTarget>
-    {(target) => (
-      <>
-        <DogBasicLookAt target={target} />
-        <VLegs target={target} />
-      </>
-    )}
-  </DogLookAtTarget>
-);
 
 const DogRun = ({ dropProps }) => {
   return (
@@ -51,7 +39,14 @@ const DogRun = ({ dropProps }) => {
         }
       >
         <Dog>
-          <LookAt />
+          <DogLookAtTarget>
+            {(target) => (
+              <>
+                <DogBasicLookAt target={target} />
+                <VLegs target={target} />
+              </>
+            )}
+          </DogLookAtTarget>
           <WagTail />
           <EarWiggle />
           <DogBark />
