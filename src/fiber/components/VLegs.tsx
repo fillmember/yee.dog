@@ -16,20 +16,20 @@ const jsonX = {
     {
       type: "number",
       name: "Spine.rotation[y]",
-      times,
-      values: r2(0, -30),
+      times: [0, 0.8, 1.2, 2],
+      values: [-30, 0, 0, 30].map(rad),
     },
     {
       type: "number",
       name: "Spine.rotation[z]",
-      times,
-      values: r2(0, 30),
+      times: [0, 0.8, 1.2, 2],
+      values: [30, 0, 0, -30].map(rad),
     },
     {
       type: "number",
       name: "Shoulder.rotation[y]",
-      times,
-      values: r2(0, -30),
+      times: [0, 0.8, 1.2, 2],
+      values: [-30, 0, 0, 30].map(rad),
     },
   ],
 };
