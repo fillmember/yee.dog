@@ -6,3 +6,12 @@ export const negate = (v) => v * -1;
 
 export const lerp = MathUtils.lerp;
 export const mapL = MathUtils.mapLinear;
+
+export const moveTowards = (
+  current: number,
+  target: number,
+  maxDistanceDelta: number = Infinity
+): number => {
+  const distanceDelta = target - current;
+  return current + Math.min(distanceDelta, maxDistanceDelta);
+};
