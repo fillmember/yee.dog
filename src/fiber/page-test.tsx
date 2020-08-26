@@ -18,16 +18,17 @@ import { EventHandler } from "./DogEvent";
 
 const transformTarget = (target, barking) => {
   const [x, y, z] = target;
-  let oZ = 0;
-  let oY = 0;
-  if (barking) {
-    if (y > 0) {
-      oY = 20;
-    } else {
-      oZ = z > 0 ? 20 : -20;
-    }
-  }
-  return [x, y + oY, z + oZ];
+  // let oZ = 0;
+  // let oY = 0;
+  // if (barking) {
+  //   if (y > 0) {
+  //     oY = 5;
+  //   } else {
+  //     oZ = z > 0 ? 20 : -20;
+  //     oY = -5;
+  //   }
+  // }
+  return [x, y + barking ? 15 : 0, z];
 };
 
 const DogRun = ({ dropProps }) => {
@@ -58,19 +59,16 @@ const DogRun = ({ dropProps }) => {
         <Dog>
           <DogLookAtTarget>
             {(target) => (
-              <EventHandler events={["bark", Event.Eating]}>
-                {([barking, eating]) => (
-                  <>
-                    <DogBasicLookAt
-                      target={transformTarget(target, barking)}
-                      lerp={DogBasicLookAt.defaultProps.lerp.map(
-                        (v) => (barking ? 1.5 : 1) * v
-                      )}
-                    />
-                    <VLegs target={eating ? [0, -2, -10] : target} />
-                  </>
-                )}
-              </EventHandler>
+              <>
+                <DogBasicLookAt target={target} />
+                <EventHandler events={[Event.Eating]}>
+                  {([eating]) => (
+                    <>
+                      <VLegs target={eating ? [0, -2, -10] : target} />
+                    </>
+                  )}
+                </EventHandler>
+              </>
             )}
           </DogLookAtTarget>
           <WagTail />

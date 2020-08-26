@@ -7,7 +7,7 @@
     "@types/react": "^16.9.16",
     "@types/three": "^0.103.2",
     "gsap": "^3.2.6",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "next": "^9.3.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -16,7 +16,7 @@
     "three": "^0.115.0",
     "three-orbit-controls": "^82.1.0",
     "typescript": "^3.7.3",
-    "use-sound": "^1.0.1"
+    "use-sound": "^1.0.2"
   },
   "scripts": {
     "dev": "next",

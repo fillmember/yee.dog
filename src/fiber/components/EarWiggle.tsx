@@ -8,7 +8,7 @@ import { DogBoneName } from "../types";
 const just0 = () => 0;
 const mapBool = (vTrue = 1, vFalse = 0) => bool => bool ? vTrue : vFalse;
 const boolTo01 = mapBool(1,0)
-const isCloseToMouse = (b) => b?.userData.distanceToMouse < 0.01 || b?.children.some((c) => c.userData.distanceToMouse < 0.0025)
+const isCloseToMouse = (b) => b?.userData.distanceToMouse < 0.005 || b?.children.some((c) => c.userData.distanceToMouse < 0.0025)
 
 export const EarWiggle: React.FC<{bones?: DogBoneName[];}> = ({bones}) => {
   const boneObjs = useDogBones(bones)
